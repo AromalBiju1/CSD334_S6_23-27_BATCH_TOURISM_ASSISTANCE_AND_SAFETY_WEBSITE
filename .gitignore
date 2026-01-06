@@ -1,20 +1,16 @@
 # =========================
-# Dependencies
+# FRONTEND (Node / Vite)
 # =========================
 node_modules/
 .pnp/
 .pnp.js
 
-# =========================
 # Build outputs
-# =========================
 dist/
 build/
 out/
 
-# =========================
 # Runtime / logs
-# =========================
 logs/
 *.log
 npm-debug.log*
@@ -22,41 +18,46 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Optional (framework-specific)
+.next/
+.vercel/
+
+# =========================
+# BACKEND (Python / FastAPI)
+# =========================
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+.venv/
+.env
+
+# Databases (if you use SQLite locally)
+*.sqlite3
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# GLOBAL / SHARED
 # =========================
 # Environment variables
-# =========================
 .env
 .env.*
 !.env.example
 
-# =========================
 # OS / Editor
-# =========================
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 
-# =========================
-# Cache
-# =========================
-.cache/
-.eslintcache
-*.tsbuildinfo
-
-# =========================
-# Testing
-# =========================
-coverage/
-
-# =========================
 # Security
-# =========================
 *.pem
 *.key
-
-# =========================
-# Optional (framework-specific)
-# =========================
-.next/
-.vercel/
