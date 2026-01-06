@@ -9,6 +9,10 @@ node_modules/
 dist/
 build/
 out/
+dist
+dist-ssr
+*.local
+
 
 # Runtime / logs
 logs/
@@ -61,3 +65,14 @@ Thumbs.db
 # Security
 *.pem
 *.key
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
