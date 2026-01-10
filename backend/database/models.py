@@ -49,3 +49,11 @@ class Attraction(Base):
     rating = Column(Float)  
     city = relationship("City", back_populates="attractions")  
 
+class EmergencyContact(Base):
+    __tablename__ = "emergency_contacts"
+    id = Column(Integer, primary_key=True)
+    city_id = Column(Integer, ForeignKey("cities.id"), nullable=True)
+    name = Column(String)
+    number = Column(String)
+    service_type = Column(String) .
+    is_national = Column(Boolean, default=False)

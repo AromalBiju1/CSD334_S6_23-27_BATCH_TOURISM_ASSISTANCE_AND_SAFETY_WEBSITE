@@ -6,6 +6,9 @@ import Home from "./pages/Home";
 import Explore from './pages/Explore';
 import SafeRoute from './pages/SafeRoute';
 import Emergency from './pages/Emergency';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Hotspots from './pages/Hotspots';
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
         <Route path='/explore' element={<Explore />} />
         <Route path='/safe-route' element={<SafeRoute />} />
         <Route path='/emergency' element={<Emergency />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/hotspots' element={<Hotspots />} />
       </Routes>
       <Toaster
         position="top-center"

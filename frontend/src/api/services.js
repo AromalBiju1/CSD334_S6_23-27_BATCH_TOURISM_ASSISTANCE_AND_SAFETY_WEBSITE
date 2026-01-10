@@ -1,0 +1,75 @@
+import api from './axios';
+
+
+export const getCities = async (params = {}) => {
+    const response = await api.get('/api/cities', { params });
+    return response.data;
+};
+
+export const getCityById = async (cityId) => {
+    const response = await api.get(`/api/cities/${cityId}`);
+    return response.data;
+};
+
+export const getCitiesByZone = async (zone) => {
+    const response = await api.get('/api/cities', { params: { zone } });
+    return response.data;
+};
+
+export const searchCities = async (query) => {
+    const response = await api.get('/api/cities/search', { params: { q: query } });
+    return response.data;
+};
+
+
+export const getSafeRoute = async (origin, destination) => {
+    const response = await api.post('/api/routes/safe', { origin, destination });
+    return response.data;
+};
+
+
+export const getRouteAlternatives = async (origin, destination) => {
+    const response = await api.get('/api/routes/alternatives', {
+        params: { origin, destination },
+    });
+    return response.data;
+};
+
+
+export const getEmergencyContacts = async (cityId) => {
+    const response = await api.get(`/api/emergency/${cityId}`);
+    return response.data;
+};
+
+
+export const getAllEmergencyServices = async () => {
+    const response = await api.get('/api/emergency');
+    return response.data;
+};
+
+export const getAttractions = async (cityId) => {
+    const response = await api.get(`/api/attractions/${cityId}`);
+    return response.data;
+};
+
+
+export const getAllAttractions = async (params = {}) => {
+    const response = await api.get('/api/attractions', { params });
+    return response.data;
+};
+
+//auth
+
+export const login = async (email, password) => {
+    const response = await api.post('/api/auth/login', { email, password });
+    return response.data;
+};
+
+export const register = async (userData) => {
+    const response = await api.post('/api/auth/register', userData);
+    return response.data;
+};
+
+export const logout = () => {
+    localStorage.removeItem('token');
+};
