@@ -13,13 +13,25 @@ class UserBase(BaseModel):
     name: str
 
 class UserCreate(UserBase):
+    password: str
     google_id: Optional[str] = None
 
-class UserResponse(UserBase):
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+class UserResponse(BaseModel):
     id: int
+    email: EmailStr
+    name: str
     profile_pic: Optional[str] = None
+    google_id: Optional[str] = None
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 # C I T Y
