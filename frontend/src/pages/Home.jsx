@@ -38,7 +38,7 @@ export default function Home() {
       title: "Safety Zones Map",
       description:
         "Visualize cities across India color-coded by safety levels based on crime data.",
-      color: "bg-emerald-500",
+      color: "bg-gradient-to-r from-purple-500 via-purple-400 to-pink-400",
       path: "/explore",
     },
     {
@@ -46,7 +46,7 @@ export default function Home() {
       title: "Safe Route Planning",
       description:
         "Get routes optimized for safety, avoiding high risk areas when possible.",
-      color: "bg-blue-500",
+      color: "bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-400",
       path: "/safe-route",
     },
     {
@@ -54,7 +54,7 @@ export default function Home() {
       title: "Tourist Hotspots",
       description:
         "Discover popular attractions with safety ratings for each location.",
-      color: "bg-orange-500",
+      color: "bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400",
       path: "/hotspots",
     },
     {
@@ -62,7 +62,7 @@ export default function Home() {
       title: "Emergency Support",
       description:
         "Quick access to emergency contacts and step by step guidance for crisis situations.",
-      color: "bg-green-500",
+      color: "bg-gradient-to-r from-emerald-500 via-green-400 to-lime-400",
       path: "/emergency",
     },
   ];
