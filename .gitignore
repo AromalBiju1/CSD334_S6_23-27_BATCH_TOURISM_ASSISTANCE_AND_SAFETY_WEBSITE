@@ -76,3 +76,12 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+secrets/
+
+# Docker
+docker-compose.override.yml
+docker-compose.yml
+dockerfile
+.dockerignore
+.docker/
+*.log
