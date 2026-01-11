@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from "./components/Navbar";
+import BackgroundBlur from './components/BackgroundBlur';
 import Home from "./pages/Home";
 import Explore from './pages/Explore';
 import SafeRoute from './pages/SafeRoute';
@@ -19,6 +20,7 @@ function App() {
     <AuthProvider>
       <div className="min-h-screen bg-[#020617] text-white">
         <Navbar />
+        <BackgroundBlur/>
         <Routes>
           {/* Public Routes */}
           <Route path='/' element={<Home />} />
