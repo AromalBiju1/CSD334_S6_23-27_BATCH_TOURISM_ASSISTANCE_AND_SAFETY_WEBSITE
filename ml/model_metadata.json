@@ -1,0 +1,59 @@
+{
+  "trained_at": "20260127_164403",
+  "feature_columns": [
+    "murder_rate",
+    "rape_rate",
+    "kidnapping_rate",
+    "robbery_rate",
+    "theft_rate",
+    "riots_rate",
+    "cheating_rate",
+    "crime_severity_index",
+    "crime_diversity_score",
+    "tourist_risk_score",
+    "crime_rate",
+    "safety_score"
+  ],
+  "class_names": {
+    "0": "Safe",
+    "1": "Moderate",
+    "2": "High"
+  },
+  "metrics": {
+    "accuracy": 0.9655172413793104,
+    "precision": 0.9626070722600483,
+    "recall": 0.9655172413793104,
+    "f1_score": 0.9637657361795293,
+    "confusion_matrix": [
+      [
+        0,
+        2,
+        0
+      ],
+      [
+        1,
+        12,
+        1
+      ],
+      [
+        0,
+        2,
+        156
+      ]
+    ],
+    "feature_importance": {
+      "crime_diversity_score": 0.43284502625465393,
+      "tourist_risk_score": 0.12481716275215149,
+      "theft_rate": 0.10392588376998901,
+      "cheating_rate": 0.05038781464099884,
+      "rape_rate": 0.04908354952931404,
+      "crime_severity_index": 0.04186709597706795,
+      "safety_score": 0.03801468014717102,
+      "robbery_rate": 0.03645272180438042,
+      "riots_rate": 0.03535192459821701,
+      "crime_rate": 0.034455716609954834,
+      "kidnapping_rate": 0.027437446638941765,
+      "murder_rate": 0.02536090649664402
+    }
+  }
+}
