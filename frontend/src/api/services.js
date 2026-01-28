@@ -2,7 +2,9 @@ import api from './axios';
 
 
 export const getCities = async (params = {}) => {
-    const response = await api.get('/api/cities', { params });
+    // Request all cities by default (up to 1000)
+    const defaultParams = { limit: 1000, ...params };
+    const response = await api.get('/api/cities', { params: defaultParams });
     return response.data;
 };
 

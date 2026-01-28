@@ -85,3 +85,16 @@ dockerfile
 .dockerignore
 .docker/
 *.log
+
+# Test files with secrets
+backend/test/
+
+# ML outputs
+ml/models/
+ml/*.pkl
+ml/*.joblib
+*.csv
+
+# Database files
+*.db
+*.csv
