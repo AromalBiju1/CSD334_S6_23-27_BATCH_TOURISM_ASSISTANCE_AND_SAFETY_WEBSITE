@@ -522,3 +522,332 @@ def get_route_alternatives(
         routes=routes,
         recommended_index=0  # First route is safest
     )
+
+
+# ----- Smart Routing (OSRM + Safety Agent) -----
+
+from pydantic import Field
+
+
+class SmartRouteResponse(BaseModel):
+    """Response from the smart routing endpoint with agent reasoning."""
+    origin: RoutePoint
+    destination: RoutePoint
+    path: List[List[float]]
+    waypoints: List[RoutePoint] = []
+    distance: str
+    duration: str
+    distance_km: float = 0.0
+    safety_score: float
+    route_type: str
+    warnings: List[str] = []
+    zone_breakdown: dict = {}
+    agent_reasoning: str = ""
+    risk_zones: List[dict] = []
+
+
+class SmartMultiRouteResponse(BaseModel):
+    """Response containing multiple OSRM-based route alternatives with agent scoring."""
+    routes: List[SmartRouteResponse]
+    recommended_index: int = 0
+    agent_summary: str = ""
+
+
+@router.get("/smart", response_model=SmartMultiRouteResponse)
+async def get_smart_routes(
+    origin: str = None,
+    destination: str = None,
+    origin_lat: float = None,
+    origin_lng: float = None,
+    dest_lat: float = None,
+    dest_lng: float = None,
+    mode: str = "driving",
+    db: Session = Depends(get_db)
+):
+    """
+    Smart routing using OSRM (real roads) + Safety Agent scoring.
+    
+    Accepts either city names OR direct lat/lng coordinates.
+    Returns multiple real road route alternatives scored for safety,
+    with agent reasoning explaining why each route is ranked.
+    
+    Falls back to A* if OSRM is unavailable.
+    """
+    from utils.osrm_router import get_osrm_routes, format_distance as fmt_dist, format_duration as fmt_dur
+    from utils.safety_agent import evaluate_routes
+
+    # Resolve Origin
+    origin_city = None
+    dest_city = None
+
+    if origin:
+        origin_city = db.query(models.City).filter(
+            models.City.name.ilike(f"%{origin}%")
+        ).first()
+        if not origin_city:
+            raise HTTPException(status_code=404, detail=f"Origin city '{origin}' not found")
+        origin_lat = origin_city.latitude
+        origin_lng = origin_city.longitude
+    elif origin_lat is not None and origin_lng is not None:
+        pass # Use provided coordinates
+    else:
+        raise HTTPException(status_code=400, detail="Missing origin (provide orign name or lat/lng)")
+
+    # Resolve Destination
+    if destination:
+        dest_city = db.query(models.City).filter(
+            models.City.name.ilike(f"%{destination}%")
+        ).first()
+        if not dest_city:
+            raise HTTPException(status_code=404, detail=f"Destination city '{destination}' not found")
+        dest_lat = dest_city.latitude
+        dest_lng = dest_city.longitude
+    elif dest_lat is not None and dest_lng is not None:
+        pass # Use provided coordinates
+    else:
+        raise HTTPException(status_code=400, detail="Missing destination (provide destination name or lat/lng)")
+
+    # Find nearest cities for metadata if using coords
+    if not origin_city and origin_lat and origin_lng:
+        # Simple nearest neighbor search (could be optimized)
+        closest_dist = float('inf')
+        all_cities = db.query(models.City).all()
+        for c in all_cities:
+            dist = haversine_distance(origin_lat, origin_lng, c.latitude, c.longitude)
+            if dist < closest_dist:
+                closest_dist = dist
+                if dist < 50: # Only associate if within 50km
+                    origin_city = c
+
+    if not dest_city and dest_lat and dest_lng:
+        closest_dist = float('inf')
+        all_cities = db.query(models.City).all() if 'all_cities' not in locals() else all_cities
+        for c in all_cities:
+            dist = haversine_distance(dest_lat, dest_lng, c.latitude, c.longitude)
+            if dist < closest_dist:
+                closest_dist = dist
+                if dist < 50:
+                    dest_city = c
+
+    origin_name = origin_city.name if origin_city else f"{origin_lat:.2f},{origin_lng:.2f}"
+    dest_name = dest_city.name if dest_city else f"{dest_lat:.2f},{dest_lng:.2f}"
+
+    # Fetch OSRM routes (real road geometry)
+    osrm_routes = await get_osrm_routes(origin_lat, origin_lng, dest_lat, dest_lng, alternatives=3, profile=mode)
+
+    if not osrm_routes:
+        # OSRM failed — fall back to A* routing
+        print("OSRM unavailable, falling back to A* routing")
+        fallback = get_route_alternatives(
+            origin=origin_name,
+            destination=dest_name,
+            db=db
+        )
+        # Convert A* routes to SmartMultiRouteResponse format
+        smart_routes = []
+        for route in fallback.routes:
+            smart_routes.append(SmartRouteResponse(
+                origin=route.origin,
+                destination=route.destination,
+                path=route.path,
+                waypoints=route.waypoints,
+                distance=route.distance,
+                duration=route.duration,
+                distance_km=route.distance_km,
+                safety_score=route.safety_score,
+                route_type=route.route_type,
+                warnings=route.warnings + ["⚠️ Using A* fallback routing (road routing service unavailable)"],
+                zone_breakdown={},
+                agent_reasoning="Fallback route using A* graph search (OSRM unavailable).",
+                risk_zones=[]
+            ))
+        return SmartMultiRouteResponse(
+            routes=smart_routes,
+            recommended_index=fallback.recommended_index,
+            agent_summary="Using A* fallback routing. OSRM road routing service was unavailable."
+        )
+
+    # Get all cities for safety scoring
+    all_cities = db.query(models.City).all()
+
+    # Run safety agent evaluation
+    agent_result = evaluate_routes(
+        osrm_routes=osrm_routes,
+        cities=all_cities,
+        origin_name=origin_name,
+        dest_name=dest_name
+    )
+
+    # Build origin/destination RoutePoints
+    origin_point = RoutePoint(
+        name=origin_city.name if origin_city else "Origin",
+        state=origin_city.state if origin_city else "",
+        latitude=origin_lat,
+        longitude=origin_lng,
+        safety_zone=origin_city.safety_zone if origin_city else "orange"
+    )
+    dest_point = RoutePoint(
+        name=dest_city.name if dest_city else "Destination",
+        state=dest_city.state if dest_city else "",
+        latitude=dest_lat,
+        longitude=dest_lng,
+        safety_zone=dest_city.safety_zone if dest_city else "orange"
+    )
+
+    # Build response routes
+    smart_routes = []
+    for route in agent_result["routes"]:
+        smart_routes.append(SmartRouteResponse(
+            origin=origin_point,
+            destination=dest_point,
+            path=route["geometry"],
+            waypoints=[],
+            distance=fmt_dist(route["distance_km"]),
+            duration=fmt_dur(route["duration_min"]),
+            distance_km=route["distance_km"],
+            safety_score=route["safety_score"],
+            route_type=route["route_type"],
+            warnings=route.get("warnings", []),
+            zone_breakdown=route.get("zone_breakdown", {}),
+            agent_reasoning=route.get("agent_reasoning", ""),
+            risk_zones=route.get("risk_zones", [])
+        ))
+
+    return SmartMultiRouteResponse(
+        routes=smart_routes,
+        recommended_index=agent_result["recommended_index"],
+        agent_summary=agent_result["agent_summary"]
+    )
+
+
+# ----- Live GPS Safety Check & Auto-Rerouting -----
+
+@router.get("/check-safety")
+def check_position_safety(
+    lat: float,
+    lng: float,
+    db: Session = Depends(get_db)
+):
+    """
+    Check if a GPS position is in a danger zone.
+    Used during live navigation to trigger rerouting alerts.
+    
+    Returns the nearest district's safety info and whether to trigger a reroute.
+    """
+    from utils.safety_agent import find_nearest_city
+
+    all_cities = db.query(models.City).all()
+    nearest = find_nearest_city(lat, lng, all_cities, max_distance_km=80)
+
+    if not nearest:
+        return {
+            "safe": True,
+            "zone": "unknown",
+            "trigger_reroute": False,
+            "message": "No safety data available for this area",
+            "nearest_district": None
+        }
+
+    is_danger = nearest.safety_zone == "red"
+    is_moderate = nearest.safety_zone == "orange"
+
+    return {
+        "safe": nearest.safety_zone == "green",
+        "zone": nearest.safety_zone,
+        "trigger_reroute": is_danger,
+        "message": (
+            f"⚠️ You are near {nearest.name}, {nearest.state} — a HIGH-RISK area! Rerouting recommended."
+            if is_danger else
+            f"⚡ You are near {nearest.name}, {nearest.state} — moderate risk. Stay alert."
+            if is_moderate else
+            f"✅ You are near {nearest.name}, {nearest.state} — safe area."
+        ),
+        "nearest_district": {
+            "name": nearest.name,
+            "state": nearest.state,
+            "zone": nearest.safety_zone,
+            "crime_index": nearest.crime_index,
+            "lat": nearest.latitude,
+            "lng": nearest.longitude
+        }
+    }
+
+
+@router.get("/reroute")
+async def reroute_from_position(
+    lat: float,
+    lng: float,
+    dest_lat: float,
+    dest_lng: float,
+    dest_name: str = "Destination",
+    db: Session = Depends(get_db)
+):
+    """
+    Emergency reroute from current GPS position to destination.
+    Called when the user enters a high-risk zone during navigation.
+    Uses OSRM to get fresh routes from current position and scores them for safety.
+    """
+    from utils.osrm_router import get_osrm_routes, format_distance as fmt_dist, format_duration as fmt_dur
+    from utils.safety_agent import evaluate_routes
+
+    all_cities = db.query(models.City).all()
+
+    # Get fresh routes from current position
+    osrm_routes = await get_osrm_routes(lat, lng, dest_lat, dest_lng, alternatives=3)
+
+    if not osrm_routes:
+        return {
+            "success": False,
+            "message": "Unable to find alternative routes. Continue with caution.",
+            "routes": []
+        }
+
+    # Score with safety agent
+    agent_result = evaluate_routes(
+        osrm_routes=osrm_routes,
+        cities=all_cities,
+        origin_name="Current Location",
+        dest_name=dest_name
+    )
+
+    # Build response
+    origin_point = RoutePoint(
+        name="Current Location",
+        state="",
+        latitude=lat,
+        longitude=lng,
+        safety_zone="red"  # We know we're in a danger zone
+    )
+    dest_point = RoutePoint(
+        name=dest_name,
+        state="",
+        latitude=dest_lat,
+        longitude=dest_lng,
+        safety_zone="orange"
+    )
+
+    smart_routes = []
+    for route in agent_result["routes"]:
+        smart_routes.append(SmartRouteResponse(
+            origin=origin_point,
+            destination=dest_point,
+            path=route["geometry"],
+            waypoints=[],
+            distance=fmt_dist(route["distance_km"]),
+            duration=fmt_dur(route["duration_min"]),
+            distance_km=route["distance_km"],
+            safety_score=route["safety_score"],
+            route_type=route["route_type"],
+            warnings=route.get("warnings", []),
+            zone_breakdown=route.get("zone_breakdown", {}),
+            agent_reasoning=route.get("agent_reasoning", ""),
+            risk_zones=route.get("risk_zones", [])
+        ))
+
+    return SmartMultiRouteResponse(
+        routes=smart_routes,
+        recommended_index=agent_result["recommended_index"],
+        agent_summary=f"🔄 Rerouted! {agent_result['agent_summary']}"
+    )
+
+

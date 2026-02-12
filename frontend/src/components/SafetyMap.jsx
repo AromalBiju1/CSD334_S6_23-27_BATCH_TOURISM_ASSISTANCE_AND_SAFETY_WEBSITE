@@ -24,12 +24,14 @@ const ZONE_COLORS = {
     green: '#22c55e',
     orange: '#f97316',
     red: '#ef4444',
+    user: '#3b82f6', // Blue for user location
 };
 
 const ZONE_LABELS = {
     green: 'Safe Zone',
     orange: 'Moderate Risk',
     red: 'High Risk',
+    user: 'Your Location',
 };
 
 // Tile layer config from env or default
@@ -140,8 +142,8 @@ function MapController({ center, zoom, fitBounds }) {
     return null;
 }
 
-// City marker component
-const CityMarker = React.memo(({ city, onClick, showCircle }) => {
+// City marker component with selection buttons
+const CityMarker = React.memo(({ city, onClick, showCircle, onSelectStart, onSelectDest }) => {
     const handleClick = useCallback(() => {
         onClick(city);
     }, [city, onClick]);
@@ -154,9 +156,25 @@ const CityMarker = React.memo(({ city, onClick, showCircle }) => {
                 eventHandlers={{ click: handleClick }}
             >
                 <Popup className="custom-popup">
-                    <div className="p-1 min-w-[150px]">
+                    <div className="p-1 min-w-[160px]">
                         <h3 className="font-bold text-gray-900 text-base mb-1">{city.name}</h3>
                         <p className="text-gray-600 text-sm mb-2">{city.state}</p>
+
+                        <div className="flex gap-2 mb-2">
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onSelectStart && onSelectStart(city); }}
+                                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs py-1 px-2 rounded transition-colors"
+                            >
+                                Start
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onSelectDest && onSelectDest(city); }}
+                                className="flex-1 bg-red-500 hover:bg-red-600 text-white text-xs py-1 px-2 rounded transition-colors"
+                            >
+                                End
+                            </button>
+                        </div>
+
                         <div
                             className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white"
                             style={{ backgroundColor: ZONE_COLORS[city.zone || city.safety_zone] }}
@@ -261,6 +279,8 @@ export default function SafetyMap({
     showLegend = true,
     zoneFilter = 'all',
     onCityClick = () => { },
+    onSelectStart = () => { },
+    onSelectDest = () => { },
     onMapReady = () => { },
     loading = false,
     error = null,
@@ -342,6 +362,8 @@ export default function SafetyMap({
                             city={city}
                             onClick={onCityClick}
                             showCircle={showZoneCircles}
+                            onSelectStart={onSelectStart}
+                            onSelectDest={onSelectDest}
                         />
                     ))}
                 </MarkerClusterGroup>
