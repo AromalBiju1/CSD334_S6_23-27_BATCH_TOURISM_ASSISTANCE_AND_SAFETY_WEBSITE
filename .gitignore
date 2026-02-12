@@ -88,7 +88,7 @@ dockerfile
 
 # Test files with secrets
 backend/test/
-
+secrets/
 # ML outputs (generated — reproduce via: python ml/train_xgboost.py)
 ml/models/
 ml/*.pkl
