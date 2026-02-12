@@ -9,6 +9,10 @@ node_modules/
 dist/
 build/
 out/
+dist
+dist-ssr
+*.local
+
 
 # Runtime / logs
 logs/
@@ -61,3 +65,36 @@ Thumbs.db
 # Security
 *.pem
 *.key
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+secrets/
+
+# Docker
+docker-compose.override.yml
+docker-compose.yml
+dockerfile
+.dockerignore
+.docker/
+*.log
+
+# Test files with secrets
+backend/test/
+
+# ML outputs (generated — reproduce via: python ml/train_xgboost.py)
+ml/models/
+ml/*.pkl
+ml/*.joblib
+ml/training_dataset.csv
+ml/models/district_xgboost_predictions.csv
+
+# Database files
+*.db
