@@ -90,11 +90,7 @@ dockerfile
 backend/test/
 secrets/
 # ML outputs (generated — reproduce via: python ml/train_xgboost.py)
-ml/models/
-ml/*.pkl
-ml/*.joblib
-ml/training_dataset.csv
-ml/models/district_xgboost_predictions.csv
+
 
 # Database files
 *.db
