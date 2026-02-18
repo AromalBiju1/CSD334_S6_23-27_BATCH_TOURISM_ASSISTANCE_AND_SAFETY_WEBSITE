@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { Search, Navigation, ChevronDown, MapPin, Loader, AlertCircle, Shield, Zap, Scale, Bot, ChevronRight, Car, Bike, Footprints, Locate } from "lucide-react";
+import { Search, Navigation, ChevronDown, MapPin, Loader, AlertCircle, Shield, Zap, Scale, Bot, ChevronRight, Car, Locate } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
 import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition } from "../api/services";
 import toast from "react-hot-toast";
@@ -60,8 +60,8 @@ export default function SafeRoute() {
     const [travelMode, setTravelMode] = useState("driving"); // driving, walking, cycling
 
     // Debounce search inputs (300ms delay)
-    const debouncedStart = useDebounce(startPoint, 300);
-    const debouncedDest = useDebounce(destination, 300);
+    const debouncedStart = useDebounce(startPoint, 150);
+    const debouncedDest = useDebounce(destination, 150);
 
     // Fetch cities for autocomplete
     useEffect(() => {
@@ -541,25 +541,12 @@ export default function SafeRoute() {
                             </div>
                         </div>
 
-                        {/* Travel Mode Selector */}
-                        <div className="grid grid-cols-3 gap-3 mb-4">
-                            {[
-                                { id: 'driving', icon: Car, label: 'Drive' },
-                                { id: 'cycling', icon: Bike, label: 'Cycle' },
-                                { id: 'walking', icon: Footprints, label: 'Walk' }
-                            ].map((mode) => (
-                                <button
-                                    key={mode.id}
-                                    onClick={() => setTravelMode(mode.id)}
-                                    className={`flex flex-col items-center justify-center py-3 px-2 rounded-xl border transition-all ${travelMode === mode.id
-                                        ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 ring-1 ring-emerald-500/30'
-                                        : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:border-slate-700 hover:text-slate-400'
-                                        }`}
-                                >
-                                    <mode.icon size={20} className="mb-1.5" />
-                                    <span className="text-[10px] uppercase font-bold tracking-wider">{mode.label}</span>
-                                </button>
-                            ))}
+                        {/* Travel Mode - Driving Only */}
+                        <div className="mb-4">
+                            <div className="flex flex-col items-center justify-center py-3 rounded-xl border bg-emerald-500/10 border-emerald-500/50 text-emerald-400 ring-1 ring-emerald-500/30">
+                                <Car size={22} className="mb-1.5" />
+                                <span className="text-[10px] uppercase font-bold tracking-wider">Drive</span>
+                            </div>
                         </div>
 
                         {/* Find Route Button */}
@@ -871,7 +858,7 @@ export default function SafeRoute() {
                             zoom={startCity && destCity ? 6 : 5}
                             height="600px"
                             showLegend={true}
-                            showZoneCircles={zoneFilter === 'all'}
+                            showZoneCircles={false}
                             zoneFilter={zoneFilter}
                             className="border border-slate-800"
                             fitBounds={selectedRoute?.path?.length >= 2 ? selectedRoute.path : null}

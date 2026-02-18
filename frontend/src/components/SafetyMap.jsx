@@ -350,11 +350,12 @@ export default function SafetyMap({
                 <MarkerClusterGroup
                     chunkedLoading
                     iconCreateFunction={clusterIconFunction}
-                    maxClusterRadius={60}
+                    maxClusterRadius={80}
                     spiderfyOnMaxZoom={true}
                     showCoverageOnHover={false}
-                    animate={true}
+                    animate={false}
                     animateAddingMarkers={false}
+                    disableClusteringAtZoom={16}
                 >
                     {cities.map((city) => (
                         <CityMarker
