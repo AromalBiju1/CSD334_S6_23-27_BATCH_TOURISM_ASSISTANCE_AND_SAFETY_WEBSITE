@@ -1,0 +1,856 @@
+district,state,crime_score,xgboost_zone,confidence
+Adilabad,Telangana,1828.05,green,0.95152974
+Agar,Madhya Pradesh,1618.79,green,0.97956306
+Agra,Uttar Pradesh,14658.47,red,0.999869
+Ahmedabad City,Gujarat,13434.76,red,0.99961287
+Ahmedabad Rural,Gujarat,1428.69,green,0.99959093
+Ahmednagar,Maharashtra,26609.870000000003,red,0.9998913
+Aizawl,Mizoram,1754.52,green,0.95277214
+Ajmer,Rajasthan,21607.17,red,0.9998847
+Akola,Maharashtra,6446.759999999999,red,0.9830009
+Alapuzha,Kerala,4536.92,orange,0.98458326
+Aligarh,Uttar Pradesh,22290.030000000002,red,0.999858
+Alipurduar,West Bengal,4539.56,orange,0.9946136
+Alirajpur,Madhya Pradesh,2489.4500000000003,orange,0.98683655
+All Districts,Kerala,4135.83,orange,0.9910473
+Alluri Sitharama Raju,Andhra Pradesh,1615.74,green,0.95864415
+Almora,Uttarakhand,611.0200000000001,green,0.9997925
+Alwar,Rajasthan,17362.300000000003,red,0.99985516
+Ambala,Haryana,7278.47,red,0.9995937
+Ambedkar Nagar,Uttar Pradesh,7074.82,red,0.99957067
+Amethi,Uttar Pradesh,3315.52,orange,0.99926955
+Amravati Commr.,Maharashtra,7738.9800000000005,red,0.9983469
+Amravati Rural,Maharashtra,7433.16,red,0.9984895
+Amreli,Gujarat,1346.21,green,0.99742573
+Amritsar Rural,Punjab,3596.92,orange,0.9992779
+Anakapalli,Andhra Pradesh,4447.83,orange,0.9969553
+Anand,Gujarat,1645.38,green,0.80930203
+Anantapuramu,Andhra Pradesh,3773.6,orange,0.99738616
+Anantnag,Jammu and Kashmir,2919.25,orange,0.99646276
+Angul,Odisha,9075.27,red,0.99901533
+Anjaw,Arunachal Pradesh,42.309999999999995,green,0.9998223
+Annamayya,Andhra Pradesh,2585.0899999999997,orange,0.99626476
+Anuppur,Madhya Pradesh,4550.37,orange,0.9993749
+Araria,Bihar,7749.63,red,0.99901426
+Ariyalur,Tamil Nadu,744.33,green,0.9997559
+Arvalli,Gujarat,1878.65,green,0.98141956
+Arwal,Bihar,1693.1399999999999,green,0.999146
+Asansol-Durgapur PC,West Bengal,3133.13,orange,0.99791795
+Ashok Nagar,Madhya Pradesh,2989.05,orange,0.9965609
+Auraiya,Uttar Pradesh,4637.860000000001,orange,0.9885089
+Aurangabad,Bihar,6795.2,red,0.9973193
+Aurangabad Commr.,Maharashtra,9697.130000000001,red,0.99981517
+Aurangabad Rural,Maharashtra,7444.56,red,0.9981501
+Avadi,Tamil Nadu,2653.59,orange,0.9820494
+Awantipora,Jammu and Kashmir,1183.3600000000001,green,0.998563
+Ayodhya,Uttar Pradesh,9385.95,red,0.99950147
+Azamgarh,Uttar Pradesh,11901.039999999999,red,0.99985576
+Badaun,Uttar Pradesh,7679.240000000001,red,0.9981237
+Baddi,Himachal Pradesh,1551.9399999999998,green,0.82015663
+Bagaha,Bihar,4057.39,orange,0.997203
+Bagalkot,Karnataka,3514.35,orange,0.99796224
+Bageshwar,Uttarakhand,409.77,green,0.9998111
+Baghpat,Uttar Pradesh,7482.04,red,0.997644
+Bahraich,Uttar Pradesh,14243.34,red,0.9993864
+Bajali,Assam,881.52,green,0.99978405
+Baksa,Assam,1455.6200000000001,green,0.9991301
+Balaghat,Madhya Pradesh,6201.32,red,0.9980292
+Balasore,Odisha,11812.580000000002,red,0.9998708
+Ballari,Karnataka,2570.38,orange,0.9961378
+Ballia,Uttar Pradesh,6236.97,red,0.9977791
+Balod,Chhattisgarh,1900.69,orange,0.5200664
+Balodbazar,Chhattisgarh,4063.36,orange,0.99855953
+Balrampur,Chhattisgarh,3871.22,orange,0.99575704
+Balrampur,Chhattisgarh,5583.62,orange,0.8689177
+Balrampur,Uttar Pradesh,4935.799999999999,orange,0.9605853
+Balrampur,Uttar Pradesh,6648.2,red,0.97968847
+Banaskantha,Gujarat,2966.34,orange,0.99567837
+Banda,Uttar Pradesh,7411.58,red,0.9989139
+Bandipora,Jammu and Kashmir,944.37,green,0.99974936
+Bangaon,West Bengal,4469.95,orange,0.9972518
+Banka,Bihar,3817.5499999999997,orange,0.9766001
+Bankura,West Bengal,3915.7400000000002,orange,0.9974381
+Banswara,Rajasthan,10886.4,red,0.99951243
+Bapatla,Andhra Pradesh,3805.7400000000002,orange,0.9981456
+Barabanki,Uttar Pradesh,9641.81,red,0.9928161
+Baragarh,Odisha,8192.97,red,0.99855477
+Baramulla,Jammu and Kashmir,2242.0,orange,0.68508834
+Baran,Rajasthan,6975.83,red,0.99906486
+Barasat,West Bengal,5045.13,orange,0.9584917
+Bareilly,Uttar Pradesh,15262.869999999999,red,0.9995877
+Barmer,Rajasthan,10545.32,red,0.9996387
+Barnala,Punjab,1356.17,green,0.9996916
+Barpeta,Assam,5734.09,red,0.968733
+Barrackpur PC,West Bengal,12608.33,red,0.99819726
+Baruipur Police,West Bengal,11513.359999999999,red,0.99842095
+Barwani,Madhya Pradesh,4781.150000000001,orange,0.9870877
+Basirhat,West Bengal,9095.21,red,0.975099
+Basti,Uttar Pradesh,7200.34,red,0.99722195
+Batala,Punjab,2232.09,orange,0.9723317
+Bathinda,Punjab,3444.4799999999996,orange,0.99928683
+Beed,Maharashtra,8847.289999999999,red,0.9988059
+Begusarai,Bihar,8348.85,red,0.9952441
+Belagavi City,Karnataka,2022.31,orange,0.6043579
+Belagavi District,Karnataka,6622.45,red,0.9832283
+Bemetra,Chhattisgarh,2010.3,orange,0.6129688
+Bengaluru City,Karnataka,38628.14000000001,red,0.9998901
+Bengaluru District,Karnataka,8906.49,red,0.99967325
+Berhampur,Odisha,4869.79,orange,0.9511301
+Bettiah,Bihar,5998.860000000001,red,0.99596727
+Betul,Madhya Pradesh,5662.33,red,0.5860072
+Bhadohi,Uttar Pradesh,3456.8799999999997,orange,0.99139094
+Bhadradri Kothagudem,Telangana,4261.37,orange,0.9943539
+Bhadrak,Odisha,10122.2,red,0.99984
+Bhagalpur,Bihar,10171.74,red,0.99901295
+Bhandara,Maharashtra,4107.49,orange,0.99942327
+Bharatpur,Rajasthan,17109.74,red,0.9998876
+Bharuch,Gujarat,1660.57,green,0.988648
+Bhavnagar,Gujarat,2316.0,orange,0.9928604
+Bhilwara,Rajasthan,22488.62,red,0.99988544
+Bhind,Madhya Pradesh,4548.49,orange,0.9716124
+Bhiwadi,Rajasthan,12585.25,red,0.9998467
+Bhiwani,Haryana,5379.32,orange,0.8020372
+Bhojpur,Bihar,9725.27,red,0.9990201
+Bhopal Commissionarate,Madhya Pradesh,21278.13,red,0.9998435
+Bhopal Rural,Madhya Pradesh,2288.66,orange,0.99582255
+Bidar,Karnataka,2928.02,orange,0.998211
+Bidhannagar PC,West Bengal,2832.06,orange,0.99927145
+BIEO,Assam,0.17,green,0.99981695
+Bijnor,Uttar Pradesh,3865.95,orange,0.9915241
+Bikaner,Rajasthan,9695.77,red,0.9995933
+Bilaspur,Chhattisgarh,11632.39,red,0.99964166
+Bilaspur,Chhattisgarh,7644.6900000000005,red,0.9845458
+Bilaspur,Himachal Pradesh,5066.07,orange,0.9695435
+Bilaspur,Himachal Pradesh,1078.3700000000001,green,0.9995426
+Birbhum,West Bengal,4332.450000000001,orange,0.99729854
+Bishnupur,Manipur,312.34999999999997,green,0.9998167
+Biswanath,Assam,2264.9,orange,0.9893533
+Bizapur,Chhattisgarh,1197.15,green,0.9982322
+Bokaro,Jharkhand,6280.38,red,0.99278826
+Bolangir,Odisha,6507.599999999999,red,0.89099723
+Bongaigaon,Assam,3299.39,orange,0.9974808
+Botad,Gujarat,579.64,green,0.9998766
+Boudh,Odisha,1713.26,green,0.9984817
+Budgam,Jammu and Kashmir,3256.85,orange,0.9956037
+Bulandshahar,Uttar Pradesh,7319.56,red,0.9983493
+Buldhana,Maharashtra,9638.34,red,0.9997563
+Bundi,Rajasthan,7630.45,red,0.9972475
+Burhanpur,Madhya Pradesh,2935.13,orange,0.9971691
+Buxar,Bihar,4371.42,orange,0.8980829
+Cachar,Assam,9679.460000000001,red,0.99966574
+Central,Delhi,17432.16,red,0.9995042
+Chaibasa,Jharkhand,3490.6000000000004,orange,0.9670305
+Chamarajnagar,Karnataka,2546.4500000000003,orange,0.88417643
+Chamba,Himachal Pradesh,1363.45,green,0.99620265
+Chamoli,Uttarakhand,673.59,green,0.999713
+Champawat,Uttarakhand,787.08,green,0.99969244
+Champhai,Mizoram,64.18,green,0.9998671
+Chandannagar PC,West Bengal,1648.9,green,0.9654493
+Chandel,Manipur,67.36999999999999,green,0.99983144
+Chandigarh,Chandigarh,6063.91,red,0.9278713
+Chandoli,Uttar Pradesh,2409.77,orange,0.99373615
+Chandrapur,Maharashtra,8795.990000000002,red,0.9990589
+Changlang,Arunachal Pradesh,417.43,green,0.99979776
+Charaideo,Assam,1722.37,green,0.98816454
+Charkhi Dadri,Haryana,1643.2,green,0.98533845
+Chatra,Jharkhand,2907.44,orange,0.9846944
+Chengalpattu,Tamil Nadu,1237.08,green,0.9989034
+Chennai,Tamil Nadu,9988.58,orange,0.88005936
+Chhatarpur,Madhya Pradesh,8068.28,red,0.9995757
+Chhindwara,Madhya Pradesh,5830.2300000000005,red,0.9658581
+Chhotaudepur,Gujarat,1209.66,green,0.9991013
+Chikkaballapura,Karnataka,3365.97,orange,0.9902408
+Chikkamagaluru,Karnataka,3684.55,orange,0.98255104
+Chirang,Assam,1952.56,green,0.98713917
+Chitradurga,Karnataka,6096.389999999999,red,0.98836213
+Chitrakoot,Uttar Pradesh,2291.96,orange,0.99330586
+Chittoor,Andhra Pradesh,3419.26,orange,0.9977174
+Chittorgarh,Rajasthan,10236.699999999999,red,0.99959785
+Churachandpur,Manipur,252.94,green,0.9998642
+Churu,Rajasthan,6717.58,red,0.98280025
+CICE Jammu,Jammu and Kashmir,0.0,green,0.99981695
+CICE Kashmir,Jammu and Kashmir,0.0,green,0.99981695
+Coimbatore,Tamil Nadu,2090.98,orange,0.9712479
+Coimbatore City,Tamil Nadu,3122.1800000000003,orange,0.96219826
+Coochbehar,West Bengal,9749.67,red,0.9978671
+CP Amritsar,Punjab,3684.67,orange,0.99751234
+CP Jalandhar,Punjab,3191.83,orange,0.9984395
+CP Ludhiana,Punjab,6481.580000000001,red,0.99556977
+Cuddalore,Tamil Nadu,3668.16,orange,0.9973043
+Cuttack,Odisha,9106.48,red,0.9994542
+Dadra and Nagar Haveli,Dadra and Nagar Haveli and Daman and Diu,1015.8499999999999,green,0.9995732
+Dahod,Gujarat,2804.16,orange,0.9807438
+Dakshin Dinajpur,West Bengal,4939.169999999999,orange,0.981781
+Dakshina Kannada,Karnataka,1604.8999999999999,green,0.9952195
+Daman,Dadra and Nagar Haveli and Daman and Diu,638.89,green,0.9997532
+Damoh,Madhya Pradesh,5052.96,orange,0.9810899
+Dang,Gujarat,203.66000000000003,green,0.9998349
+Dantewara,Chhattisgarh,1585.4299999999998,green,0.9796729
+Darbhanga,Bihar,6824.700000000001,red,0.99470454
+Darjeeling,West Bengal,2749.6800000000003,orange,0.9955928
+Darrang,Assam,6428.41,red,0.9931746
+Datia,Madhya Pradesh,3288.44,orange,0.99914944
+Dausa,Rajasthan,9062.18,red,0.99937457
+Davanagere,Karnataka,5842.44,red,0.98469526
+DCP BBSR,Odisha,13678.76,red,0.999511
+DCP CTC,Odisha,8252.150000000001,red,0.99809915
+Dehradun,Uttarakhand,12090.12,red,0.9998574
+Deogarh,Odisha,2972.99,orange,0.9977621
+Deoghar,Jharkhand,6632.2,red,0.9934116
+Deoria,Uttar Pradesh,1815.46,green,0.99107367
+Devbhumi Dwarka,Gujarat,508.0,green,0.9998994
+Dewas,Madhya Pradesh,6176.5199999999995,red,0.98690736
+Dhalai,Tripura,708.1,green,0.99984896
+Dhamtari,Chhattisgarh,2340.92,orange,0.96687675
+Dhanbad,Jharkhand,7108.75,red,0.9698406
+Dhar,Madhya Pradesh,14632.13,red,0.9998853
+Dharmapuri,Tamil Nadu,1463.77,green,0.989051
+Dharwad,Karnataka,1320.5900000000001,green,0.9989598
+Dhemaji,Assam,2090.48,orange,0.9870739
+Dhenkanal,Odisha,7956.0,red,0.99467105
+Dholpur,Rajasthan,7602.37,red,0.9957761
+Dhubri,Assam,5094.99,orange,0.9750475
+Dhule,Maharashtra,5478.36,orange,0.95399696
+Diamond Harbour Police,West Bengal,3687.19,orange,0.9988532
+Dibang Valley,Arunachal Pradesh,2.09,green,0.99981695
+Dibrugarh,Assam,4497.54,orange,0.99795026
+Dima Hasao,Assam,434.53000000000003,green,0.99982387
+Dimapur,Nagaland,815.03,green,0.9995079
+Dindigul,Tamil Nadu,2741.0699999999997,orange,0.9907419
+Dindori,Madhya Pradesh,3317.6400000000003,orange,0.9990422
+Diu,Dadra and Nagar Haveli and Daman and Diu,24.619999999999997,green,0.99982953
+Doda,Jammu and Kashmir,872.0799999999999,green,0.9997843
+Dr BR Ambedkar Konaseema,Andhra Pradesh,5083.09,orange,0.9778381
+Dumka,Jharkhand,3471.2900000000004,orange,0.99784565
+Dungarpur,Rajasthan,7644.89,red,0.9969708
+Durg,Chhattisgarh,8866.07,red,0.9998567
+Dwarka,Delhi,31009.02,red,0.9998344
+East,Delhi,23438.649999999998,red,0.9997118
+East Godavari,Andhra Pradesh,4734.48,orange,0.9911438
+Economic Offences Unit,Bihar,0.19,green,0.99981695
+Eluru,Andhra Pradesh,6985.490000000001,red,0.9504591
+Ernakulam Commr.,Kerala,7007.8099999999995,red,0.97527164
+Ernakulam Rural,Kerala,7464.1,red,0.9601178
+Erode,Tamil Nadu,1599.45,green,0.9517696
+Etah,Uttar Pradesh,3672.1099999999997,orange,0.9976968
+Etawah,Uttar Pradesh,4489.41,orange,0.99575365
+Faridabad,Haryana,15933.960000000001,red,0.99987173
+Faridkot,Punjab,1277.56,green,0.99979204
+Fatehabad,Haryana,3729.05,orange,0.99880505
+Fatehgarh,Uttar Pradesh,5590.120000000001,red,0.971704
+Fatehgarh Sahib,Punjab,2026.99,green,0.9774824
+Fatehpur,Uttar Pradesh,5931.27,red,0.96287274
+Fazilka,Punjab,2447.75,orange,0.98559445
+Ferozepur,Punjab,2061.01,green,0.7165838
+Firozabad,Uttar Pradesh,21164.309999999998,red,0.9998852
+Gadag,Karnataka,1546.34,green,0.9990363
+Gadchiroli,Maharashtra,2532.4,orange,0.99421835
+Gajapati,Odisha,2375.9100000000003,orange,0.9957066
+Ganderbal,Jammu and Kashmir,1721.1,green,0.98012424
+Gandhinagar,Gujarat,2565.01,orange,0.98860335
+Ganganagar,Rajasthan,12033.87,red,0.99975246
+Gangtok (East),Sikkim,617.63,green,0.99977213
+Ganjam,Odisha,8799.039999999999,red,0.9997092
+Garhwa,Jharkhand,5119.1,orange,0.9979322
+Gariyaband,Chhattisgarh,1821.5,green,0.97878474
+Garo Hills East,Meghalaya,268.66,green,0.9998554
+Garo Hills North,Meghalaya,245.14,green,0.99984574
+Garo Hills West,Meghalaya,1382.9,green,0.9985239
+Gaurela-Pendra-Marwari,Chhattisgarh,1252.6,green,0.99966264
+Gautambudh Nagar,Uttar Pradesh,12764.099999999999,red,0.9991266
+Gaya,Bihar,16513.199999999997,red,0.9995596
+Ghaziabad,Uttar Pradesh,13769.980000000001,red,0.9998247
+Ghazipur,Uttar Pradesh,7450.59,red,0.9912566
+Gir Somnath,Gujarat,1077.68,green,0.99977094
+Giridih,Jharkhand,8885.26,red,0.99847454
+Goalpara,Assam,4624.41,orange,0.99240243
+Godda,Jharkhand,5505.5199999999995,orange,0.97771
+Golaghat,Assam,2374.76,orange,0.9971257
+Gomati,Tripura,680.69,green,0.9998479
+Gonda,Uttar Pradesh,8088.47,red,0.9965
+Gondia,Maharashtra,4342.87,orange,0.99715745
+Gopalganj,Bihar,8162.62,red,0.99759185
+Gorakhpur,Uttar Pradesh,11255.0,red,0.99986243
+Gumla,Jharkhand,5070.509999999999,orange,0.9926329
+Guna,Madhya Pradesh,3908.17,orange,0.9984232
+Guntur,Andhra Pradesh,7425.900000000001,red,0.9822221
+Gurdaspur,Punjab,1027.22,green,0.9997805
+Gurugram,Haryana,18100.3,red,0.99989986
+Guwahati City,Assam,13681.81,red,0.99987555
+Gwalior,Madhya Pradesh,15055.52,red,0.99989414
+Gyalshing (West),Sikkim,130.78,green,0.99983454
+Hailakandi,Assam,2935.84,orange,0.997908
+Hamirpur,Himachal Pradesh,945.71,green,0.9995716
+Hamirpur,Himachal Pradesh,1956.01,green,0.9539088
+Hamirpur,Uttar Pradesh,2400.16,green,0.63196456
+Hamirpur,Uttar Pradesh,3410.46,orange,0.995067
+Hamren,Assam,663.79,green,0.99980253
+Handwara,Jammu and Kashmir,920.2099999999999,green,0.99899703
+Hansi,Haryana,2349.6,orange,0.9232119
+Hanumangarh,Rajasthan,9218.57,red,0.99957496
+Hapur,Uttar Pradesh,7451.179999999999,red,0.9923241
+Harda,Madhya Pradesh,3377.86,orange,0.9985274
+Hardoi,Uttar Pradesh,7100.82,red,0.9918709
+Haridwar,Uttarakhand,12535.54,red,0.99982774
+Hassan,Karnataka,6092.52,red,0.97518164
+Hathras,Uttar Pradesh,7774.46,red,0.9978757
+Haveri,Karnataka,3422.8500000000004,orange,0.99623835
+Hazaribagh,Jharkhand,5474.2300000000005,orange,0.9816097
+Hingoli,Maharashtra,2863.2000000000003,orange,0.9987472
+Hissar,Haryana,9564.35,red,0.9993456
+Hnahthial,Mizoram,67.42,green,0.99982494
+Hojai,Assam,5257.41,orange,0.9799637
+Hooghly Rural Police,West Bengal,4532.29,orange,0.98773265
+Hoshiarpur,Punjab,2869.47,orange,0.9990422
+Howrah PC,West Bengal,3267.75,orange,0.99545103
+Howrah Rural,West Bengal,4269.29,orange,0.9846934
+Hubballi Dharwad City,Karnataka,2304.4,orange,0.98722214
+Hyderabad Commissionerate,Telangana,20247.58,red,0.9998895
+Idukki,Kerala,3963.92,orange,0.99434435
+IGI Airport,Delhi,460.42,green,0.99896884
+Imphal East,Manipur,949.91,green,0.9989773
+Imphal West,Manipur,1923.32,green,0.9306517
+Indore Commissionarate,Madhya Pradesh,21467.54,red,0.9998574
+Indore Rural,Madhya Pradesh,4765.9800000000005,orange,0.9730387
+Irrigation & Power,Haryana,13.72,green,0.9998128
+Islampur,West Bengal,2627.68,orange,0.9985482
+Jabalpur,Madhya Pradesh,16660.55,red,0.9998412
+Jagatsinghpur,Odisha,9817.22,red,0.99939513
+Jagdalpur,Chhattisgarh,2368.04,orange,0.9885371
+Jagityal,Telangana,3488.93,orange,0.9981793
+Jaintia Hills East,Meghalaya,494.23,green,0.9998247
+Jaintia Hills West,Meghalaya,546.8599999999999,green,0.99987435
+Jaipur Crime,Rajasthan,0.15,green,0.99981695
+Jaipur East,Rajasthan,12770.48,red,0.99980956
+Jaipur Metro,Rajasthan,0.0,green,0.99981695
+Jaipur North,Rajasthan,6351.54,red,0.99328387
+Jaipur Rural,Rajasthan,10289.599999999999,red,0.9998635
+Jaipur West,Rajasthan,11861.56,red,0.99987197
+Jaisalmer,Rajasthan,3003.27,orange,0.9971336
+Jajpur,Odisha,9849.34,red,0.9998747
+Jalandhar Rural,Punjab,2578.66,orange,0.9921341
+Jalaun,Uttar Pradesh,3945.25,orange,0.99775994
+Jalgaon,Maharashtra,11506.87,red,0.9996146
+Jalna,Maharashtra,9933.39,red,0.99970704
+Jalore,Rajasthan,7269.83,red,0.99884605
+Jalpaiguri,West Bengal,4768.87,orange,0.9459674
+Jammu,Jammu and Kashmir,5525.38,red,0.98784965
+Jamnagar,Gujarat,1382.82,green,0.99926215
+Jamshedpur,Jharkhand,7783.49,red,0.9887734
+Jamtara,Jharkhand,1551.41,green,0.99527586
+Jamui,Bihar,3354.14,orange,0.98931
+Jangipur Police District,West Bengal,2866.1299999999997,orange,0.99704033
+Janjgir,Chhattisgarh,4912.179999999999,orange,0.9905428
+Jashpur,Chhattisgarh,3884.86,orange,0.99768186
+Jaunpur,Uttar Pradesh,9629.6,red,0.99981254
+Jayashankar Bhupalpalli,Telangana,1716.58,green,0.81405413
+Jehanabad,Bihar,2862.6200000000003,orange,0.9959202
+Jhabua,Madhya Pradesh,5545.990000000001,red,0.93974316
+Jhajjar,Haryana,6846.59,red,0.99611074
+Jhalawar,Rajasthan,10146.63,red,0.99982786
+Jhansi,Uttar Pradesh,4932.820000000001,orange,0.99235207
+Jhargram,West Bengal,2334.19,orange,0.98625815
+Jharsuguda,Odisha,3038.63,orange,0.9961498
+Jhunjhunu,Rajasthan,6718.62,red,0.9971451
+Jind,Haryana,5641.01,red,0.97465116
+Jiribam,Manipur,67.3,green,0.99983644
+Jodhpur East,Rajasthan,6315.12,red,0.9826912
+Jodhpur Rural,Rajasthan,6562.82,red,0.99936336
+Jodhpur West,Rajasthan,7273.429999999999,red,0.98981607
+Jogulamba Gadwal,Telangana,1422.27,green,0.99382955
+Jorhat,Assam,4153.05,orange,0.99908304
+Junagadh,Gujarat,1731.6299999999999,green,0.98685974
+K.G.F.,Karnataka,1107.95,green,0.99965847
+Kabirdham,Chhattisgarh,2996.58,orange,0.9994783
+Kachchh East(G),Gujarat,2590.09,orange,0.9882782
+Kachchh West(B),Gujarat,2085.57,green,0.96607333
+Kaimur(Bhabhua),Bihar,3878.76,orange,0.99539256
+Kaithal,Haryana,6270.02,red,0.9951739
+Kakching,Manipur,338.17999999999995,green,0.99984777
+Kakinada,Andhra Pradesh,4377.22,orange,0.9966574
+Kalaburgi,Karnataka,3408.2999999999997,orange,0.9979372
+Kalaburgi City,Karnataka,2105.3999999999996,orange,0.9823842
+Kalahandi,Odisha,8475.58,red,0.99956065
+Kalimpong,West Bengal,606.0699999999999,green,0.99986124
+Kallakurichi,Tamil Nadu,1556.5,green,0.9791109
+Kamareddy,Telangana,2345.73,orange,0.9949892
+Kameng East,Arunachal Pradesh,258.11999999999995,green,0.9998385
+Kameng West,Arunachal Pradesh,180.35999999999999,green,0.99982566
+Kamjong,Manipur,1.05,green,0.99982494
+Kamle,Arunachal Pradesh,51.330000000000005,green,0.99982446
+Kamrup,Assam,11316.75,red,0.9998964
+Kanchipuram,Tamil Nadu,867.8,green,0.99983144
+Kandhamal,Odisha,6028.09,red,0.5313426
+Kangpokpi,Manipur,93.61,green,0.99984896
+Kangra,Himachal Pradesh,3638.2,orange,0.9954228
+Kanker,Chhattisgarh,2017.22,orange,0.69395447
+Kannauj,Uttar Pradesh,9433.199999999999,red,0.9940462
+Kannur City,Kerala,1873.76,orange,0.6199547
+Kannur Rural,Kerala,1328.37,green,0.99173075
+Kanpur Commissionarate,Uttar Pradesh,14406.289999999999,red,0.9998659
+Kanpur Dehat,Uttar Pradesh,4612.900000000001,orange,0.99412304
+Kanpur Outer,Uttar Pradesh,0.0,green,0.99981695
+Kanyakumari,Tamil Nadu,2323.4900000000002,orange,0.9704516
+Kapurthala,Punjab,1794.8799999999999,green,0.9969638
+Karaikal,Puducherry,0.0,green,0.99981695
+Karauli,Rajasthan,9591.04,red,0.9997565
+Karbi Anglong,Assam,1243.3200000000002,green,0.99879044
+Kargil,Ladakh,162.95,green,0.99984896
+Karimganj,Assam,4194.070000000001,orange,0.98161054
+Karimnagar Commissionerate,Telangana,3129.4100000000003,orange,0.9982066
+Karnal,Haryana,10606.59,red,0.99980253
+Karur,Tamil Nadu,803.9,green,0.999856
+Kasargod,Kerala,2075.1800000000003,green,0.9377813
+Kasganj,Uttar Pradesh,7999.17,red,0.99855894
+Kathua,Jammu and Kashmir,1353.59,green,0.9991843
+Katihar,Bihar,7020.5,red,0.99935716
+Katni,Madhya Pradesh,6329.88,red,0.9827224
+Kaushambi,Uttar Pradesh,4920.84,orange,0.99386543
+Kendrapara,Odisha,15022.17,red,0.999711
+Keonjhar,Odisha,12668.57,red,0.9998852
+Khagaria,Bihar,5621.99,red,0.9754478
+Khairagarh - Chhuikhadan-Gandai,Chhattisgarh,1363.6000000000001,green,0.9990932
+Khammam Commissionerate,Telangana,4422.129999999999,orange,0.9947478
+Khandwa,Madhya Pradesh,5766.46,red,0.9960698
+Khanna,Punjab,1209.62,green,0.99961686
+Khargone,Madhya Pradesh,6383.01,red,0.9992337
+Khasi Hills East,Meghalaya,2092.19,orange,0.98956406
+Khasi Hills Eastern West,Meghalaya,131.76,green,0.99985445
+Khasi Hills West,Meghalaya,465.33,green,0.9998018
+Khawzawl,Mizoram,97.69,green,0.99984074
+Kheda,Gujarat,2014.45,green,0.9709349
+Khiri,Uttar Pradesh,10893.58,red,0.99959284
+Khunti,Jharkhand,2023.76,green,0.97404534
+Khurda,Odisha,10519.74,red,0.99544626
+Kinnaur,Himachal Pradesh,540.18,green,0.999739
+Kiphire,Nagaland,30.169999999999998,green,0.99982494
+Kishanganj,Bihar,4002.3399999999997,orange,0.99504197
+Kishtwar,Jammu and Kashmir,503.92999999999995,green,0.9997999
+Kodagu,Karnataka,1752.27,green,0.99328184
+Koderma,Jharkhand,2943.9199999999996,orange,0.9951426
+Kohima,Nagaland,190.29999999999998,green,0.9998679
+Kokrajhar,Assam,3795.02,orange,0.9995832
+Kolar,Karnataka,3698.83,orange,0.9981212
+Kolasib,Mizoram,271.42,green,0.99982554
+Kolhapur,Maharashtra,11240.64,red,0.9996952
+Kolkata,West Bengal,10767.179999999998,red,0.99624544
+Kollam Commr.,Kerala,3400.5699999999997,orange,0.9878588
+Kollam Rural,Kerala,3830.76,orange,0.98913014
+Kondagaon,Chhattisgarh,1612.4199999999998,green,0.93932855
+Koppal,Karnataka,2714.35,orange,0.9861093
+Koraput,Odisha,9370.11,red,0.99837947
+Korba,Chhattisgarh,4461.6,orange,0.99339575
+Koriya,Chhattisgarh,1345.28,green,0.99962413
+Kota City,Rajasthan,11282.81,red,0.9997526
+Kota Rural,Rajasthan,5913.929999999999,red,0.9873384
+Kottayam,Kerala,5624.48,orange,0.9126947
+Kowai,Tripura,496.17,green,0.9998311
+Kozhikode Commr.,Kerala,4872.92,orange,0.9953595
+Kozhikode Rural,Kerala,5512.77,orange,0.98030615
+Kra Dadi,Arunachal Pradesh,49.220000000000006,green,0.99981695
+Krishna,Andhra Pradesh,6918.82,red,0.966231
+Krishnagar,West Bengal,8510.45,red,0.99664104
+Krishnagiri,Tamil Nadu,1609.87,green,0.96575344
+Kulgam,Jammu and Kashmir,2391.25,orange,0.95818096
+Kullu,Himachal Pradesh,1832.23,green,0.96026874
+Kumaram Bheem Asifabad,Telangana,1587.8100000000002,green,0.9965463
+Kupwara,Jammu and Kashmir,1490.98,green,0.9969612
+Kurnool,Andhra Pradesh,3889.63,orange,0.9974179
+Kurukshetra,Haryana,8564.85,red,0.99952173
+Kurung Kumey,Arunachal Pradesh,37.23,green,0.99982375
+Kushi Nagar,Uttar Pradesh,10147.51,red,0.99574524
+Lahaul & Spiti,Himachal Pradesh,69.24000000000001,green,0.9998385
+Lakhimpur,Assam,3869.14,orange,0.9986457
+Lakhisarai,Bihar,3483.73,orange,0.9955474
+Lakshadweep,Lakshadweep,120.96,green,0.9998282
+Lalitpur,Uttar Pradesh,2450.7599999999998,orange,0.9888883
+Latehar,Jharkhand,2714.87,orange,0.99807453
+Latur,Maharashtra,6430.54,red,0.98468506
+Lawngtlai,Mizoram,138.03,green,0.9998584
+Leh,Ladakh,186.74,green,0.9998499
+Leparada,Arunachal Pradesh,74.5,green,0.99983704
+Lohardagga,Jharkhand,2215.13,orange,0.9800481
+Lohit,Arunachal Pradesh,234.06,green,0.99983406
+Longding,Arunachal Pradesh,120.53,green,0.99984896
+Longleng,Nagaland,55.29,green,0.9998466
+Lower Dibang Valley,Arunachal Pradesh,241.74,green,0.99983215
+Lower Siang,Arunachal Pradesh,124.57000000000001,green,0.9998392
+Lucknow Commissionarate,Uttar Pradesh,18465.870000000003,red,0.9998559
+Lucknow Grameen,Uttar Pradesh,0.0,green,0.99981695
+Ludhiana Rural,Punjab,1654.04,green,0.9995472
+Lunglei,Mizoram,138.1,green,0.99983084
+Madhepura,Bihar,5582.63,red,0.97522235
+Madhubani,Bihar,4950.57,orange,0.68117595
+Madurai,Tamil Nadu,3712.25,orange,0.996881
+Madurai City,Tamil Nadu,2855.87,orange,0.9929005
+Mahabubabad,Telangana,3129.43,orange,0.99928325
+Mahabubnagar,Telangana,3294.01,orange,0.9984497
+Maharajganj,Uttar Pradesh,1910.08,green,0.9655158
+Mahasamund,Chhattisgarh,2618.18,orange,0.99695075
+Mahendergarh,Haryana,3563.04,orange,0.9989303
+Mahisagar,Gujarat,622.77,green,0.9998565
+Mahoba,Uttar Pradesh,2255.9500000000003,orange,0.98335415
+Mainpuri,Uttar Pradesh,7360.259999999999,red,0.9975374
+Majuli,Assam,473.29999999999995,green,0.99985385
+Malappuram,Kerala,7860.26,red,0.9868205
+Malda,West Bengal,14790.480000000001,red,0.9997842
+Malerkotla,Punjab,766.47,green,0.99981755
+Malkangiri,Odisha,5746.67,red,0.95798445
+Mamit,Mizoram,85.66,green,0.9998411
+Mandi,Himachal Pradesh,2983.62,orange,0.9849979
+Mandla,Madhya Pradesh,4812.85,orange,0.9865498
+Mandsaur,Madhya Pradesh,4361.030000000001,orange,0.98644686
+Mandya,Karnataka,6583.5,red,0.9959947
+Manendragarh-Chirmiri-Bharatpur,Chhattisgarh,2209.5099999999998,orange,0.9905335
+Mangaluru City,Karnataka,2007.53,green,0.9763723
+Mangan (North),Sikkim,95.64,green,0.99983525
+Mansa,Punjab,1747.58,green,0.99784875
+Mathura,Uttar Pradesh,16924.73,red,0.9998846
+Mau,Uttar Pradesh,5345.11,orange,0.9806513
+Mayurbhanj,Odisha,18652.09,red,0.9998919
+Medak,Telangana,2495.06,orange,0.9970282
+Meerut,Uttar Pradesh,16196.220000000001,red,0.99987245
+Mehsana,Gujarat,2300.48,orange,0.9630277
+Metro,Delhi,4042.48,orange,0.8810077
+Mira Bhayandar Vasai Virar Commr.,Maharashtra,20771.44,red,0.99960583
+Mirzapur,Uttar Pradesh,2836.8199999999997,orange,0.9968072
+Moga,Punjab,1854.18,green,0.9778863
+Mohla-Manpur-Ambagarh Chouki,Chhattisgarh,1066.1200000000001,green,0.9997197
+Mokokchung,Nagaland,75.38,green,0.99984896
+Mon,Nagaland,95.21000000000001,green,0.99983704
+Moradabad,Uttar Pradesh,4570.889999999999,orange,0.9926081
+Morbi,Gujarat,1247.33,green,0.9993641
+Morena,Madhya Pradesh,7165.1,red,0.9994881
+Morigaon,Assam,5665.55,red,0.98182654
+Motihari,Bihar,13799.75,red,0.99874496
+Muktsar,Punjab,2222.59,green,0.9071992
+Mulug,Telangana,1087.06,green,0.9993704
+Mumbai Commr.,Maharashtra,78067.41,red,0.9998895
+Mungali,Chhattisgarh,1510.6,green,0.9930016
+Munger,Bihar,5171.45,orange,0.9561596
+Murshidabad Police District,West Bengal,13184.859999999999,red,0.99903715
+Muzaffarnagar,Uttar Pradesh,4616.94,orange,0.98954695
+Muzaffarpur,Bihar,19993.15,red,0.99956495
+Mysuru City,Karnataka,3721.08,orange,0.99819165
+Mysuru District,Karnataka,5857.07,red,0.9811668
+Nabarangpur,Odisha,4959.62,orange,0.9806567
+Nagaon,Assam,7186.490000000001,red,0.9986185
+Nagapattinam,Tamil Nadu,1954.8899999999999,green,0.9377063
+Nagarkurnool,Telangana,2859.22,orange,0.9983273
+Nagaur,Rajasthan,12981.89,red,0.9998852
+Nagpur Commr.,Maharashtra,16454.09,red,0.9997111
+Nagpur Rural,Maharashtra,6412.97,red,0.98296714
+Nainital,Uttarakhand,7549.88,red,0.9966198
+Nalanda,Bihar,12096.18,red,0.99816424
+Nalbari,Assam,3392.84,orange,0.99879575
+Nalgonda,Telangana,4900.83,orange,0.99103874
+Namakkal,Tamil Nadu,1388.0700000000002,green,0.9959215
+Namsai,Arunachal Pradesh,269.26,green,0.9998275
+Nanded,Maharashtra,9260.53,red,0.99908125
+Nandurbar,Maharashtra,3625.96,orange,0.99922943
+Nandyal,Andhra Pradesh,3308.34,orange,0.9966028
+Narayanpet,Telangana,1284.05,green,0.9985531
+Narayanpur,Chhattisgarh,552.53,green,0.99987745
+Narmada,Gujarat,412.40999999999997,green,0.9998599
+Narmadapuram,Madhya Pradesh,5367.860000000001,orange,0.95311594
+Narsinghpur,Madhya Pradesh,5852.2300000000005,red,0.9929108
+Nasik Commr.,Maharashtra,8809.47,red,0.9993173
+Nasik Rural,Maharashtra,12953.009999999998,red,0.9997249
+Naugachia,Bihar,3496.31,orange,0.97312784
+Navi Mumbai,Maharashtra,13561.25,red,0.9997069
+Navsari,Gujarat,598.4200000000001,green,0.99975914
+Nawadah,Bihar,7463.05,red,0.9970927
+Nayagarh,Odisha,4897.02,orange,0.9867194
+Neemuch,Madhya Pradesh,2712.06,orange,0.99766076
+New Delhi,Delhi,2563.87,orange,0.9719876
+Nicobar,Andaman and Nicobar Islands,83.81,green,0.99984264
+Nilgiris,Tamil Nadu,457.84999999999997,green,0.9998715
+Nirmal,Telangana,1639.9,green,0.9731959
+Niwari,Madhya Pradesh,1577.76,green,0.9949338
+Nizamabad Commissionerate,Telangana,5046.39,orange,0.9928294
+Noney,Manipur,64.2,green,0.99981695
+North,Tripura,1124.69,green,0.99977547
+North,Tripura,3540.1499999999996,orange,0.9435948
+North,Delhi,19807.120000000003,red,0.9882625
+North,Delhi,22222.58,red,0.9996118
+North & Middle Andaman,Andaman and Nicobar Islands,94.32000000000001,green,0.99984205
+North Goa,Goa,2915.8399999999997,orange,0.9962793
+North-East,Delhi,32340.76,red,0.9998429
+North-West,Delhi,27289.47,red,0.9998702
+NRI Wing,Punjab,3.16,green,0.99984455
+NTR,Andhra Pradesh,8722.26,red,0.99392325
+Nuapada,Odisha,2385.42,orange,0.9882903
+Nuh,Haryana,5401.950000000001,red,0.771089
+Osmanabad,Maharashtra,5707.46,orange,0.838931
+Outer,Delhi,26403.670000000002,red,0.99984217
+Outer North,Delhi,24420.29,red,0.9998944
+Pakkessang,Arunachal Pradesh,36.25,green,0.9998223
+Pakur,Jharkhand,2536.86,orange,0.9960037
+Pakyong (East),Sikkim,143.35999999999999,green,0.9998424
+Palakkad,Kerala,5231.53,orange,0.9511406
+Palamu,Jharkhand,6221.839999999999,red,0.97647923
+Palghar,Maharashtra,4997.25,orange,0.9908404
+Pali,Rajasthan,12360.28,red,0.9998658
+Palnadu,Andhra Pradesh,3815.94,orange,0.99761605
+Palwal,Haryana,7482.150000000001,red,0.99940324
+Panchkula,Haryana,4327.4,orange,0.9854556
+Panchmahal,Gujarat,2041.79,green,0.9543733
+Panipat,Haryana,15897.28,red,0.99987185
+Panna,Madhya Pradesh,5179.570000000001,orange,0.9873596
+Papum Pare City,Arunachal Pradesh,1564.98,green,0.98174745
+Papum Pare Rural,Arunachal Pradesh,230.01999999999998,green,0.99983
+Parbhani,Maharashtra,4975.75,orange,0.9891684
+Parvathipuram Manyam,Andhra Pradesh,1808.78,orange,0.551979
+Paschim Medinipur,West Bengal,10302.560000000001,red,0.99950945
+Patan,Gujarat,1450.1899999999998,green,0.9984541
+Pathanamthitta,Kerala,3403.6600000000003,orange,0.9921927
+Pathankot,Punjab,833.6700000000001,green,0.9998591
+Patiala,Punjab,4110.19,orange,0.9962121
+Patna,Bihar,38281.32,red,0.9997913
+Pauri Garhwal,Uttarakhand,1520.34,green,0.99917066
+Perambalur,Tamil Nadu,862.54,green,0.9999018
+Peren,Nagaland,71.24000000000001,green,0.99982893
+Phek,Nagaland,24.34,green,0.99983704
+Pherzawl,Manipur,20.099999999999998,green,0.99981695
+Pilibhit,Uttar Pradesh,15141.33,red,0.99972016
+Pimpri Chinchwad City,Maharashtra,21172.54,red,0.999879
+Pithoragarh,Uttarakhand,1666.32,green,0.9973279
+Poonch,Jammu and Kashmir,1671.8400000000001,green,0.99454737
+Porbandar,Gujarat,689.99,green,0.99984515
+Prakasam,Andhra Pradesh,4793.04,orange,0.9945372
+Pratapgarh,Rajasthan,10618.09,red,0.9976986
+Pratapgarh,Rajasthan,9537.17,red,0.99865425
+Pratapgarh,Uttar Pradesh,10634.59,red,0.9997857
+Pratapgarh,Uttar Pradesh,9553.67,red,0.999819
+Prayagraj,Uttar Pradesh,16757.510000000002,red,0.99986875
+Puducherry,Puducherry,2019.37,orange,0.8587682
+Pudukottai,Tamil Nadu,1892.67,green,0.9608747
+Pulwama,Jammu and Kashmir,1336.9399999999998,green,0.9987325
+Pune Commr.,Maharashtra,30046.22,red,0.9998902
+Pune Rural,Maharashtra,21440.530000000002,red,0.999828
+Purab Medinipur,West Bengal,14720.400000000001,red,0.99814296
+Purba Bardhaman,West Bengal,9714.89,red,0.99894243
+Puri,Odisha,8466.82,red,0.99965787
+Purnea,Bihar,12088.2,red,0.9995696
+Purulia,West Bengal,2323.21,orange,0.9963804
+Rachakonda Commissionerate,Telangana,21822.02,red,0.99986565
+Raibareilly,Uttar Pradesh,7243.54,red,0.99642414
+Raichur,Karnataka,4702.070000000001,orange,0.9878159
+Raigad,Maharashtra,5038.42,orange,0.54918206
+Raiganj,West Bengal,3893.8100000000004,orange,0.99608636
+Raigarh,Chhattisgarh,6123.839999999999,red,0.91951144
+Raipur,Chhattisgarh,14107.87,red,0.9998934
+Raisen,Madhya Pradesh,7864.96,red,0.9996904
+Rajanna Siricilla,Telangana,2226.22,orange,0.98736924
+Rajgarh,Madhya Pradesh,6412.91,red,0.9979474
+Rajkot City,Gujarat,2966.42,orange,0.9965612
+Rajkot Rural,Gujarat,1499.15,green,0.9920438
+Rajnandgaon,Chhattisgarh,3362.25,orange,0.99960166
+Rajouri,Jammu and Kashmir,3336.66,orange,0.9951079
+Rajsamand,Rajasthan,6998.0199999999995,red,0.9996309
+Ramagundam Commissionerate,Telangana,4860.469999999999,orange,0.9964264
+Ramanagara,Karnataka,6693.650000000001,red,0.99201137
+Ramban,Jammu and Kashmir,679.03,green,0.99981886
+Ramgarh,Jharkhand,2057.9,green,0.95146024
+Ramnathapuram,Tamil Nadu,2171.23,orange,0.7881721
+Rampur,Uttar Pradesh,7782.65,red,0.99361837
+Ranaghat,West Bengal,5154.34,orange,0.9625809
+Ranchi,Jharkhand,13247.68,red,0.9991672
+Ranipet,Tamil Nadu,792.63,green,0.99980086
+Ratlam,Madhya Pradesh,7587.38,red,0.9997918
+Ratnagiri,Maharashtra,2377.69,orange,0.99447733
+Rayagada,Odisha,3723.08,orange,0.9986835
+Reasi,Jammu and Kashmir,1231.22,green,0.99954957
+Rewa,Madhya Pradesh,13491.25,red,0.9998609
+Rewari,Haryana,4805.8,orange,0.98039776
+Ri-Bhoi,Meghalaya,718.04,green,0.99983513
+Rohini,Delhi,22706.760000000002,red,0.99987304
+Rohtak,Haryana,8740.07,red,0.9998385
+Rohtas,Bihar,6936.1900000000005,red,0.9973838
+Ropar,Punjab,1260.6200000000001,green,0.99966204
+Rourkela,Odisha,7467.34,red,0.998533
+RPO,Assam,0.0,green,0.99981695
+Rudra Prayag,Uttarakhand,379.2,green,0.99979633
+Sabarkantha,Gujarat,2218.79,orange,0.9293349
+Sadia,Assam,466.42999999999995,green,0.99978024
+Sagar,Madhya Pradesh,11525.49,red,0.9998673
+Saharanpur,Uttar Pradesh,6850.34,red,0.9982487
+Saharsa,Bihar,3226.75,orange,0.99826044
+Sahebganj,Jharkhand,3455.73,orange,0.9989396
+Saiha,Mizoram,54.98,green,0.99982953
+Saitual,Mizoram,17.36,green,0.99983704
+Sakti,Chhattisgarh,2903.34,orange,0.99917066
+Salem,Tamil Nadu,2369.4300000000003,orange,0.9811087
+Salem City,Tamil Nadu,1921.13,green,0.9782583
+Samastipur,Bihar,11014.07,red,0.9995059
+Samba,Jammu and Kashmir,743.64,green,0.99971384
+Sambalpur,Odisha,6370.6,red,0.9914818
+Sambhal,Uttar Pradesh,7475.7699999999995,red,0.9992378
+Sangareddy,Telangana,3160.96,orange,0.99701667
+Sangli,Maharashtra,11710.39,red,0.9998802
+Sangrur,Punjab,2017.19,green,0.98272425
+Sant Kabirnagar,Uttar Pradesh,4620.6,orange,0.99029267
+Saraikela,Jharkhand,1971.64,green,0.9886535
+Saran,Bihar,14420.740000000002,red,0.9983004
+Sarangarh-Bilaigarh,Chhattisgarh,2403.9199999999996,orange,0.99650276
+Sarguja,Chhattisgarh,4885.299999999999,orange,0.9862325
+SAS Nagar,Punjab,4876.740000000001,orange,0.9523573
+Satara,Maharashtra,11081.25,red,0.9998758
+Satna,Madhya Pradesh,9635.29,red,0.99907744
+Sawai Madhopur,Rajasthan,8156.18,red,0.9996942
+SBS Nagar,Punjab,892.84,green,0.9998822
+SCRB,Rajasthan,0.02,green,0.99982566
+Sehore,Madhya Pradesh,4980.47,red,0.8483757
+Senapati,Manipur,51.339999999999996,green,0.99983704
+Seoni,Madhya Pradesh,6819.099999999999,red,0.99902546
+Serchhip,Mizoram,108.44999999999999,green,0.9998287
+Shahdara,Delhi,18707.18,red,0.9995388
+Shahdol,Madhya Pradesh,5860.23,red,0.9789863
+Shahjahanpur,Uttar Pradesh,5849.84,red,0.9688339
+Shajapur,Madhya Pradesh,3192.86,orange,0.9975055
+Shamli,Uttar Pradesh,3823.16,orange,0.9964226
+Sheikhpura,Bihar,2184.17,green,0.5882438
+Sheohar,Bihar,1627.48,green,0.9817677
+Sheopur,Madhya Pradesh,1827.34,green,0.98483026
+Shimla,Himachal Pradesh,2439.37,orange,0.9917446
+Shimoga,Karnataka,6914.23,red,0.9988385
+Shivpuri,Madhya Pradesh,8246.019999999999,red,0.9998518
+Shiyomi,Arunachal Pradesh,26.189999999999998,green,0.99983
+Shopian,Jammu and Kashmir,1063.3100000000002,green,0.99912816
+Shrawasti,Uttar Pradesh,4290.4800000000005,orange,0.9958274
+Siang,Arunachal Pradesh,100.45,green,0.99983215
+Siang East,Arunachal Pradesh,465.04,green,0.99981385
+Siang Upper,Arunachal Pradesh,33.76,green,0.9998273
+Siang West,Arunachal Pradesh,377.31,green,0.99982685
+Sibsagar,Assam,2267.1,orange,0.99600005
+Siddipet Commissionerate,Telangana,3390.79,orange,0.99931896
+Sidharthnagar,Uttar Pradesh,3963.63,orange,0.9961079
+Sidhi,Madhya Pradesh,4745.01,orange,0.98592746
+Sikar,Rajasthan,11538.89,red,0.99989724
+Siliguri PC,West Bengal,5978.56,red,0.9718103
+Simdega,Jharkhand,2417.2599999999998,orange,0.96191007
+Sindhudurg,Maharashtra,1525.4599999999998,green,0.99866354
+Singrauli,Madhya Pradesh,5245.83,red,0.6014374
+Sipahijala,Tripura,773.64,green,0.99987173
+Sirmaur,Himachal Pradesh,2414.48,orange,0.9765485
+Sirohi,Rajasthan,7428.08,red,0.9972596
+Sirsa,Haryana,6028.25,red,0.9959913
+Sitamarhi,Bihar,11862.25,red,0.999509
+Sitapur,Uttar Pradesh,9949.34,red,0.9634464
+Sivagangai,Tamil Nadu,2091.3700000000003,orange,0.99228984
+Siwan,Bihar,8965.37,red,0.99712306
+SOG,Rajasthan,0.22,green,0.99981695
+Solan,Himachal Pradesh,1411.3500000000001,green,0.9984718
+Solapur Commr.,Maharashtra,3637.43,orange,0.9982475
+Solapur Rural,Maharashtra,13640.17,red,0.9998714
+Sonbhadra,Uttar Pradesh,4250.15,orange,0.9944412
+Sonepur,Odisha,2932.2999999999997,orange,0.9883338
+Sonipat,Haryana,13166.98,red,0.99988735
+Sonitpur,Assam,10950.08,red,0.9986947
+Sopore,Jammu and Kashmir,1329.79,green,0.9959099
+Soreng (West),Sikkim,72.67,green,0.99984837
+Special Crime Wing Jammu,Jammu and Kashmir,0.13,green,0.99981695
+Special Crime Wing Kashmir,Jammu and Kashmir,0.15,green,0.99981695
+Spl Cell,Delhi,72.48,green,0.99977046
+SPUWAC,Delhi,1.44,green,0.99986005
+Sri Potti Sriramulu Nellore,Andhra Pradesh,5351.22,orange,0.97400767
+Sri Sathya Sai,Andhra Pradesh,3938.21,orange,0.9922971
+Srikakulam,Andhra Pradesh,3465.98,orange,0.99607205
+Srinagar,Jammu and Kashmir,5171.17,orange,0.9850662
+SRP(Cuttack),Odisha,1240.56,green,0.986357
+SRP(Rourkela),Odisha,714.0300000000001,green,0.99112684
+SSB,Rajasthan,0.0,green,0.99981695
+Subansiri Lower,Arunachal Pradesh,123.44,green,0.99983156
+Subansiri Upper,Arunachal Pradesh,103.78,green,0.99984896
+Sukma,Chhattisgarh,874.5,green,0.99980456
+Sultanpur,Uttar Pradesh,12265.56,red,0.9998491
+Sundarban Police,West Bengal,5951.01,red,0.9834276
+Sundargarh,Odisha,4979.61,orange,0.9933175
+Supaul,Bihar,4734.900000000001,red,0.8290118
+Surajpur,Chhattisgarh,3508.6000000000004,orange,0.9977709
+Surat City,Gujarat,9478.66,red,0.99940956
+Surat Rural,Gujarat,2203.8599999999997,orange,0.984044
+Surendranagar,Gujarat,1506.8400000000001,green,0.9982285
+Suryapet,Telangana,4286.16,orange,0.99872774
+Tambaram,Tamil Nadu,3545.89,orange,0.96559215
+Tamenglong,Manipur,36.2,green,0.99983215
+Tamulpur,Assam,1161.78,green,0.999589
+Tapi,Gujarat,380.11,green,0.9997918
+Tarn Taran,Punjab,1822.54,green,0.99116594
+Tawang,Arunachal Pradesh,49.31,green,0.9998223
+Tehri Garhwal,Uttarakhand,789.62,green,0.999818
+Tengnoupal,Manipur,65.42999999999999,green,0.99983
+Tenkasi,Tamil Nadu,2197.8500000000004,orange,0.9938308
+Thane Commr.,Maharashtra,30246.19,red,0.9998505
+Thane Rural,Maharashtra,4701.9800000000005,orange,0.9973908
+Thanjavur,Tamil Nadu,4069.1699999999996,orange,0.99122447
+Theni,Tamil Nadu,2109.38,orange,0.9802561
+Thirunelveli,Tamil Nadu,2437.4900000000002,orange,0.9812444
+Thirunelveli City,Tamil Nadu,887.75,green,0.9998745
+Thiruvallur,Tamil Nadu,1162.32,green,0.99927074
+Thiruvannamalai,Tamil Nadu,1646.15,green,0.9638747
+Thiruvarur,Tamil Nadu,1058.82,green,0.9996928
+Thoothukudi,Tamil Nadu,3398.48,orange,0.99683833
+Thoubal,Manipur,676.02,green,0.9998062
+Thrissur Rural,Kerala,4031.91,orange,0.9935994
+Tikamgarh,Madhya Pradesh,3643.73,orange,0.9988932
+Tinsukia,Assam,6394.95,red,0.98753685
+Tirap,Arunachal Pradesh,69.36,green,0.9998374
+Tirupati,Andhra Pradesh,4977.21,orange,0.9961817
+Tiruppattur,Tamil Nadu,1074.89,green,0.9996201
+Tiruppur,Tamil Nadu,2064.12,green,0.9806012
+Tiruppur City,Tamil Nadu,1168.68,green,0.99941397
+Tonk,Rajasthan,7089.37,red,0.9991436
+Trichy,Tamil Nadu,2277.4,orange,0.99525946
+Trichy City,Tamil Nadu,1229.72,green,0.9993585
+Trivandrum Commr.,Kerala,4312.349999999999,orange,0.98284364
+Trivandrum Rural,Kerala,7405.56,red,0.96030897
+Tuensang,Nagaland,23.479999999999997,green,0.99983
+Tumakuru,Karnataka,7721.44,red,0.9969338
+Udaipur,Rajasthan,24386.74,red,0.9998584
+Udalguri,Assam,2846.6,orange,0.99860746
+Udhampur,Jammu and Kashmir,1583.8700000000001,green,0.9923804
+Udhamsingh Nagar,Uttarakhand,11454.33,red,0.999471
+Udupi,Karnataka,1808.04,green,0.9823887
+Ujjain,Madhya Pradesh,9613.380000000001,red,0.9998388
+Ukhrul,Manipur,66.35,green,0.9998363
+Umaria,Madhya Pradesh,2303.93,orange,0.9840296
+Una,Himachal Pradesh,1403.83,green,0.99690324
+Unakoti,Tripura,614.6899999999999,green,0.9998907
+Unnao,Uttar Pradesh,8736.69,red,0.9992348
+Uttara Kannada,Karnataka,3212.91,orange,0.98839927
+Uttarkashi,Uttarakhand,828.94,green,0.99968326
+Vadodara City,Gujarat,2142.96,orange,0.9755645
+Vadodara Rural,Gujarat,1541.5400000000002,green,0.99749184
+Vaishali,Bihar,13087.02,red,0.9985648
+Valsad,Gujarat,1275.74,green,0.99780136
+Varanasi Commissionarate,Uttar Pradesh,8488.74,red,0.9998129
+Vasanasi Dehat,Uttar Pradesh,0.0,green,0.99981695
+Vellore,Tamil Nadu,943.48,green,0.9997063
+Vidisha,Madhya Pradesh,6597.9,red,0.9991037
+Vigilance,Delhi,0.0,green,0.99981695
+Vijayanagara,Karnataka,1975.0900000000001,green,0.9606171
+Vijayapura,Karnataka,4488.66,orange,0.9968079
+Vikarabad,Telangana,2536.2400000000002,orange,0.9984408
+Villupuram,Tamil Nadu,2250.5299999999997,orange,0.99234915
+Virudhunagar,Tamil Nadu,2441.32,orange,0.98154575
+Visakhapatnam,Andhra Pradesh,6930.38,red,0.9860854
+Vizianagaram,Andhra Pradesh,3676.1400000000003,orange,0.9977658
+W.Rly Ahmedabad,Gujarat,377.19,green,0.9994301
+W.Rly Vadodara,Gujarat,682.2900000000001,green,0.98761135
+Wanaparthy,Telangana,1257.83,green,0.9992488
+Warangal Commissionerate,Telangana,8410.0,red,0.9996649
+Wardha,Maharashtra,5599.51,red,0.98016125
+Washim,Maharashtra,4094.4900000000002,orange,0.98927224
+Wayanadu,Kerala,2792.9500000000003,orange,0.9870884
+West,Tripura,1436.8,green,0.99719065
+West,Tripura,4512.0,orange,0.98517275
+West,Delhi,24313.969999999998,red,0.9961259
+West,Delhi,27389.17,red,0.99984324
+West Godavari,Andhra Pradesh,4735.91,orange,0.99155384
+Wokha,Nagaland,24.259999999999998,green,0.99983644
+Yadgiri,Karnataka,2186.8199999999997,orange,0.95048434
+Yamunanagar,Haryana,8568.83,red,0.99961686
+Yavatmal,Maharashtra,10770.45,red,0.9998771
+YSR,Andhra Pradesh,3569.36,orange,0.9962585
+Zunheboto,Nagaland,28.36,green,0.99983644

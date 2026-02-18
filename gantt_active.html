@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GuardMyTrip - Active Timeline</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 40px;
+            background: #fff;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            text-align: left;
+            margin-bottom: 10px;
+            font-size: 26px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .chart-section {
+            background: white;
+            padding: 25px;
+            padding-bottom: 80px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: visible;  
+        }
+
+        .mermaid {
+            margin-top: 15px;
+            overflow: visible;
+        }
+        
+        .mermaid svg {
+            overflow: visible !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="chart-section">
+            <div class="mermaid">
+                gantt
+                title Project Development Schedule
+                dateFormat YYYY-MM-DD
+                axisFormat %b %d
+                todayMarker stroke-width:3px,stroke:#e65100
+
+                section Milestones
+                1st Evaluation :milestone, m1, 2026-01-14, 0d
+                2nd Evaluation :milestone, m2, 2026-01-28, 0d
+                Status Review :milestone, m4, 2026-02-25, 0d
+                Final Evaluation :milestone, m5, 2026-03-16, 0d
+                Final Report :milestone, m6, 2026-03-18, 0d
+
+                section Phase 1 - Setup & Auth
+                Project Setup :done, p1a, 2026-01-01, 6d
+                UI Components :done, p1b, 2026-01-07, 5d
+                Auth System :done, p1c, 2026-01-12, 4d
+
+                section Phase 2 - Backend
+                Database Schema :done, p2a, 2026-01-16, 4d
+                Cities & Routes API :done, p2b, 2026-01-20, 5d
+                Map Integration :done, p2c, 2026-01-25, 4d
+
+                section Phase 3 - ML & Safety
+                Data Collection :done, p3a, 2026-01-29, 4d
+                XGBoost Training :done, p3b, 2026-02-02, 5d
+                Zone Classification :active, p3c, 2026-02-07, 4d
+
+                section Phase 4 - Refinement
+                UI Polish :p4a, 2026-02-11, 6d
+                Testing :p4b, 2026-02-17, 7d
+                Documentation :p4c, 2026-02-24, 10d
+                Performance :p4d, 2026-02-24, 10d
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            gantt: {
+                titleTopMargin: 15,
+                barHeight: 18,
+                barGap: 5,
+                topPadding: 30,
+                bottomPadding: 80,
+                leftPadding: 100,
+                gridLineStartPadding: 25,
+                fontSize: 10,
+                sectionFontSize: 11,
+                numberSectionStyles: 4,
+                todayMarker: true
+            },
+            themeVariables: {
+                primaryColor: '#e8e8e8',
+                primaryTextColor: '#333',
+                primaryBorderColor: '#999',
+                lineColor: '#ff6b35',
+                secondaryColor: '#f5f5dc',
+                tertiaryColor: '#8b8b8b',
+                background: '#fff',
+                mainBkg: '#e8e8e8',
+                gridColor: '#ddd',
+                doneTaskBkgColor: '#b8b8b8',
+                doneTaskBorderColor: '#888',
+                activeTaskBkgColor: '#8b8b8b',
+                activeTaskBorderColor: '#666',
+                taskTextColor: '#333',
+                taskTextOutsideColor: '#333',
+                todayLineColor: '#ff6b35'
+            }
+        });
+    </script>
+</body>
+
+</html>

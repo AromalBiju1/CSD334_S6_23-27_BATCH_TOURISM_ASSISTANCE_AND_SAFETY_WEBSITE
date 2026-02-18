@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GuardMyTrip - Active Timeline</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #fff;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #000;
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .chart-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #000;
+            border-bottom: none;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .mermaid {
+            margin-top: 20px;
+        }
+
+        /* Gantt chart color overrides to match reference - Purple/Lavender theme */
+        .mermaid .task {
+            fill: #8a8ac8 !important;
+            stroke: #6a6ab0 !important;
+        }
+
+        .mermaid .done0,
+        .mermaid .done1,
+        .mermaid .done2,
+        .mermaid .done3 {
+            fill: #8a8ac8 !important;
+            stroke: #6a6ab0 !important;
+        }
+
+        .mermaid .active0,
+        .mermaid .active1,
+        .mermaid .active2,
+        .mermaid .active3 {
+            fill: #7070b8 !important;
+            stroke: #5050a0 !important;
+        }
+
+        .mermaid .section0 {
+            fill: #f8f0ff !important;
+        }
+
+        .mermaid .section1 {
+            fill: #fffde0 !important;
+        }
+
+        .mermaid .section2 {
+            fill: #f0f0ff !important;
+        }
+
+        .mermaid .section3 {
+            fill: #f8f8f8 !important;
+        }
+
+        .mermaid .section4 {
+            fill: #e8e8f8 !important;
+        }
+
+        .mermaid .today {
+            stroke: #cc3333 !important;
+            stroke-width: 2px !important;
+        }
+
+        .mermaid .milestone {
+            fill: #9090d0 !important;
+            stroke: #7070b0 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Active Project Timeline</h1>
+        <div class="chart-section">
+            <h2>2. Current Active Progress (Updated Jan 29)</h2>
+            <p>Reflecting completed ML integration and Map features.</p>
+            <div class="mermaid">
+                gantt
+                title GuardMyTrip - Accelerated Development Timeline
+                dateFormat YYYY-MM-DD
+                axisFormat %b %d
+
+                section Milestones
+                1st Evaluation (Done) :milestone, m1, 2026-01-14, 0d
+                XGBoost Integration (Done) :milestone, mX, 2026-01-28, 0d
+                2nd Evaluation (Upcoming) :milestone, m2, 2026-02-04, 0d
+                Final Polish :milestone, m3, 2026-02-15, 0d
+
+                section Phase 1 - Frontend & Auth (Done)
+                Project Setup & UI :done, p1a, 2026-01-01, 7d
+                Pages & Auth Flow :done, p1b, 2026-01-08, 7d
+
+                section Phase 2 - Backend & Map (Done)
+                DB Schema & Cities API :done, p2a, 2026-01-15, 5d
+                Routes API & Map Integration :done, p2b, 2026-01-20, 6d
+                Multi-Route Alternatives :done, p2c, 2026-01-25, 3d
+
+                section Phase 3 - ML & Safety (Done Early!)
+                Data Collection (NCRB) :done, p3a, 2026-01-20, 4d
+                XGBoost Model Training :done, p3b, 2026-01-24, 3d
+                Zone Classification & Seed :done, p3c, 2026-01-27, 2d
+                Frontend Integration (Zones):done, p3d, 2026-01-29, 1d
+
+                section Phase 4 - Refinement (Current)
+                Zone Filtering UI :active, p4a, 2026-01-29, 2d
+                Unit & Integration Testing :p4c, 2026-02-01, 5d
+                Performance Optimization :p4d, 2026-02-06, 4d
+                Final Report & Docs :p4e, 2026-02-10, 5d
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#e8e8e8',        // Light gray for tasks
+                primaryTextColor: '#333',
+                primaryBorderColor: '#999',
+                lineColor: '#ff6b35',           // Orange accent line
+                secondaryColor: '#f5f5dc',      // Beige for sections
+                tertiaryColor: '#8b8b8b',       // Darker gray
+                background: '#fff',
+                mainBkg: '#e8e8e8',
+                secondBkg: '#f5f5dc',
+                gridColor: '#ddd',
+                doneTaskBkgColor: '#b8b8b8',    // Gray for done tasks
+                doneTaskBorderColor: '#888',
+                activeTaskBkgColor: '#8b8b8b',  // Darker gray for active
+                activeTaskBorderColor: '#666',
+                critBkgColor: '#ff6b35',        // Orange for critical
+                critBorderColor: '#e65525',
+                todayLineColor: '#ff6b35'       // Orange today line
+            }
+        });
+    </script>
+</body>
+
+</html>
