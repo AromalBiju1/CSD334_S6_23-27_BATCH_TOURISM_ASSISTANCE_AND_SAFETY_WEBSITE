@@ -78,10 +78,13 @@ Thumbs.db
 *.sw?
 secrets/
 
-# Docker
-docker-compose.override.yml
-docker-compose.yml
-dockerfile
-.dockerignore
-.docker/
 *.log
+
+# Test files with secrets
+backend/test/
+secrets/
+# ML outputs (generated — reproduce via: python ml/train_xgboost.py)
+
+
+# Database files
+*.db

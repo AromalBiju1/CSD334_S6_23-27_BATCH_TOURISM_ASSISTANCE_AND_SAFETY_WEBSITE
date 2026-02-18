@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, useMap, ZoomControl } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -23,43 +24,107 @@ const ZONE_COLORS = {
     green: '#22c55e',
     orange: '#f97316',
     red: '#ef4444',
+    user: '#3b82f6', // Blue for user location
 };
 
 const ZONE_LABELS = {
     green: 'Safe Zone',
     orange: 'Moderate Risk',
     red: 'High Risk',
+    user: 'Your Location',
 };
 
 // Tile layer config from env or default
 const TILE_URL = import.meta.env.VITE_MAP_TILE_URL || 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 const TILE_ATTRIBUTION = import.meta.env.VITE_MAP_ATTRIBUTION || '&copy; OpenStreetMap &copy; CARTO';
 
-// Memoized zone icon creator
+// Memoized zone icon creator - small markers for overview
 const zoneIconCache = {};
-const createZoneIcon = (zone) => {
-    if (zoneIconCache[zone]) return zoneIconCache[zone];
+const createZoneIcon = (zone, small = true) => {
+    const key = `${zone}-${small}`;
+    if (zoneIconCache[key]) return zoneIconCache[key];
+
+    const size = small ? 12 : 24;
+    const border = small ? 2 : 3;
 
     const icon = L.divIcon({
         className: 'custom-zone-marker',
         html: `
       <div style="
-        width: 28px;
-        height: 28px;
+        width: ${size}px;
+        height: ${size}px;
         background-color: ${ZONE_COLORS[zone] || '#6b7280'};
-        border: 3px solid white;
+        border: ${border}px solid white;
         border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.4);
         transition: transform 0.2s;
       "></div>
     `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -14],
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+        popupAnchor: [0, -size / 2],
     });
 
-    zoneIconCache[zone] = icon;
+    zoneIconCache[key] = icon;
     return icon;
+};
+
+// Custom cluster icon - uses single color when filtering, gradient when showing all
+const createClusterCustomIcon = (cluster, zoneFilter = 'all') => {
+    const count = cluster.getChildCount();
+
+    // Size based on count
+    let size = 42;
+    if (count > 50) size = 56;
+    else if (count > 20) size = 48;
+
+    // Determine background color based on filter
+    let bgColor;
+    if (zoneFilter === 'all') {
+        // Show conic gradient for mixed zones
+        bgColor = `conic-gradient(
+            ${ZONE_COLORS.green} 0deg 120deg,
+            ${ZONE_COLORS.orange} 120deg 240deg,
+            ${ZONE_COLORS.red} 240deg 360deg
+        )`;
+    } else {
+        // Show single solid color matching the filter
+        bgColor = ZONE_COLORS[zoneFilter] || ZONE_COLORS.orange;
+    }
+
+    return L.divIcon({
+        html: `
+            <div style="
+                width: ${size}px;
+                height: ${size}px;
+                background: ${bgColor};
+                border: 3px solid white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            ">
+                <div style="
+                    width: ${size - 12}px;
+                    height: ${size - 12}px;
+                    background: rgba(30, 41, 59, 0.95);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: 700;
+                    font-size: ${count > 99 ? '11px' : '13px'};
+                ">
+                    ${count}
+                </div>
+            </div>
+        `,
+        className: 'custom-cluster-icon',
+        iconSize: L.point(size, size),
+        iconAnchor: [size / 2, size / 2],
+    });
 };
 
 // Map controller component for programmatic control
@@ -77,8 +142,8 @@ function MapController({ center, zoom, fitBounds }) {
     return null;
 }
 
-// City marker component
-const CityMarker = React.memo(({ city, onClick, showCircle }) => {
+// City marker component with selection buttons
+const CityMarker = React.memo(({ city, onClick, showCircle, onSelectStart, onSelectDest }) => {
     const handleClick = useCallback(() => {
         onClick(city);
     }, [city, onClick]);
@@ -91,9 +156,25 @@ const CityMarker = React.memo(({ city, onClick, showCircle }) => {
                 eventHandlers={{ click: handleClick }}
             >
                 <Popup className="custom-popup">
-                    <div className="p-1 min-w-[150px]">
+                    <div className="p-1 min-w-[160px]">
                         <h3 className="font-bold text-gray-900 text-base mb-1">{city.name}</h3>
                         <p className="text-gray-600 text-sm mb-2">{city.state}</p>
+
+                        <div className="flex gap-2 mb-2">
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onSelectStart && onSelectStart(city); }}
+                                className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs py-1 px-2 rounded transition-colors"
+                            >
+                                Start
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onSelectDest && onSelectDest(city); }}
+                                className="flex-1 bg-red-500 hover:bg-red-600 text-white text-xs py-1 px-2 rounded transition-colors"
+                            >
+                                End
+                            </button>
+                        </div>
+
                         <div
                             className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white"
                             style={{ backgroundColor: ZONE_COLORS[city.zone || city.safety_zone] }}
@@ -127,28 +208,46 @@ const CityMarker = React.memo(({ city, onClick, showCircle }) => {
 
 CityMarker.displayName = 'CityMarker';
 
-// Route polyline component
-const RoutePolyline = React.memo(({ route, index }) => (
-    <Polyline
-        key={index}
-        positions={route.path}
-        pathOptions={{
-            color: route.safe ? ZONE_COLORS.green : ZONE_COLORS.red,
-            weight: 5,
-            opacity: 0.85,
-            dashArray: route.safe ? null : '10, 10',
-        }}
-    >
-        {route.info && (
-            <Popup>
-                <div className="p-1">
-                    <p className="font-medium text-gray-900">{route.info.distance}</p>
-                    <p className="text-gray-600 text-sm">{route.info.duration}</p>
-                </div>
-            </Popup>
-        )}
-    </Polyline>
-));
+// Route polyline component - supports custom colors and animation
+const RoutePolyline = React.memo(({ route, index }) => {
+    // Get color from route or default based on safety
+    const color = route.color || (route.safe ? ZONE_COLORS.green : ZONE_COLORS.red);
+    const weight = route.weight || (route.selected ? 6 : 4);
+    const opacity = route.opacity || (route.selected ? 0.9 : 0.5);
+
+    // Animation class for pulsing effect
+    const animatedStyle = route.animate ? {
+        className: 'route-pulse'
+    } : {};
+
+    return (
+        <Polyline
+            key={index}
+            positions={route.path}
+            pathOptions={{
+                color: color,
+                weight: weight,
+                opacity: opacity,
+                dashArray: route.safe === false && !route.selected ? '10, 10' : null,
+                lineCap: 'round',
+                lineJoin: 'round',
+            }}
+            {...animatedStyle}
+        >
+            {route.info && (
+                <Popup>
+                    <div className="p-2 min-w-[120px]">
+                        <p className="font-semibold text-gray-900 capitalize mb-1">
+                            {route.info.type?.replace('_', ' ') || 'Route'}
+                        </p>
+                        <p className="text-gray-600 text-sm">{route.info.distance}</p>
+                        <p className="text-gray-500 text-xs">{route.info.duration}</p>
+                    </div>
+                </Popup>
+            )}
+        </Polyline>
+    );
+});
 
 RoutePolyline.displayName = 'RoutePolyline';
 
@@ -178,7 +277,10 @@ export default function SafetyMap({
     routes = [],
     showZoneCircles = false,
     showLegend = true,
+    zoneFilter = 'all',
     onCityClick = () => { },
+    onSelectStart = () => { },
+    onSelectDest = () => { },
     onMapReady = () => { },
     loading = false,
     error = null,
@@ -187,6 +289,11 @@ export default function SafetyMap({
     fitBounds = null,
 }) {
     const [mapReady, setMapReady] = useState(false);
+
+    // Create cluster icon function with current zone filter
+    const clusterIconFunction = useCallback((cluster) => {
+        return createClusterCustomIcon(cluster, zoneFilter);
+    }, [zoneFilter]);
 
 
     const handleMapReady = useCallback(() => {
@@ -239,15 +346,27 @@ export default function SafetyMap({
                 <ZoomControl position="topright" />
                 <MapController center={center} zoom={zoom} fitBounds={fitBounds} />
 
-                {/* City markers */}
-                {cities.map((city) => (
-                    <CityMarker
-                        key={city.id}
-                        city={city}
-                        onClick={onCityClick}
-                        showCircle={showZoneCircles}
-                    />
-                ))}
+                {/* City markers with clustering */}
+                <MarkerClusterGroup
+                    chunkedLoading
+                    iconCreateFunction={clusterIconFunction}
+                    maxClusterRadius={60}
+                    spiderfyOnMaxZoom={true}
+                    showCoverageOnHover={false}
+                    animate={true}
+                    animateAddingMarkers={false}
+                >
+                    {cities.map((city) => (
+                        <CityMarker
+                            key={city.id}
+                            city={city}
+                            onClick={onCityClick}
+                            showCircle={showZoneCircles}
+                            onSelectStart={onSelectStart}
+                            onSelectDest={onSelectDest}
+                        />
+                    ))}
+                </MarkerClusterGroup>
 
                 {/* Route polylines */}
                 {routes.map((route, index) => (

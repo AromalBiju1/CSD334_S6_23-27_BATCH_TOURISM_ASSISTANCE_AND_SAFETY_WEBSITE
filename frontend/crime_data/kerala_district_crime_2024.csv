@@ -1,0 +1,17 @@
+District,Total_FIRs,Period,Notes,Risk_Label_Inferred
+Thiruvananthapuram City,50627,Jan-Aug 2024,Highest FIR count,High Risk
+Ernakulam City,45211,Jan-Aug 2024,,High Risk
+Kollam City,35211,Jan-Aug 2024,,High Risk
+Malappuram,32651,Jan-Aug 2024,High narcotics cases (5906 in 1.5 yrs),High Risk
+Kottayam,28091,Jan-Aug 2024,,Moderate Risk
+Thiruvananthapuram Rural,27711,Jan-Aug 2024,,Moderate Risk
+Alappuzha,27631,Jan-Aug 2024,,Moderate Risk
+Ernakulam Rural,26977,Jan-Aug 2024,,Moderate Risk
+Palakkad,22300,Jan-Aug 2024,,Moderate Risk
+Thrissur City,18500,Jan-Aug 2024,Estimated based on rank,Moderate Risk
+Kozhikode City,19200,Jan-Aug 2024,Estimated based on rank,Moderate Risk
+Kannur City,15400,Jan-Aug 2024,Estimated based on rank,Safe
+Idukki,12100,Jan-Aug 2024,Estimated low density,Safe
+Wayanad,8500,Jan-Aug 2024,Estimated low density,Safe
+Pathanamthitta,11200,Jan-Aug 2024,Estimated low density,Safe
+Kasargod,9800,Jan-Aug 2024,Estimated,Safe

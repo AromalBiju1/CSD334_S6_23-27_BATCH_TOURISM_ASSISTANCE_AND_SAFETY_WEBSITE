@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    container_name: api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./secrets:/secrets:ro
+    env_file:
+      - ./backend/.env.docker
+
+  frontend:
+    build: ./frontend
+    container_name: frontendapi
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:                         
+      - ./frontend/.env.docker
+    depends_on:
+      - backend                     

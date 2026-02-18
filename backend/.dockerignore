@@ -1,0 +1,30 @@
+# Python junk
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+venv/
+.env
+
+
+# Git
+.git
+.gitignore
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Tests & docs (optional)
+tests/
+coverage/
+README.md
+
+# Secrets (NEVER bake these into images)
+secrets/
+.keys/
+*.pem

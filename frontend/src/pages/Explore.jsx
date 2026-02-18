@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, Map, List, ChevronDown, Loader, AlertCircle } from "lucide-react";
+import { Search, Map, List, Loader, AlertCircle } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
 import { getCities, getCitiesByZone, searchCities } from "../api/services";
 
@@ -86,47 +86,70 @@ export default function Explore() {
                         </div>
                     </div>
 
-                    {/* Right Controls */}
-                    <div className="flex gap-3">
-                        {/* Zone Filter */}
-                        <div className="relative">
-                            <select
-                                value={selectedZone}
-                                onChange={(e) => setSelectedZone(e.target.value)}
-                                className="appearance-none bg-slate-900/50 border border-slate-800 rounded-xl h-12 pl-4 pr-10 text-white focus:outline-none focus:border-emerald-500/50 cursor-pointer transition-colors"
-                            >
-                                <option value="all">All Zones</option>
-                                <option value="green">Green Zone</option>
-                                <option value="orange">Orange Zone</option>
-                                <option value="red">Red Zone</option>
-                            </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={18} />
-                        </div>
-
-                        {/* View Toggle */}
-                        <div className="flex bg-slate-900/50 border border-slate-800 rounded-xl p-1">
-                            <button
-                                onClick={() => setViewMode("map")}
-                                className={`flex items-center gap-2 px-4 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === "map"
-                                        ? "bg-emerald-500/20 text-emerald-400"
-                                        : "text-slate-400 hover:text-white"
-                                    }`}
-                            >
-                                <Map size={16} />
-                                <span>Map</span>
-                            </button>
-                            <button
-                                onClick={() => setViewMode("list")}
-                                className={`flex items-center gap-2 px-4 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === "list"
-                                        ? "bg-emerald-500/20 text-emerald-400"
-                                        : "text-slate-400 hover:text-white"
-                                    }`}
-                            >
-                                <List size={16} />
-                                <span>List</span>
-                            </button>
-                        </div>
+                    {/* View Toggle */}
+                    <div className="flex bg-slate-900/50 border border-slate-800 rounded-xl p-1">
+                        <button
+                            onClick={() => setViewMode("map")}
+                            className={`flex items-center gap-2 px-4 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === "map"
+                                ? "bg-emerald-500/20 text-emerald-400"
+                                : "text-slate-400 hover:text-white"
+                                }`}
+                        >
+                            <Map size={16} />
+                            <span>Map</span>
+                        </button>
+                        <button
+                            onClick={() => setViewMode("list")}
+                            className={`flex items-center gap-2 px-4 h-10 rounded-lg text-sm font-medium transition-all ${viewMode === "list"
+                                ? "bg-emerald-500/20 text-emerald-400"
+                                : "text-slate-400 hover:text-white"
+                                }`}
+                        >
+                            <List size={16} />
+                            <span>List</span>
+                        </button>
                     </div>
+                </div>
+
+                {/* Zone Filter Buttons */}
+                <div className="flex items-center gap-2 mb-6 flex-wrap">
+                    <span className="text-sm text-slate-400 mr-2">Filter by Zone:</span>
+                    <button
+                        onClick={() => setSelectedZone('all')}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedZone === 'all'
+                            ? 'bg-slate-600/30 text-white border border-slate-500/50'
+                            : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700'
+                            }`}
+                    >
+                        All Districts
+                    </button>
+                    <button
+                        onClick={() => setSelectedZone('green')}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedZone === 'green'
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50'
+                            : 'bg-slate-800/50 text-slate-400 hover:text-emerald-400 border border-slate-700'
+                            }`}
+                    >
+                        🟢 Safe
+                    </button>
+                    <button
+                        onClick={() => setSelectedZone('orange')}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedZone === 'orange'
+                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/50'
+                            : 'bg-slate-800/50 text-slate-400 hover:text-amber-400 border border-slate-700'
+                            }`}
+                    >
+                        🟠 Moderate
+                    </button>
+                    <button
+                        onClick={() => setSelectedZone('red')}
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${selectedZone === 'red'
+                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/50'
+                            : 'bg-slate-800/50 text-slate-400 hover:text-rose-400 border border-slate-700'
+                            }`}
+                    >
+                        🔴 High Risk
+                    </button>
                 </div>
 
                 {/* Map or List View */}
@@ -139,7 +162,8 @@ export default function Explore() {
                             zone: c.safety_zone
                         }))}
                         onCityClick={handleCityClick}
-                        showZoneCircles={true}
+                        showZoneCircles={selectedZone === 'all'}
+                        zoneFilter={selectedZone}
                         showLegend={true}
                         height="500px"
                         loading={loading}
