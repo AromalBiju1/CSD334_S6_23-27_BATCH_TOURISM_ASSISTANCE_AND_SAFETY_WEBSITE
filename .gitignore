@@ -76,3 +76,15 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+secrets/
+
+*.log
+
+# Test files with secrets
+backend/test/
+secrets/
+# ML outputs (generated — reproduce via: python ml/train_xgboost.py)
+
+
+# Database files
+*.db

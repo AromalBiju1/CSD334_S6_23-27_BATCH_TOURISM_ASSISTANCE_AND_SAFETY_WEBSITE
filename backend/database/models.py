@@ -13,7 +13,7 @@ class User(Base):
     profile_pic = Column(String,nullable=True)
     google_id = Column(String,nullable=True,unique=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-
+    phone = Column(String, unique=True, nullable=True) 
 
 
 class City(Base):
@@ -55,5 +55,5 @@ class EmergencyContact(Base):
     city_id = Column(Integer, ForeignKey("cities.id"), nullable=True)
     name = Column(String)
     number = Column(String)
-    service_type = Column(String) .
+    service_type = Column(String) 
     is_national = Column(Boolean, default=False)

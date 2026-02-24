@@ -1,0 +1,16 @@
+Location,District,Category,Crime_Density_Label,Primary_Concerns,Safety_Score_Inferred,Notes
+Kochi_City,Ernakulam,Urban_Tourist,High,Drugs_Theft_Nightlife,4,High urban crime rate; caution in nightlife areas (Panampilly Nagar)
+Fort_Kochi,Ernakulam,Tourist_Spot,Moderate,Theft_Drugs,6,Tourist police active; drug usage in secluded areas reported
+Varkala,Thiruvananthapuram,Beach_Town,Moderate,Drowning_Harassment_Drugs,5,Recent incidents on cliffs; 'sensitive' status due to cliff edge safety
+Kovalam,Thiruvananthapuram,Beach_Town,Low,Petty_Theft,8,Highly rated for solo travelers; visible policing
+Munnar,Idukki,Hill_Station,Low,Road_Accidents,8,Very safe from violent crime; main risk is traffic/terrain
+Thekkady,Idukki,Nature_Reserve,Low,Restricted_Access,9,Strictly monitored forest zones; very low crime
+Alappuzha_Houseboats,Alappuzha,Backwaters,Low,Water_Safety_Fraud,7,Occasional reports of overcharging/fraud; physical safety high
+Wayanad,Wayanad,Hill_Station,Moderate,Drugs_Hotspots,7,Police identified 100+ sensitive drug spots near institutions/resorts
+Kaloor_Stadium,Ernakulam,Hotspot_Urban,High,Anti_Social_Activity,3,Designated police hotspot for drug/gathering issues
+Vizhinjam,Thiruvananthapuram,Coastal_Hotspot,Moderate,Construction_Unrest,5,Sensitive due to port activities and influx
+Papanasam_Beach,Thiruvananthapuram,Hotspot_Beach,Moderate,Drowning_Harassment,5,Specific zone in Varkala flagged for safety upgrades
+Kumarakom,Kottayam,Backwaters,Low,None,9,Premium tourist area; high security awareness
+Bekal,Kasargod,Beach_Fort,Low,Isolated_Areas,8,Generally safe; isolated areas at night can be risky
+Thrissur_Round,Thrissur,Urban_Cultural,Moderate,Crowd_Crimes_Pickpocketing,6,High density during festivals; moderate otherwise
+Kozhikode_Beach,Kozhikode,Beach_Urban,Moderate,Night_Safety,6,Popular evening spot; adequate policing but crowded

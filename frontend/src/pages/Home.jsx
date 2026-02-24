@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Map,
   Navigation,
@@ -9,8 +9,22 @@ import {
   ChevronRight,
   AlertTriangle,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleProtectedClick = (path, label) => {
+    if (isAuthenticated) {
+      navigate(path);
+    } else {
+      toast.error(`Please login to access ${label}`);
+      navigate("/login");
+    }
+  };
+
   const stats = [
     { value: "50+", label: "Cities Covered" },
     { value: "3", label: "Safety Zones" },
@@ -24,28 +38,32 @@ export default function Home() {
       title: "Safety Zones Map",
       description:
         "Visualize cities across India color-coded by safety levels based on crime data.",
-      color: "bg-emerald-500",
+      color: "bg-gradient-to-r from-purple-500 via-purple-400 to-pink-400",
+      path: "/explore",
     },
     {
       icon: <Navigation size={24} />,
       title: "Safe Route Planning",
       description:
         "Get routes optimized for safety, avoiding high risk areas when possible.",
-      color: "bg-blue-500",
+      color: "bg-gradient-to-r from-blue-500 via-cyan-400 to-teal-400",
+      path: "/safe-route",
     },
     {
       icon: <MapPin size={24} />,
       title: "Tourist Hotspots",
       description:
         "Discover popular attractions with safety ratings for each location.",
-      color: "bg-orange-500",
+      color: "bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400",
+      path: "/hotspots",
     },
     {
       icon: <Phone size={24} />,
       title: "Emergency Support",
       description:
         "Quick access to emergency contacts and step by step guidance for crisis situations.",
-      color: "bg-green-500",
+      color: "bg-gradient-to-r from-emerald-500 via-green-400 to-lime-400",
+      path: "/emergency",
     },
   ];
 
@@ -88,75 +106,48 @@ export default function Home() {
           </div>
 
           {/* Headline */}
-          <h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl 
-font-bold mb-5 leading-tight"
-          >
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-5 leading-tight">
             Travel <span className="text-emerald-400">Safely</span> Across
             <br />
             <span className="text-emerald-400">India</span>
           </h1>
 
           {/* Description */}
-          <p
-            className="text-slate-400 text-sm sm:text-base md:text-lg 
-max-w-xs sm:max-w-xl mx-auto mb-8 leading-relaxed"
-          ></p>
+          <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-xl mx-auto mb-8 leading-relaxed">
+            Navigate India confidently with real-time safety data, smart route planning, and instant emergency assistance.
+          </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-            <Link
-              to="/explore"
-              className="inline-flex items-center gap-2
-  bg-emerald-500 hover:bg-emerald-600
-  text-white
-  px-5 py-3
-  text-sm
-  rounded-full
-  font-semibold
-  transition-all
-  active:scale-[0.98]
-  active:opacity-90
-
-"
+            <button
+              onClick={() => handleProtectedClick("/explore", "Safety Map")}
+              className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-3 text-sm rounded-full font-semibold transition-all active:scale-[0.98]"
             >
-              <Map size={16} strokeWidth={1.8}/>
+              <Map size={16} strokeWidth={1.8} />
               <span>Explore Safety Map</span>
               <ChevronRight size={16} strokeWidth={1.8} />
-            </Link>
-            <Link
-              to="/safe-route"
-              className="
-  inline-flex items-center gap-2
-  bg-slate-800 hover:bg-slate-700
-  border border-slate-700
-  text-white
-  px-5 py-3
-  text-sm
-  rounded-full
-  font-medium
-  transition-all
-  active:scale-[0.98]
-  active:opacity-90
-
-">
+            </button>
+            <button
+              onClick={() => handleProtectedClick("/safe-route", "Route Planning")}
+              className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-5 py-3 text-sm rounded-full font-semibold transition-all"
+            >
               <Navigation size={16} strokeWidth={1.8} />
               <span>Plan Safe Route</span>
-            </Link>
+            </button>
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 border-t border-b border-slate-800/50">
-        <div className="w-full max-w-6xl mx-auto px-6 md:px-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <section className="py-12 md:py-16 border-y border-slate-800/50">
+        <div className="w-full max-w-5xl mx-auto px-6 md:px-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {stats.map((stat, index) => (
-              <div key={index}>
-                <div className="text-3xl md:text-5xl font-bold text-emerald-400 mb-1">
+              <div key={index} className="text-center">
+                <div className="text-3xl md:text-4xl font-bold text-emerald-400 mb-1">
                   {stat.value}
                 </div>
-                <div className="text-slate-400">{stat.label}</div>
+                <div className="text-slate-400 text-sm">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -164,97 +155,89 @@ max-w-xs sm:max-w-xl mx-auto mb-8 leading-relaxed"
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
-        <div className="w-full max-w-6xl mx-auto px-6 md:px-16">
-          {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Everything You Need for{" "}
-              <span className="text-emerald-400">Safe Travel</span>
+      <section className="py-16 md:py-24">
+        <div className="w-full max-w-5xl mx-auto px-6 md:px-16">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+              Smart Features for <span className="text-emerald-400">Safe Travel</span>
             </h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              Our comprehensive platform combines safety data, navigation, and
-              emergency support to ensure you have a worry-free travel
-              experience.
+            <p className="text-slate-400 max-w-lg mx-auto">
+              Everything you need to travel safely across India in one platform
             </p>
           </div>
 
-          {/* Feature Cards */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 gap-4">
             {features.map((feature, index) => (
-              <div
+              <button
                 key={index}
-                className="bg-slate-900/50 border border-slate-800 rounded-2xl 
-p-5 md:p-6 hover:border-slate-700 transition-all"
+                onClick={() => handleProtectedClick(feature.path, feature.title)}
+                className="text-left bg-slate-900/30 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-all group"
               >
                 <div
-                  className={`${feature.color} w-12 h-12 rounded-xl flex items-center justify-center text-white mb-4`}
+                  className={`w-12 h-12 ${feature.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform`}
                 >
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors">
                   {feature.title}
                 </h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   {feature.description}
                 </p>
-              </div>
+              </button>
             ))}
           </div>
         </div>
       </section>
 
       {/* Safety Zones Section */}
-      <section className="py-14 md:py-20">
-        <div className="w-full max-w-6xl mx-auto px-6 md:px-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Left - Zone Info */}
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Understanding Our{" "}
-                <span className="text-emerald-400">Safety Zones</span>
-              </h2>
-              <p className="text-slate-400 mb-8 leading-relaxed">
-                We analyze crime data from official sources to classify cities
-                into three safety zones, helping you make informed travel
-                decisions.
-              </p>
+      <section className="py-16 md:py-24 bg-slate-900/20">
+        <div className="w-full max-w-5xl mx-auto px-6 md:px-16">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+              Understanding <span className="text-emerald-400">Safety Zones</span>
+            </h2>
+            <p className="text-slate-400 max-w-lg mx-auto">
+              Cities are classified based on crime data and safety metrics
+            </p>
+          </div>
 
-              <div className="space-y-4">
-                {zones.map((zone, index) => (
-                  <div
-                    key={index}
-                    className={`${zone.bgColor} border-l-4 ${zone.borderColor} rounded-r-xl p-4 flex items-start gap-4`}
-                  >
-                    <div className="flex-shrink-0 mt-0.5">{zone.icon}</div>
-                    <div>
-                      <h4 className={`font-semibold ${zone.textColor} mb-1`}>
-                        {zone.title}
-                      </h4>
-                      <p className="text-slate-400 text-sm">
-                        {zone.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right - Map Preview */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-8 flex flex-col items-center justify-center min-h-[280px] md:min-h-[400px]">
-              <div className="text-slate-600 mb-4">
-                <Map size={56} strokeWidth={1.5} />
-              </div>
-              <p className="text-slate-500 mb-4 text-center">
-                Interactive Safety Map
-              </p>
-              <Link
-                to="/explore"
-                className="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1 text-sm font-medium"
+          <div className="grid md:grid-cols-3 gap-4">
+            {zones.map((zone, index) => (
+              <div
+                key={index}
+                className={`border-l-4 ${zone.borderColor} ${zone.bgColor} rounded-lg p-5`}
               >
-                View Full Map <ChevronRight size={16} />
-              </Link>
-            </div>
+                <div className="flex items-center gap-2 mb-2">
+                  {zone.icon}
+                  <h3 className={`font-semibold ${zone.textColor}`}>
+                    {zone.title}
+                  </h3>
+                </div>
+                <p className="text-slate-400 text-sm">{zone.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 md:py-24">
+        <div className="w-full max-w-3xl mx-auto px-6 md:px-16 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+            Ready to Travel <span className="text-emerald-400">Safely</span>?
+          </h2>
+          <p className="text-slate-400 mb-8 max-w-md mx-auto">
+            Join thousands of travelers who trust GuardMyTrip for their safety
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/signup"
+              className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold transition-all"
+            >
+              Get Started Free
+              <ChevronRight size={16} />
+            </Link>
           </div>
         </div>
       </section>

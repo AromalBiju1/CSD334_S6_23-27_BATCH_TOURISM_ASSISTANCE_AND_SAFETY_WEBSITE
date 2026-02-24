@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, LogIn, Shield, Eye, EyeOff } from "lucide-react";
-import { login } from "../api/services";
+import { login as loginApi } from "../api/services";
+import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
 
 export default function Login() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { login } = useAuth();
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -21,12 +24,26 @@ export default function Login() {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await login(formData.email, formData.password);
-            localStorage.setItem("token", response.access_token);
-            localStorage.setItem("user", JSON.stringify(response.user));
-            toast.success("Login successful!");
-            navigate("/");
+            const response = await loginApi(formData.email, formData.password);
+            console.log('Login response:', response);
+
+            // Handle different API response formats
+            const token = response.access_token || response.token;
+            // Backend returns only token, create user from form data
+            const userData = response.user || {
+                email: formData.email,
+                name: formData.email.split('@')[0], // Use email prefix as name
+            };
+
+            if (token) {
+                login(userData, token);
+                toast.success("Login successful!");
+                navigate('/', { replace: true });
+            } else {
+                toast.error("Invalid response from server");
+            }
         } catch (error) {
+            console.error('Login error:', error);
             toast.error(error.response?.data?.detail || "Login failed");
         } finally {
             setLoading(false);

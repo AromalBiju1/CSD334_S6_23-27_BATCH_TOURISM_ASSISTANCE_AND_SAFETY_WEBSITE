@@ -34,6 +34,25 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ProfileUpdate(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+
+class ProfileResponse(BaseModel):
+    id: int
+    email: EmailStr
+    name: str
+    phone: Optional[str] = None
+    profile_pic: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+
+
 # C I T Y
 class CityBase(BaseModel):
     name: str = Field(..., max_length=100)

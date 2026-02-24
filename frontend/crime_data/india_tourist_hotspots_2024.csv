@@ -1,0 +1,21 @@
+Location,State,Category,Crime_Density_Label,Primary_Concerns,Safety_Score_Inferred,Notes
+Paharganj,Delhi,Urban_Tourist,High,Theft_Harassment_Scams,3,High rate of crimes against foreigners; dense market area risks
+Connaught_Place,Delhi,Urban_Shopping,Moderate,Pickpocketing_Touts,5,Heavily policed but high tout activity
+North_Goa_Beaches,Goa,Beach_Party,High,Drugs_Theft_Fights,4,Calangute/Baga have highest tourist crime stats in state
+South_Goa_Beaches,Goa,Beach_Relax,Low,None,8,Palolem/Colva significantly safer; very low violent crime
+Taj_Mahal_Area,Uttar_Pradesh,Heritage,Moderate,Touts_Harassment,5,Taj Ganj area prone to aggressive touting; police presence high
+Jaipur_Old_City,Rajasthan,Heritage,Moderate,Scams_Overcharging,5,Gem scams/fraud common; physical safety generally okay
+Udaipur_Lake_Area,Rajasthan,Heritage,Low,None,8,Very tourist-friendly; low scam rate compared to Jaipur
+Varanasi_Ghats,Uttar_Pradesh,Spiritual,Moderate,Scams_Overcrowding,6,Boat scams/pickpocketing; Tourist Police active
+Manali,Himachal_Pradesh,Hill_Station,Low,Drugs_Road_Safety,8,Very low violent crime; drug usage in outskirts only major issue
+Shimla_Mall_Road,Himachal_Pradesh,Hill_Station,Low,None,9,Extremely safe; strict anti-smoking/littering laws
+Colaba,Maharashtra,Urban_Tourist,Moderate,Touts_Scams,6,Gateway of India area has many touts; nightlife generally safe
+Kolkata_Park_Street,West_Bengal,Urban_Cultural,Low,Pickpocketing,8,Safest metro city in India (NCRB); high police visibility
+Mysore_Palace,Karnataka,Heritage,Low,None,9,Very well managed; clean and safe for solo travelers
+Hampi,Karnataka,Ruins,Low,Isolated_Areas,7,Safe during day; some isolated areas best avoided at night
+Pondicherry_White_Town,Puducherry,Colonial,Low,None,9,Very safe; heavy French influence/expat community
+Rishikesh,Uttarakhand,Spiritual,Low,Water_Safety,8,Safe for solo female travelers; main risk is rafting accidents
+Patna,Bihar,Urban,High,Theft_Harassment,3,Higher street crime rate; requires caution after dark
+Bodh_Gaya,Bihar,Spiritual,Moderate,Theft,6,Heavily guarded tourist zone but surrounding areas differ
+Srinagar_Dal_Lake,Jammu_Kashmir,Nature,Moderate,Political_Unrest_Scams,6,Heavy security presence; boat scams occur
+Leh_City,Ladakh,Adventure,Low,Altitude_Sickness,9,Virtually zero crime; main risk is health-related
