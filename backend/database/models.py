@@ -16,7 +16,6 @@ class User(Base):
     phone = Column(String, unique=True, nullable=True) 
 
 
-
 class City(Base):
     __tablename__ = "cities"
     id = Column(Integer, primary_key=True, index=True)
