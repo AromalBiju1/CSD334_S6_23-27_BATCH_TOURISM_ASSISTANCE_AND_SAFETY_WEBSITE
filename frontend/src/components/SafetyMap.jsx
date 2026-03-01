@@ -69,6 +69,101 @@ const createZoneIcon = (zone, small = true) => {
     return icon;
 };
 
+// Large pin-style icon for Start/Destination markers
+const createLargeZoneIcon = (zone) => {
+    const color = ZONE_COLORS[zone] || '#22c55e';
+    const icon = L.divIcon({
+        className: 'custom-large-marker',
+        html: `
+      <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+      ">
+        <div style="
+          width: 36px;
+          height: 36px;
+          background-color: ${color};
+          border: 3px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        ">
+          <div style="width:10px;height:10px;background:white;border-radius:50%;"></div>
+        </div>
+        <div style="
+          width: 3px;
+          height: 12px;
+          background-color: ${color};
+          margin-top: -1px;
+        "></div>
+        <div style="
+          width: 8px;
+          height: 3px;
+          background-color: ${color};
+          border-radius: 50%;
+          opacity: 0.4;
+        "></div>
+      </div>
+    `,
+        iconSize: [36, 55],
+        iconAnchor: [18, 53],
+        popupAnchor: [0, -54],
+    });
+    return icon;
+};
+
+// Numbered icon for tour stop markers
+const createNumberedIcon = (number, color = '#22c55e') => {
+    const icon = L.divIcon({
+        className: 'custom-numbered-marker',
+        html: `
+      <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+      ">
+        <div style="
+          width: 34px;
+          height: 34px;
+          background-color: ${color};
+          border: 3px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: 800;
+          font-size: ${number > 9 ? '11px' : '14px'};
+          box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+          font-family: sans-serif;
+        ">${number}</div>
+        <div style="
+          width: 3px;
+          height: 10px;
+          background-color: ${color};
+          margin-top: -1px;
+        "></div>
+        <div style="
+          width: 8px;
+          height: 3px;
+          background-color: ${color};
+          border-radius: 50%;
+          opacity: 0.4;
+        "></div>
+      </div>
+    `,
+        iconSize: [34, 51],
+        iconAnchor: [17, 49],
+        popupAnchor: [0, -50],
+    });
+    return icon;
+};
+
 // Custom cluster icon - uses single color when filtering, gradient when showing all
 const createClusterCustomIcon = (cluster, zoneFilter = 'all') => {
     const count = cluster.getChildCount();
@@ -148,11 +243,22 @@ const CityMarker = React.memo(({ city, onClick, showCircle, onSelectStart, onSel
         onClick(city);
     }, [city, onClick]);
 
+    // Choose marker icon based on city properties
+    const markerIcon = (() => {
+        if (city.stopNumber !== undefined) {
+            return createNumberedIcon(city.stopNumber, city.stopColor || ZONE_COLORS.green);
+        }
+        if (city.isStart || city.isDest) {
+            return createLargeZoneIcon(city.zone || city.safety_zone || 'green');
+        }
+        return createZoneIcon(city.zone || city.safety_zone);
+    })();
+
     return (
         <>
             <Marker
                 position={[city.lat || city.latitude, city.lng || city.longitude]}
-                icon={createZoneIcon(city.zone || city.safety_zone)}
+                icon={markerIcon}
                 eventHandlers={{ click: handleClick }}
             >
                 <Popup className="custom-popup">
