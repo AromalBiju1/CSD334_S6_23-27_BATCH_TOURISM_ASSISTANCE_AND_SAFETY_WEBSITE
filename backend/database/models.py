@@ -46,7 +46,11 @@ class Attraction(Base):
     city_id = Column(Integer, ForeignKey("cities.id")) 
     name = Column(String(200), nullable=False)
     category = Column(String(50))
-    rating = Column(Float)  
+    rating = Column(Float)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    description = Column(String(500), nullable=True)
+    image_url = Column(String(500), nullable=True)
     city = relationship("City", back_populates="attractions")  
 
 class EmergencyContact(Base):

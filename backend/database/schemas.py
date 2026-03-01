@@ -95,6 +95,10 @@ class AttractionBase(BaseModel):
     name: str = Field(..., max_length=200)
     category: Optional[str] = None
     rating: Optional[float] = Field(None, ge=0, le=5)
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
 
 class AttractionCreate(AttractionBase):
     city_id: int
@@ -105,6 +109,10 @@ class AttractionResponse(AttractionBase):
     
     class Config:
         from_attributes = True
+
+class AttractionWithCity(AttractionResponse):
+    """Attraction with resolved city_name for list endpoints"""
+    city_name: Optional[str] = None
 
 class CityWithDetails(CityResponse):
     """City with related data"""
