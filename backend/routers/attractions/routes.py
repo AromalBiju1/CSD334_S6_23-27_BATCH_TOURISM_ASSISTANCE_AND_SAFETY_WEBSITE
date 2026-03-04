@@ -8,19 +8,26 @@ from database.database import get_db
 router = APIRouter(prefix="/api/recommendations", tags=["Hotspot Recommendations"])
 
 
+
 @router.get("", response_model=List[schemas.AttractionWithCity])
 def list_attractions(
     city: Optional[str] = Query(None, description="Filter by city name"),
     category: Optional[str] = Query(None, description="Filter by category"),
-    limit: int = Query(100, ge=1, le=500),
+    limit: int = Query(500, ge=1, le=1000),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
 ):
     """
     List all attractions with optional city/category filtering.
     Returns attractions with their parent city name for display.
+    Ordered by rating DESC; duplicates (same name + category) are removed,
+    keeping the entry from the best-matched city.
     """
-    query = db.query(models.Attraction).join(models.City)
+    query = (
+        db.query(models.Attraction)
+        .join(models.City)
+        .order_by(models.Attraction.rating.desc())
+    )
 
     if city:
         query = query.filter(models.City.name.ilike(f"%{city}%"))
@@ -30,9 +37,17 @@ def list_attractions(
 
     attractions = query.offset(offset).limit(limit).all()
 
-    # Build response with city_name and fallback lat/lng from parent city
+    # Build response with city_name and fallback lat/lng from parent city.
+    # Deduplicate by (name, category) — keep the first (highest-rated) occurrence
+    # so that attractions seeded under multiple city rows appear only once.
+    seen: set = set()
     result = []
     for attr in attractions:
+        dedup_key = (attr.name.strip().lower(), (attr.category or "").strip().lower())
+        if dedup_key in seen:
+            continue
+        seen.add(dedup_key)
+
         data = {
             "id": attr.id,
             "city_id": attr.city_id,

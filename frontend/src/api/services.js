@@ -96,7 +96,9 @@ export const getAttractions = async (cityId) => {
 
 
 export const getAllAttractions = async (params = {}) => {
-    const response = await api.get('/api/recommendations', { params });
+    // Default limit=500 to fetch the full set and avoid silent truncation
+    const defaultParams = { limit: 500, ...params };
+    const response = await api.get('/api/recommendations', { params: defaultParams });
     return response.data;
 };
 
