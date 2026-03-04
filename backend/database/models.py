@@ -6,15 +6,23 @@ from datetime import datetime, timedelta
 
 class User(Base):
     __tablename__= "users"
-    id = Column(Integer, primary_key=True,index=True)
+    id = Column(Integer, primary_key=True, index=True)
     password = Column(String, nullable=False) 
-    email = Column(String, unique=True,index=True,nullable=False)
-    name = Column(String, index=True,nullable=False)
-    profile_pic = Column(String,nullable=True)
-    google_id = Column(String,nullable=True,unique=True)
+    email = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, index=True, nullable=False)
+    phone = Column(String, unique=True, nullable=True)
+    profile_pic = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    phone = Column(String, unique=True, nullable=True) 
-
+    google_id = Column(String, unique=True, nullable=True)
+    
+    # --- New Preference/Privacy Columns ---
+    language = Column(String, default="English")
+    theme = Column(String, default="light")
+    notifications_enabled = Column(Boolean, default=True)
+    is_public = Column(Boolean, default=True) # Privacy setting
+    
+    # Relationships
+    saved_routes = relationship("SavedRoute", back_populates="user")
 
 class City(Base):
     __tablename__ = "cities"
@@ -46,7 +54,11 @@ class Attraction(Base):
     city_id = Column(Integer, ForeignKey("cities.id")) 
     name = Column(String(200), nullable=False)
     category = Column(String(50))
-    rating = Column(Float)  
+    rating = Column(Float)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    description = Column(String(500), nullable=True)
+    image_url = Column(String(500), nullable=True)
     city = relationship("City", back_populates="attractions")  
 
 class EmergencyContact(Base):
@@ -57,3 +69,15 @@ class EmergencyContact(Base):
     number = Column(String)
     service_type = Column(String) 
     is_national = Column(Boolean, default=False)
+
+class SavedRoute(Base):
+    __tablename__ = "saved_routes"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    origin = Column(String, nullable=False)
+    destination = Column(String, nullable=False)
+    distance_km = Column(Float, nullable=False)
+    safety_score = Column(Float, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="saved_routes")

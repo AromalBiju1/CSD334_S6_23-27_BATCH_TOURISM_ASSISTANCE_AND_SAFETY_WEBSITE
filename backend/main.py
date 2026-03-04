@@ -11,8 +11,12 @@ from routers.emergency.routes import router as emergency_router
 
 from routers.attractions.routes import router as attractions_router
 
+from routers.profile import routes as profile_routes
+from routers.profile import routes as profile_routes
+ 
 app = FastAPI()
-
+app.include_router(profile_routes.router)
+app.include_router(profile_routes.router)
 Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
 app.include_router(cities_router)

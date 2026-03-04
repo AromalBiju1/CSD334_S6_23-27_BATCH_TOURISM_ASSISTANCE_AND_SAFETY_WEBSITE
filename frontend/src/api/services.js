@@ -96,7 +96,7 @@ export const getAttractions = async (cityId) => {
 
 
 export const getAllAttractions = async (params = {}) => {
-    const response = await api.get('/api/attractions', { params });
+    const response = await api.get('/api/recommendations', { params });
     return response.data;
 };
 

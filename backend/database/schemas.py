@@ -95,6 +95,10 @@ class AttractionBase(BaseModel):
     name: str = Field(..., max_length=200)
     category: Optional[str] = None
     rating: Optional[float] = Field(None, ge=0, le=5)
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
 
 class AttractionCreate(AttractionBase):
     city_id: int
@@ -106,7 +110,73 @@ class AttractionResponse(AttractionBase):
     class Config:
         from_attributes = True
 
+class AttractionWithCity(AttractionResponse):
+    """Attraction with resolved city_name for list endpoints"""
+    city_name: Optional[str] = None
+
 class CityWithDetails(CityResponse):
     """City with related data"""
     attractions: List[AttractionResponse] = []
     crime_statistics: List[CrimeStatisticResponse] = []
+
+class RouteSaveRequest(BaseModel):
+        origin: str
+        destination: str
+        distance_km: float
+        safety_score: float
+
+# 2. For the "Change Password" Feature
+class PasswordChangeRequest(BaseModel):
+    old_password: str
+    new_password: str
+
+# 3. Profile Sub-Sections
+class ProfileStats(BaseModel):
+    routes_planned: int
+    cities_explored: int
+    total_km: float
+
+class UserPreferences(BaseModel):
+    language: str
+    theme: str
+    notifications_enabled: bool
+
+class UserPrivacy(BaseModel):
+    is_public: bool
+
+# 4. The Final "Full Profile" Response
+class UserProfileResponse(BaseModel):
+    name: str
+    email: str
+    profile_pic: Optional[str] = None
+    stats: ProfileStats
+    preferences: UserPreferences
+    privacy: UserPrivacy
+
+    class Config:
+        from_attributes = True
+
+class PasswordChangeRequest(BaseModel):
+    old_password: str
+    new_password: str
+
+class ProfileUpdate(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    language: str = "English"
+    theme: str = "light"
+    notifications_enabled: bool = True
+
+class ProfileResponse(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    language: str
+    theme: str
+    notifications_enabled: bool
+    # We leave Privacy (is_public) out of this response if it's handled elsewhere
+    
+    class Config:
+        from_attributes = True
