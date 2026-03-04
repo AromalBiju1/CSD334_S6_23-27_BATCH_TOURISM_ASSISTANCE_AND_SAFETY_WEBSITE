@@ -80,30 +80,28 @@ def update_profile(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    # Check unique email
+    # 1. Validation for Email
     if data.email != current_user.email:
-        existing = db.query(models.User).filter(
-            models.User.email == data.email
-        ).first()
-        if existing:
+        if db.query(models.User).filter(models.User.email == data.email).first():
             raise HTTPException(status_code=400, detail="Email already in use")
-    
 
-    if data.phone:
-        existing = db.query(models.User).filter(
-            models.User.phone == data.phone,
-            models.User.id != current_user.id
-        ).first()
-        if existing:
+    # 2. Validation for Phone
+    if data.phone and data.phone != current_user.phone:
+        if db.query(models.User).filter(models.User.phone == data.phone).first():
             raise HTTPException(status_code=400, detail="Phone number already in use")
     
+    # 3. Update core fields
     current_user.name = data.name
     current_user.email = data.email
     current_user.phone = data.phone
     
+    # 4. Update Preferences
+    current_user.language = data.language
+    current_user.theme = data.theme
+    current_user.notifications_enabled = data.notifications_enabled
+    
     db.commit()
     db.refresh(current_user)
-    
     return current_user
 
 
