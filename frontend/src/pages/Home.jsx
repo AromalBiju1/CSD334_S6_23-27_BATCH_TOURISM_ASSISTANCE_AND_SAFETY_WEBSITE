@@ -230,15 +230,7 @@ export default function Home() {
           <p className="text-slate-400 mb-8 max-w-md mx-auto">
             Join thousands of travelers who trust GuardMyTrip for their safety
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              to="/signup"
-              className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold transition-all"
-            >
-              Get Started Free
-              <ChevronRight size={16} />
-            </Link>
-          </div>
+          
         </div>
       </section>
     </main>
