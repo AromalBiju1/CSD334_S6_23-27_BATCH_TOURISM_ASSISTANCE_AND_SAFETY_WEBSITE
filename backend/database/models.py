@@ -24,7 +24,6 @@ class User(Base):
     # Relationships
     saved_routes = relationship("SavedRoute", back_populates="user")
 
-
 class City(Base):
     __tablename__ = "cities"
     id = Column(Integer, primary_key=True, index=True)
