@@ -1,25 +1,55 @@
 """
 Cities Router - CRUD operations for cities with safety data
+Includes in-memory TTL cache for fast map data loading
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database.database import get_db
 from database import models, schemas
+import time
+import json
 
 router = APIRouter(prefix="/api/cities", tags=["cities"])
+
+# ── In-memory TTL cache ──
+_cache = {}
+CACHE_TTL = 60  # seconds
+
+def _get_cache_key(zone, state, limit, offset):
+    return f"{zone}:{state}:{limit}:{offset}"
+
+def _get_cached(key):
+    if key in _cache:
+        data, ts = _cache[key]
+        if time.time() - ts < CACHE_TTL:
+            return data
+        del _cache[key]
+    return None
+
+def _set_cache(key, data):
+    _cache[key] = (data, time.time())
 
 
 @router.get("", response_model=List[schemas.CityResponse])
 def get_cities(
+    response: Response,
     zone: Optional[str] = Query(None, description="Filter by safety zone (green, orange, red)"),
     state: Optional[str] = Query(None, description="Filter by state"),
     limit: int = Query(100, ge=1, le=2000),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db)
 ):
-    """Get all cities with optional filtering."""
+    """Get all cities with optional filtering. Cached for 60s."""
+    cache_key = _get_cache_key(zone, state, limit, offset)
+    cached = _get_cached(cache_key)
+    
+    if cached is not None:
+        response.headers["X-Cache"] = "HIT"
+        response.headers["Cache-Control"] = "public, max-age=60"
+        return cached
+    
     query = db.query(models.City)
     
     if zone:
@@ -29,6 +59,10 @@ def get_cities(
         query = query.filter(models.City.state.ilike(f"%{state}%"))
     
     cities = query.offset(offset).limit(limit).all()
+    
+    _set_cache(cache_key, cities)
+    response.headers["X-Cache"] = "MISS"
+    response.headers["Cache-Control"] = "public, max-age=60"
     return cities
 
 
@@ -97,4 +131,8 @@ def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
     db.add(db_city)
     db.commit()
     db.refresh(db_city)
+    
+    # Invalidate cache on new city
+    _cache.clear()
+    
     return db_city

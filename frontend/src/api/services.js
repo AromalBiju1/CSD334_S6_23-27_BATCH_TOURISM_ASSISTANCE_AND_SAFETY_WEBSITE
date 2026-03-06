@@ -1,11 +1,28 @@
 import api from './axios';
 
+// ── Request cache for map data (60s TTL) ──
+const _requestCache = new Map();
+const CACHE_TTL_MS = 60000;
+
+function getCachedOrFetch(key, fetcher) {
+    const cached = _requestCache.get(key);
+    if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+        return Promise.resolve(cached.data);
+    }
+    return fetcher().then(data => {
+        _requestCache.set(key, { data, ts: Date.now() });
+        return data;
+    });
+}
+
 
 export const getCities = async (params = {}) => {
-    // Request all cities by default (up to 1000)
     const defaultParams = { limit: 1000, ...params };
-    const response = await api.get('/api/cities', { params: defaultParams });
-    return response.data;
+    const cacheKey = `cities:${JSON.stringify(defaultParams)}`;
+    return getCachedOrFetch(cacheKey, async () => {
+        const response = await api.get('/api/cities', { params: defaultParams });
+        return response.data;
+    });
 };
 
 export const getCityById = async (cityId) => {

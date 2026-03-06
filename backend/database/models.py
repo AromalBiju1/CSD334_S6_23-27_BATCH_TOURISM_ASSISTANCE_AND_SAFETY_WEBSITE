@@ -1,4 +1,4 @@
-from sqlalchemy import Column,Integer,String,Float, DateTime,Boolean,ForeignKey
+from sqlalchemy import Column,Integer,String,Float, DateTime,Boolean,ForeignKey,Index
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from database.database import Base
@@ -27,6 +27,9 @@ class User(Base):
 
 class City(Base):
     __tablename__ = "cities"
+    __table_args__ = (
+        Index('ix_city_zone_state', 'safety_zone', 'state'),
+    )
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False, index=True)
     state = Column(String(100), nullable=False, index=True)
