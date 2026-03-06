@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, MapPin, Star, ChevronDown, Loader, Navigation, X, Route } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
 import { getAllAttractions, getCities } from "../api/services";
+import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 
 const CATEGORIES = [
@@ -21,6 +22,8 @@ const TOUR_COLORS = [
 ];
 
 export default function Hotspots() {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     // State
     const [attractions, setAttractions] = useState([]);
     const [filteredAttractions, setFilteredAttractions] = useState([]);
@@ -424,7 +427,7 @@ export default function Hotspots() {
 
                 {/* Map + Tour Panel Layout */}
                 {!loading && (
-                    <div className="flex gap-4 mb-6">
+                    <div className="flex flex-col lg:flex-row gap-4 mb-6">
                         {/* Map */}
                         <div className="flex-1 min-w-0">
                             <SafetyMap
@@ -443,8 +446,8 @@ export default function Hotspots() {
 
                         {/* Tour Sidebar */}
                         {tourStops.length > 0 && (
-                            <div className="w-72 flex-shrink-0">
-                                <div className="bg-slate-900/70 border border-slate-700 rounded-2xl overflow-hidden sticky top-20">
+                            <div className="w-full lg:w-72 flex-shrink-0">
+                                <div className={`border rounded-2xl overflow-hidden lg:sticky lg:top-20 ${isDark ? 'bg-slate-900/70 border-slate-700' : 'bg-white border-slate-200 shadow-sm'}`}>
                                     {/* Tour Header */}
                                     <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-800/60">
                                         <div className="flex items-center gap-2">

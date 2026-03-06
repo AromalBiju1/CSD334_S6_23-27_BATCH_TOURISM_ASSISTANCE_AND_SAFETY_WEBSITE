@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { User, Mail, Phone, ArrowLeft, Save, Camera, Shield } from 'lucide-react';
 import { updateProfile } from '../api/services';
 import toast from 'react-hot-toast';
 
 export default function EditProfile() {
     const { user, login } = useAuth();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -92,18 +95,18 @@ export default function EditProfile() {
                 <div className="flex items-center gap-4 mb-8">
                     <button
                         onClick={() => navigate('/profile')}
-                        className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center transition-colors"
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isDark ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200'}`}
                     >
                         <ArrowLeft size={20} className="text-slate-400" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Edit Profile</h1>
-                        <p className="text-slate-400 text-sm">Update your personal information</p>
+                        <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>Edit Profile</h1>
+                        <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Update your personal information</p>
                     </div>
                 </div>
 
                 {/* Avatar Section */}
-                <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6 mb-6">
+                <div className={`border rounded-2xl p-6 mb-6 ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
                     <div className="flex items-center gap-6">
                         <div className="relative">
                             <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500/30 flex items-center justify-center overflow-hidden">
@@ -126,8 +129,8 @@ export default function EditProfile() {
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
-                        <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                    <div className={`border rounded-2xl p-6 ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+                        <h2 className={`text-lg font-semibold mb-6 flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                             <Shield size={18} className="text-emerald-400" />
                             Personal Information
                         </h2>
@@ -215,7 +218,7 @@ export default function EditProfile() {
                         <button
                             type="button"
                             onClick={() => navigate('/profile')}
-                            className="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white h-12 rounded-xl font-medium transition-all"
+                            className={`flex-1 h-12 rounded-xl font-medium transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-700'}`}
                         >
                             Cancel
                         </button>

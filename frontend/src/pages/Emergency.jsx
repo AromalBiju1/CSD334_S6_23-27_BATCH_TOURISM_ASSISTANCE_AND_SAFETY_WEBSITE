@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AlertTriangle, Phone, Shield, Copy, Flame, Plane, ChevronDown, User, Baby, Car } from "lucide-react";
 import { getCities, getEmergencyContacts, getAllEmergencyServices } from "../api/services";
+import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 
 // National helplines (always available)
@@ -72,6 +73,8 @@ const NATIONAL_CONTACTS = [
 ];
 
 export default function Emergency() {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState(null);
     const [cityContacts, setCityContacts] = useState([]);
@@ -119,14 +122,14 @@ export default function Emergency() {
                     <h1 className="text-2xl sm:text-3xl font-bold mb-3">
                         <span className="text-red-400">Emergency</span> Support
                     </h1>
-                    <p className="text-slate-400 max-w-lg mx-auto leading-relaxed">
+                    <p className={`max-w-lg mx-auto leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         Quick access to emergency services. These numbers work across India.
                     </p>
                 </div>
 
                 {/* City Selector */}
                 <div className="mb-8">
-                    <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-5">
+                    <div className={`rounded-2xl p-5 border ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
                         <p className="text-slate-400 text-sm mb-3">Select a city for local emergency contacts:</p>
                         <div className="relative">
                             <select
@@ -135,7 +138,7 @@ export default function Emergency() {
                                     const city = cities.find(c => c.id === parseInt(e.target.value));
                                     setSelectedCity(city || null);
                                 }}
-                                className="w-full appearance-none bg-slate-800/50 border border-slate-700 rounded-xl h-12 pl-4 pr-10 text-white focus:outline-none focus:border-emerald-500/50 cursor-pointer transition-colors"
+                                className={`w-full appearance-none rounded-xl h-12 pl-4 pr-10 focus:outline-none focus:border-emerald-500/50 cursor-pointer transition-colors ${isDark ? 'bg-slate-800/50 border border-slate-700 text-white' : 'bg-white border border-slate-300 text-slate-900'}`}
                             >
                                 <option value="">National helplines only</option>
                                 {cities.map((city) => (
