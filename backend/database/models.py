@@ -23,6 +23,8 @@ class User(Base):
     
     # Relationships
     saved_routes = relationship("SavedRoute", back_populates="user")
+    preferences = relationship("UserPreference", back_populates="user", uselist=False)
+    visited_places = relationship("VisitedPlace", back_populates="user")
 
 class City(Base):
     __tablename__ = "cities"
@@ -84,3 +86,29 @@ class SavedRoute(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="saved_routes")
+
+
+class UserPreference(Base):
+    __tablename__ = "user_preferences"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    preferred_categories = Column(String, default="")  # comma-separated: "Temple,Beach,Museum"
+    budget_level = Column(String, default="medium")  # low, medium, high
+    travel_style = Column(String, default="balanced")  # adventure, relaxed, balanced
+    preferred_safety = Column(String, default="all")  # green, orange, all
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    user = relationship("User", back_populates="preferences")
+
+
+class VisitedPlace(Base):
+    __tablename__ = "visited_places"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    attraction_id = Column(Integer, ForeignKey("attractions.id"))
+    rating = Column(Float, nullable=True)  # user rating 1-5
+    visited_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="visited_places")
+    attraction = relationship("Attraction")

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Map, Navigation, Phone, AlertTriangle, LogIn, Menu, X, MapPin, User, UserPlus, Sun, Moon } from 'lucide-react';
+import { Home, Map, Navigation, Phone, AlertTriangle, LogIn, Menu, X, MapPin, User, UserPlus, Sun, Moon, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import Logo from '../assets/logo.jpeg';
@@ -21,6 +21,7 @@ export default function Navbar() {
         { name: 'Hotspots', path: '/hotspots', icon: <MapPin size={16} /> },
         { name: 'Safe Route', path: '/safe-route', icon: <Navigation size={16} /> },
         { name: 'Emergency', path: '/emergency', icon: <Phone size={16} /> },
+        { name: 'For You', path: '/recommendations', icon: <Heart size={16} /> },
     ] : [];
 
     return (
