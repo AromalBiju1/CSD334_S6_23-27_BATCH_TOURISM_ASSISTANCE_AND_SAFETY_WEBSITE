@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database import models, schemas
 from database.database import get_db
-from routers.auth.deps import get_current_user 
+from routers.auth.deps import get_current_user
+from utils.utility import hash_password, verify_password
 
 router = APIRouter(prefix="/api/profile", tags=["User Profile"])
 
@@ -69,12 +70,12 @@ def change_password(
     db: Session = Depends(get_db), 
     current_user: models.User = Depends(get_current_user)
 ):
-    # 1. Verify the old password
-    if current_user.password != data.old_password:
+    # 1. Verify the old password using Argon2
+    if not verify_password(data.old_password, current_user.password):
         raise HTTPException(status_code=400, detail="The old password you entered is incorrect.")
 
-    # 2. Update to the new password
-    current_user.password = data.new_password
+    # 2. Update to the new password, making sure to hash it!
+    current_user.password = hash_password(data.new_password)
     db.commit()
     
     return {"message": "Password changed successfully!"}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
     Heart, Settings, Star, MapPin, Search, X, Plus, Trash2,
-    Loader, RefreshCw, Shield, Sparkles, ChevronDown
+    Loader, RefreshCw, Shield, ChevronDown
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import {
@@ -177,7 +177,7 @@ export default function Recommendations() {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-                        <Sparkles className="inline-block text-amber-400 mr-2" size={28} />
+                        
                         For <span className="text-emerald-400">You</span>
                     </h1>
                     <p className={isDark ? "text-slate-400" : "text-slate-500"}>
@@ -426,7 +426,7 @@ export default function Recommendations() {
                             </div>
                         ) : recommendations.length === 0 ? (
                             <div className={`rounded-2xl border p-12 text-center ${isDark ? "bg-slate-900/30 border-slate-800" : "bg-white border-slate-200"}`}>
-                                <Sparkles className="text-amber-400 mx-auto mb-4" size={48} />
+                               
                                 <h3 className={`text-lg font-semibold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
                                     No recommendations yet
                                 </h3>

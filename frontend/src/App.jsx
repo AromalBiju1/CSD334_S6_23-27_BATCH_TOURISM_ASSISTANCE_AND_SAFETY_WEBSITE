@@ -15,6 +15,7 @@ import Signup from './pages/Signup';
 import Hotspots from './pages/Hotspots';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import ChangePassword from './pages/ChangePassword';
 import Recommendations from './pages/Recommendations';
 
 function AppContent() {
@@ -48,6 +49,9 @@ function AppContent() {
         } />
         <Route path='/profile/edit' element={
           <ProtectedRoute><EditProfile /></ProtectedRoute>
+        } />
+        <Route path='/profile/change-password' element={
+          <ProtectedRoute><ChangePassword /></ProtectedRoute>
         } />
         <Route path='/recommendations' element={
           <ProtectedRoute><Recommendations /></ProtectedRoute>
