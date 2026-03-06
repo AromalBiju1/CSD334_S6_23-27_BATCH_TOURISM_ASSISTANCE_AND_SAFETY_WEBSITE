@@ -172,8 +172,11 @@ export default function Profile() {
                             Account
                         </h2>
                         <div className="space-y-3">
-                            <button className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors text-left">
-                                <span className="text-sm text-slate-300">Change Password</span>
+                            <button
+                                onClick={() => navigate('/profile/change-password')}
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors text-left"
+                            >
+                                <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Change Password</span>
                                 <ChevronRight size={16} className="text-slate-600" />
                             </button>
                             <button className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors text-left">
