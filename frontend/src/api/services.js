@@ -143,3 +143,46 @@ export const getCurrentUser = async () => {
     const response = await api.get('/api/auth/me');
     return response.data;
 };
+
+
+// ── Recommendations API ──
+
+export const getUserPreferences = async () => {
+    const response = await api.get('/api/user-recommendations/preferences');
+    return response.data;
+};
+
+export const updateUserPreferences = async (data) => {
+    const response = await api.put('/api/user-recommendations/preferences', data);
+    return response.data;
+};
+
+export const getVisitedPlaces = async () => {
+    const response = await api.get('/api/user-recommendations/visited');
+    return response.data;
+};
+
+export const addVisitedPlace = async (data) => {
+    const response = await api.post('/api/user-recommendations/visited', data);
+    return response.data;
+};
+
+export const removeVisitedPlace = async (id) => {
+    const response = await api.delete(`/api/user-recommendations/visited/${id}`);
+    return response.data;
+};
+
+export const getRecommendations = async (limit = 20) => {
+    const response = await api.get('/api/user-recommendations/for-you', { params: { limit } });
+    return response.data;
+};
+
+export const getAvailableCategories = async () => {
+    const response = await api.get('/api/user-recommendations/categories');
+    return response.data;
+};
+
+export const searchAttractionsForMarking = async (search = "") => {
+    const response = await api.get('/api/user-recommendations/all-attractions', { params: { search } });
+    return response.data;
+};

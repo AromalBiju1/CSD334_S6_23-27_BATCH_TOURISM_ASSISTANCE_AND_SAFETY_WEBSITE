@@ -15,6 +15,7 @@ import Signup from './pages/Signup';
 import Hotspots from './pages/Hotspots';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import Recommendations from './pages/Recommendations';
 
 function AppContent() {
   const { theme } = useTheme();
@@ -47,6 +48,9 @@ function AppContent() {
         } />
         <Route path='/profile/edit' element={
           <ProtectedRoute><EditProfile /></ProtectedRoute>
+        } />
+        <Route path='/recommendations' element={
+          <ProtectedRoute><Recommendations /></ProtectedRoute>
         } />
       </Routes>
       <ThemedToaster />

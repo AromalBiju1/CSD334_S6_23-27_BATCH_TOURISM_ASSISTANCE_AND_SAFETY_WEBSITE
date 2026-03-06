@@ -180,3 +180,52 @@ class ProfileResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+
+# ── Recommendation Schemas ──
+
+class UserPreferenceCreate(BaseModel):
+    preferred_categories: str = ""  # comma-separated
+    budget_level: str = "medium"
+    travel_style: str = "balanced"
+    preferred_safety: str = "all"
+
+class UserPreferenceResponse(BaseModel):
+    id: int
+    user_id: int
+    preferred_categories: str
+    budget_level: str
+    travel_style: str
+    preferred_safety: str
+
+    class Config:
+        from_attributes = True
+
+class VisitedPlaceCreate(BaseModel):
+    attraction_id: int
+    rating: Optional[float] = None
+
+class VisitedPlaceResponse(BaseModel):
+    id: int
+    attraction_id: int
+    rating: Optional[float] = None
+    visited_at: datetime
+    attraction_name: Optional[str] = None
+    attraction_category: Optional[str] = None
+    city_name: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class RecommendationResponse(BaseModel):
+    id: int
+    name: str
+    category: Optional[str] = None
+    rating: Optional[float] = None
+    city_name: Optional[str] = None
+    city_id: int
+    safety_zone: Optional[str] = None
+    match_score: float = 0.0
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    description: Optional[str] = None
