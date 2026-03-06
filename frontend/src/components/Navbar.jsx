@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Map, Navigation, Phone, AlertTriangle, LogIn, Menu, X, MapPin, User, UserPlus } from 'lucide-react';
+import { Home, Map, Navigation, Phone, AlertTriangle, LogIn, Menu, X, MapPin, User, UserPlus, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import Logo from '../assets/logo.jpeg';
 
 export default function Navbar() {
     const location = useLocation();
     const { isAuthenticated, user } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const isActive = (path) => location.pathname === path;
     const [mobileOpen, setMobileOpen] = useState(false);
+
+    const isDark = theme === 'dark';
 
     // Nav items only show when logged in
     const navItems = isAuthenticated ? [
@@ -20,7 +24,7 @@ export default function Navbar() {
     ] : [];
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-[9999] bg-[#0a1628] border-b border-slate-800/50">
+        <nav className={`fixed top-0 left-0 right-0 z-[9999] theme-transition ${isDark ? 'bg-[#0a1628] border-b border-slate-800/50' : 'bg-white border-b border-slate-200'}`}>
             <div className="w-full max-w-7xl mx-auto px-6">
                 <div className="h-16 flex items-center justify-between">
 
@@ -28,8 +32,8 @@ export default function Navbar() {
                     <Link to="/" className="flex items-center gap-2">
                         <img src={Logo} alt="GuardMyTrip" className="w-8 h-8 md:w-10 md:h-10 rounded-md object-cover" />
                         <div className="flex flex-col">
-                            <span className="font-bold text-sm leading-tight text-white">GuardMyTrip</span>
-                            <span className="text-[9px] leading-tight text-slate-400">Your Safety Companion</span>
+                            <span className={`font-bold text-sm leading-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>GuardMyTrip</span>
+                            <span className={`text-[9px] leading-tight ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Your Safety Companion</span>
                         </div>
                     </Link>
 
@@ -41,7 +45,7 @@ export default function Navbar() {
                                 to={item.path}
                                 className={`flex items-center gap-2 text-sm font-medium transition-colors ${isActive(item.path)
                                     ? 'text-emerald-400'
-                                    : 'text-slate-400 hover:text-white'
+                                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'
                                     }`}
                             >
                                 {item.icon}
@@ -53,19 +57,31 @@ export default function Navbar() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setMobileOpen(!mobileOpen)}
-                        className="md:hidden text-slate-200 hover:text-white"
+                        className={`md:hidden ${isDark ? 'text-slate-200 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}
                     >
                         {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
 
                     {/* Right Buttons - Desktop */}
                     <div className="hidden md:flex items-center gap-3">
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className={`p-2 rounded-lg transition-all ${isDark
+                                ? 'text-amber-400 hover:bg-slate-800'
+                                : 'text-slate-600 hover:bg-slate-100'
+                                }`}
+                            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                        >
+                            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                        </button>
+
                         {isAuthenticated ? (
                             <>
                                 {/* Profile Icon */}
                                 <Link
                                     to="/profile"
-                                    className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                                    className={`flex items-center gap-2 transition-colors ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
                                 >
                                     <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center overflow-hidden">
                                         {user?.profile_pic ? (
@@ -99,7 +115,10 @@ export default function Navbar() {
                                 {/* Sign Up */}
                                 <Link
                                     to="/signup"
-                                    className="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${isDark
+                                        ? 'bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white'
+                                        : 'bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700'
+                                        }`}
                                 >
                                     <UserPlus size={14} />
                                     Sign Up
@@ -112,14 +131,14 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             {mobileOpen && (
-                <div className="md:hidden bg-[#0a1628] border-t border-slate-800/50">
+                <div className={`md:hidden theme-transition ${isDark ? 'bg-[#0a1628] border-t border-slate-800/50' : 'bg-white border-t border-slate-200'}`}>
                     <div className="flex flex-col px-6 py-4 gap-4">
                         {navItems.map((item) => (
                             <Link
                                 key={item.path}
                                 to={item.path}
                                 onClick={() => setMobileOpen(false)}
-                                className={`flex items-center gap-3 text-sm font-medium ${isActive(item.path) ? 'text-emerald-400' : 'text-slate-300'
+                                className={`flex items-center gap-3 text-sm font-medium ${isActive(item.path) ? 'text-emerald-400' : isDark ? 'text-slate-300' : 'text-slate-600'
                                     }`}
                             >
                                 {item.icon}
@@ -127,13 +146,22 @@ export default function Navbar() {
                             </Link>
                         ))}
 
-                        <div className="pt-4 border-t border-slate-800 flex flex-col gap-3">
+                        <div className={`pt-4 border-t flex flex-col gap-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                            {/* Theme toggle in mobile */}
+                            <button
+                                onClick={toggleTheme}
+                                className={`flex items-center gap-2 py-2 ${isDark ? 'text-amber-400' : 'text-slate-600'}`}
+                            >
+                                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                                {isDark ? 'Light Mode' : 'Dark Mode'}
+                            </button>
+
                             {isAuthenticated ? (
                                 <>
                                     <Link
                                         to="/profile"
                                         onClick={() => setMobileOpen(false)}
-                                        className="flex items-center gap-2 text-white py-2"
+                                        className={`flex items-center gap-2 py-2 ${isDark ? 'text-white' : 'text-slate-700'}`}
                                     >
                                         <User size={16} />
                                         Profile
@@ -158,7 +186,7 @@ export default function Navbar() {
                                     <Link
                                         to="/signup"
                                         onClick={() => setMobileOpen(false)}
-                                        className="bg-slate-700 text-white py-2 rounded-full text-center font-medium"
+                                        className={`py-2 rounded-full text-center font-medium ${isDark ? 'bg-slate-700 text-white' : 'bg-slate-100 text-slate-700'}`}
                                     >
                                         Sign Up
                                     </Link>

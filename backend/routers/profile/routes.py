@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from database import models, schemas
 from database.database import get_db
-# Assuming your authentication/deps.py has a get_current_user function
 from routers.auth.deps import get_current_user 
 
 router = APIRouter(prefix="/api/profile", tags=["User Profile"])
