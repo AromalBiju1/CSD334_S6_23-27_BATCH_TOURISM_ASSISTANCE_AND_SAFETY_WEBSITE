@@ -10,11 +10,14 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
+  const isDark = theme === 'dark';
 
   const handleProtectedClick = (path, label) => {
     if (isAuthenticated) {
@@ -113,7 +116,7 @@ export default function Home() {
           </h1>
 
           {/* Description */}
-          <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-xs sm:max-w-xl mx-auto mb-8 leading-relaxed">
+          <p className={`text-sm sm:text-base md:text-lg max-w-xs sm:max-w-xl mx-auto mb-8 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Navigate India confidently with real-time safety data, smart route planning, and instant emergency assistance.
           </p>
 
@@ -129,7 +132,10 @@ export default function Home() {
             </button>
             <button
               onClick={() => handleProtectedClick("/safe-route", "Route Planning")}
-              className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-5 py-3 text-sm rounded-full font-semibold transition-all"
+              className={`inline-flex items-center gap-2 px-5 py-3 text-sm rounded-full font-semibold transition-all ${isDark
+                ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white'
+                : 'bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700'
+                }`}
             >
               <Navigation size={16} strokeWidth={1.8} />
               <span>Plan Safe Route</span>
@@ -139,7 +145,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 md:py-16 border-y border-slate-800/50">
+      <section className={`py-12 md:py-16 border-y ${isDark ? 'border-slate-800/50' : 'border-slate-200'}`}>
         <div className="w-full max-w-5xl mx-auto px-6 md:px-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {stats.map((stat, index) => (
@@ -147,7 +153,7 @@ export default function Home() {
                 <div className="text-3xl md:text-4xl font-bold text-emerald-400 mb-1">
                   {stat.value}
                 </div>
-                <div className="text-slate-400 text-sm">{stat.label}</div>
+                <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -161,7 +167,7 @@ export default function Home() {
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">
               Smart Features for <span className="text-emerald-400">Safe Travel</span>
             </h2>
-            <p className="text-slate-400 max-w-lg mx-auto">
+            <p className={`max-w-lg mx-auto ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Everything you need to travel safely across India in one platform
             </p>
           </div>
@@ -171,17 +177,20 @@ export default function Home() {
               <button
                 key={index}
                 onClick={() => handleProtectedClick(feature.path, feature.title)}
-                className="text-left bg-slate-900/30 border border-slate-800 rounded-2xl p-6 hover:border-slate-700 transition-all group"
+                className={`text-left rounded-2xl p-6 transition-all group ${isDark
+                  ? 'bg-slate-900/30 border border-slate-800 hover:border-slate-700'
+                  : 'bg-white border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md'
+                  }`}
               >
                 <div
                   className={`w-12 h-12 ${feature.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-105 transition-transform`}
                 >
                   {feature.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                <h3 className={`text-lg font-semibold mb-2 group-hover:text-emerald-400 transition-colors ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {feature.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   {feature.description}
                 </p>
               </button>
@@ -191,13 +200,13 @@ export default function Home() {
       </section>
 
       {/* Safety Zones Section */}
-      <section className="py-16 md:py-24 bg-slate-900/20">
+      <section className={`py-16 md:py-24 ${isDark ? 'bg-slate-900/20' : 'bg-slate-50'}`}>
         <div className="w-full max-w-5xl mx-auto px-6 md:px-16">
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold mb-3">
               Understanding <span className="text-emerald-400">Safety Zones</span>
             </h2>
-            <p className="text-slate-400 max-w-lg mx-auto">
+            <p className={`max-w-lg mx-auto ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Cities are classified based on crime data and safety metrics
             </p>
           </div>
@@ -214,7 +223,7 @@ export default function Home() {
                     {zone.title}
                   </h3>
                 </div>
-                <p className="text-slate-400 text-sm">{zone.description}</p>
+                <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{zone.description}</p>
               </div>
             ))}
           </div>
@@ -227,10 +236,10 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">
             Ready to Travel <span className="text-emerald-400">Safely</span>?
           </h2>
-          <p className="text-slate-400 mb-8 max-w-md mx-auto">
+          <p className={`mb-8 max-w-md mx-auto ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             Join thousands of travelers who trust GuardMyTrip for their safety
           </p>
-          
+
         </div>
       </section>
     </main>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
     User, Mail, LogOut, Shield, Calendar, MapPin, Navigation,
     Star, Bell, Settings, ChevronRight, Map, Phone, Heart
@@ -9,6 +10,8 @@ import toast from 'react-hot-toast';
 
 export default function Profile() {
     const { user, logout } = useAuth();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -45,7 +48,7 @@ export default function Profile() {
             <div className="w-full max-w-4xl mx-auto px-6 md:px-16 py-8">
 
                 {/* Profile Header */}
-                <div className="bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border border-slate-800 rounded-3xl p-8 mb-6">
+                <div className={`bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border rounded-3xl p-8 mb-6 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         {/* Avatar */}
                         <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-4 border-emerald-500/30 flex items-center justify-center overflow-hidden">
@@ -58,8 +61,8 @@ export default function Profile() {
 
                         {/* User Info */}
                         <div className="text-center md:text-left flex-1">
-                            <h1 className="text-2xl font-bold text-white mb-1">{user.name}</h1>
-                            <p className="text-slate-400 flex items-center justify-center md:justify-start gap-2">
+                            <h1 className={`text-2xl font-bold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>{user.name}</h1>
+                            <p className={`flex items-center justify-center md:justify-start gap-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                 <Mail size={14} />
                                 {user.email}
                             </p>
@@ -74,7 +77,7 @@ export default function Profile() {
                         {/* Edit Profile Button */}
                         <button
                             onClick={() => navigate('/profile/edit')}
-                            className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+                            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${isDark ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-700'}`}
                         >
                             <Settings size={16} />
                             Edit Profile
@@ -85,12 +88,12 @@ export default function Profile() {
                 {/* Stats Row */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                     {stats.map((stat, index) => (
-                        <div key={index} className="bg-slate-900/50 border border-slate-800 rounded-2xl p-4 text-center">
-                            <div className="flex items-center justify-center gap-2 text-slate-400 mb-1">
+                        <div key={index} className={`border rounded-2xl p-4 text-center ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+                            <div className={`flex items-center justify-center gap-2 mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                 {stat.icon}
                                 <span className="text-xs">{stat.label}</span>
                             </div>
-                            <p className="text-2xl font-bold text-white">{stat.value}</p>
+                            <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{stat.value}</p>
                         </div>
                     ))}
                 </div>
@@ -107,12 +110,12 @@ export default function Profile() {
                                 <button
                                     key={index}
                                     onClick={() => navigate(action.path)}
-                                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700 transition-all group"
+                                    className={`flex items-center gap-3 p-3 rounded-xl border transition-all group ${isDark ? 'bg-slate-800/50 hover:bg-slate-800 border-slate-700' : 'bg-slate-50 hover:bg-slate-100 border-slate-200'}`}
                                 >
                                     <div className={`w-10 h-10 rounded-lg ${action.color} flex items-center justify-center`}>
                                         {action.icon}
                                     </div>
-                                    <span className="text-sm text-slate-300 group-hover:text-white font-medium">{action.label}</span>
+                                    <span className={`text-sm font-medium ${isDark ? 'text-slate-300 group-hover:text-white' : 'text-slate-600 group-hover:text-slate-900'}`}>{action.label}</span>
                                 </button>
                             ))}
                         </div>
@@ -126,12 +129,12 @@ export default function Profile() {
                         </h2>
                         <div className="space-y-3">
                             {recentActivity.map((activity, index) => (
-                                <div key={index} className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center">
+                                <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-slate-800/30' : 'bg-slate-50'}`}>
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
                                         {activity.icon}
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-sm text-white">{activity.title}</p>
+                                        <p className={`text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>{activity.title}</p>
                                         <p className="text-xs text-slate-500">{activity.time}</p>
                                     </div>
                                     <ChevronRight size={16} className="text-slate-600" />

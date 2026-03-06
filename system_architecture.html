@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuardMyTrip — System Architecture & Data Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f35;
+            --bg-card-hover: #222845;
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-pink: #ec4899;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #1e293b;
+            --border-glow: rgba(139, 92, 246, 0.3);
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --gradient-3: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 92, 246, 0.12), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(59, 130, 246, 0.08), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            text-align: center;
+            padding: 5rem 0 3rem;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1.2rem;
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent-purple);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e2e8f0 0%, #8b5cf6 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* ─── SECTIONS ─── */
+        .section {
+            margin: 3.5rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        /* Section color themes */
+        .theme-purple .section-num {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-purple);
+        }
+
+        .theme-blue .section-num {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .theme-cyan .section-num {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+        }
+
+        .theme-green .section-num {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+        }
+
+        .theme-orange .section-num {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .theme-red .section-num {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+        }
+
+        .theme-pink .section-num {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--accent-pink);
+        }
+
+        /* ─── CARDS ─── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(139, 92, 246, 0.25);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.06);
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* ─── MERMAID DIAGRAMS ─── */
+        .mermaid-wrapper {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+        }
+
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ─── TABLES ─── */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        thead {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        th {
+            padding: 0.85rem 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent-purple);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.75rem 1.2rem;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(139, 92, 246, 0.03);
+        }
+
+        td code,
+        th code {
+            background: rgba(139, 92, 246, 0.12);
+            color: var(--accent-purple);
+            padding: 0.15rem 0.45rem;
+            border-radius: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+        }
+
+        /* Method badges */
+        .method {
+            display: inline-block;
+            padding: 0.15rem 0.55rem;
+            border-radius: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.03em;
+        }
+
+        .method-get {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .method-post {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .method-put {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        /* ─── LABEL BADGES ─── */
+        .label {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .label-safe {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .label-moderate {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        .label-high {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+        }
+
+        /* ─── GRID LAYOUTS ─── */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+
+        /* ─── MINI CARDS (pages/components) ─── */
+        .mini-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .mini-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .mini-card .route {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            margin-bottom: 0.3rem;
+        }
+
+        .mini-card .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .mini-card .desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .mini-card .tag {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-top: 0.4rem;
+        }
+
+        .tag-public {
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+        }
+
+        .tag-protected {
+            background: rgba(139, 92, 246, 0.12);
+            color: #a78bfa;
+        }
+
+        /* ─── CODE / DIR TREE ─── */
+        .dir-tree {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .dir-tree .folder {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .dir-tree .file {
+            color: #94a3b8;
+        }
+
+        .dir-tree .comment {
+            color: #4b5563;
+            font-style: italic;
+        }
+
+        .dir-tree .highlight {
+            color: #a78bfa;
+        }
+
+        .dir-tree .data {
+            color: #fbbf24;
+        }
+
+        /* ─── FEATURE TABLE ─── */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .feature-item {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+        }
+
+        .feature-item code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--accent-cyan);
+        }
+
+        .feature-item .desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* ─── TECH STACK CHIPS ─── */
+        .stack-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .stack-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            min-width: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            background: rgba(30, 41, 59, 0.4);
+            color: var(--text-primary);
+        }
+
+        /* ─── FOOTER ─── */
+        .footer {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .card {
+                padding: 1.2rem;
+            }
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Nav */
+        .toc {
+            position: fixed;
+            top: 50%;
+            right: 1.5rem;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .toc a {
+            display: block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .toc a:hover {
+            background: var(--accent-purple);
+            transform: scale(1.4);
+        }
+
+        @media (max-width: 1024px) {
+            .toc {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Side nav dots -->
+    <nav class="toc">
+        <a href="#hero" title="Top"></a>
+        <a href="#arch" title="Architecture"></a>
+        <a href="#frontend" title="Frontend"></a>
+        <a href="#backend" title="Backend"></a>
+        <a href="#database" title="Database"></a>
+        <a href="#ml" title="ML Pipeline"></a>
+        <a href="#dataflow" title="Data Flow"></a>
+        <a href="#deploy" title="Deployment"></a>
+        <a href="#tree" title="Directory"></a>
+        <a href="#stack" title="Tech Stack"></a>
+    </nav>
+
+    <div class="container">
+
+        <!-- ═══════════════ HERO ═══════════════ -->
+        <header class="hero" id="hero">
+            <div class="hero-badge">📐 Technical Documentation</div>
+            <h1>GuardMyTrip</h1>
+            <p>System Architecture & Data Flow Diagram — a tourist safety platform combining real-time routing,
+                ML-powered crime analysis, and smart safety scoring.</p>
+        </header>
+
+        <!-- ═══════════════ 1. HIGH-LEVEL ARCHITECTURE ═══════════════ -->
+        <section class="section theme-purple" id="arch">
+            <div class="section-header">
+                <div class="section-num">1</div>
+                <h2>High-Level System Architecture</h2>
+            </div>
+            <div class="card">
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+graph TB
+    subgraph CL["🖥️ Client Layer"]
+        FE["React Frontend\n(Vite + React Router)\nPort 5173"]
+    end
+
+    subgraph AL["⚡ API Layer"]
+        BE["FastAPI Backend\n(Uvicorn ASGI)\nPort 8000"]
+    end
+
+    subgraph DL["💾 Data Layer"]
+        DB[("SQLite\ntourist_safety.db")]
+        OSRM["OSRM API\n(OpenStreetMap Roads)"]
+    end
+
+    subgraph ML["🤖 ML Layer"]
+        XGB["XGBoost Classifier\n(Safety Predictor)"]
+        CSV["NCRB Crime CSVs\n(Training Data)"]
+    end
+
+    FE -- "HTTP REST (Axios)" --> BE
+    BE -- "SQLAlchemy ORM" --> DB
+    BE -- "httpx async" --> OSRM
+    BE -- "pickle / JSON" --> XGB
+    CSV -- "pandas pipeline" --> XGB
+
+    style CL fill:#1a1040,stroke:#7c3aed,color:#e2e8f0
+    style AL fill:#0c1f3d,stroke:#3b82f6,color:#e2e8f0
+    style DL fill:#0a1f1a,stroke:#10b981,color:#e2e8f0
+    style ML fill:#1f0a0a,stroke:#ef4444,color:#e2e8f0
+    style FE fill:#7c3aed,color:#fff,stroke:#5b21b6
+    style BE fill:#3b82f6,color:#fff,stroke:#2563eb
+    style DB fill:#f59e0b,color:#000,stroke:#d97706
+    style OSRM fill:#10b981,color:#fff,stroke:#059669
+    style XGB fill:#ef4444,color:#fff,stroke:#dc2626
+    style CSV fill:#f97316,color:#fff,stroke:#ea580c
+                </pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 2. FRONTEND ═══════════════ -->
+        <section class="section theme-blue" id="frontend">
+            <div class="section-header">
+                <div class="section-num">2</div>
+                <h2>Frontend Architecture (React + Vite)</h2>
+            </div>
+
+            <div class="card">
+                <h3>Core Modules</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                <th>File</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>App Shell</strong></td>
+                                <td><code>App.jsx</code></td>
+                                <td>React Router, AuthProvider wrapper, Navbar, Toast notifications</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Auth Context</strong></td>
+                                <td><code>AuthContext.jsx</code></td>
+                                <td>JWT token + user state persisted in localStorage</td>
+                            </tr>
+                            <tr>
+                                <td><strong>API Client</strong></td>
+                                <td><code>axios.js</code></td>
+                                <td>Axios instance → <code>http://localhost:8000</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>API Services</strong></td>
+                                <td><code>services.js</code></td>
+                                <td>All REST call functions (auth, cities, routes, emergency)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Pages & Components</h3>
+                <div class="grid-3">
+                    <div class="mini-card">
+                        <div class="route">/</div>
+                        <div class="name">Home</div>
+                        <div class="desc">Landing page with hero section</div><span class="tag tag-public">Public</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/login</div>
+                        <div class="name">Login</div>
+                        <div class="desc">Email + password authentication</div><span
+                            class="tag tag-public">Public</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/signup</div>
+                        <div class="name">Signup</div>
+                        <div class="desc">New user registration</div><span class="tag tag-public">Public</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/explore</div>
+                        <div class="name">Explore</div>
+                        <div class="desc">City explorer with interactive safety map</div><span
+                            class="tag tag-protected">Protected</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/hotspots</div>
+                        <div class="name">Hotspots</div>
+                        <div class="desc">Crime hotspot visualization</div><span
+                            class="tag tag-protected">Protected</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/safe-route</div>
+                        <div class="name">SafeRoute</div>
+                        <div class="desc">Route finder (OSRM + A* with safety scoring)</div><span
+                            class="tag tag-protected">Protected</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/emergency</div>
+                        <div class="name">Emergency</div>
+                        <div class="desc">Emergency contacts directory</div><span
+                            class="tag tag-protected">Protected</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/profile</div>
+                        <div class="name">Profile</div>
+                        <div class="desc">User profile view</div><span class="tag tag-protected">Protected</span>
+                    </div>
+                    <div class="mini-card">
+                        <div class="route">/profile/edit</div>
+                        <div class="name">EditProfile</div>
+                        <div class="desc">Edit name, email, phone</div><span class="tag tag-protected">Protected</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Reusable Components</h3>
+                <div class="grid-2">
+                    <div class="mini-card">
+                        <div class="name">Navbar</div>
+                        <div class="desc">Navigation bar with auth-aware links</div>
+                    </div>
+                    <div class="mini-card">
+                        <div class="name">SafetyMap</div>
+                        <div class="desc">Leaflet map with green/orange/red zone markers</div>
+                    </div>
+                    <div class="mini-card">
+                        <div class="name">ProtectedRoute</div>
+                        <div class="desc">Auth guard — redirects unauthenticated users</div>
+                    </div>
+                    <div class="mini-card">
+                        <div class="name">BackgroundBlur</div>
+                        <div class="desc">Decorative gradient blur overlay</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 3. BACKEND ═══════════════ -->
+        <section class="section theme-cyan" id="backend">
+            <div class="section-header">
+                <div class="section-num">3</div>
+                <h2>Backend Architecture (FastAPI)</h2>
+            </div>
+
+            <div class="card">
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+graph TD
+    MAIN["main.py\nFastAPI App"] --> AUTH_R["Auth Router\n/api/auth"]
+    MAIN --> CITY_R["Cities Router\n/api/cities"]
+    MAIN --> ROUTE_R["Routes Router\n/api/routes"]
+    MAIN --> EMRG_R["Emergency Router\n/api/emergency"]
+
+    AUTH_R --> UTIL["utility.py\nArgon2 + JWT RS256"]
+    AUTH_R --> DB_MOD["models.py\nSQLAlchemy ORM"]
+    CITY_R --> DB_MOD
+    ROUTE_R --> DB_MOD
+    EMRG_R --> DB_MOD
+
+    ROUTE_R --> ASTAR["A* Pathfinding\n(built-in)"]
+    ROUTE_R --> OSRM_U["osrm_router.py\nOSRM Client"]
+    ROUTE_R --> SAGENT["safety_agent.py\nRoute Scorer"]
+
+    DB_MOD --> DB_ENG["database.py\nSQLAlchemy Engine"]
+
+    style MAIN fill:#0ea5e9,color:#fff,stroke:#0284c7
+    style AUTH_R fill:#8b5cf6,color:#fff,stroke:#7c3aed
+    style CITY_R fill:#8b5cf6,color:#fff,stroke:#7c3aed
+    style ROUTE_R fill:#8b5cf6,color:#fff,stroke:#7c3aed
+    style EMRG_R fill:#8b5cf6,color:#fff,stroke:#7c3aed
+    style ASTAR fill:#f59e0b,color:#000,stroke:#d97706
+    style OSRM_U fill:#10b981,color:#fff,stroke:#059669
+    style SAGENT fill:#ef4444,color:#fff,stroke:#dc2626
+    style UTIL fill:#06b6d4,color:#fff,stroke:#0891b2
+    style DB_MOD fill:#6366f1,color:#fff,stroke:#4f46e5
+    style DB_ENG fill:#475569,color:#fff,stroke:#334155
+                </pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>API Endpoints (16 total)</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Router</th>
+                                <th>Endpoint</th>
+                                <th>Method</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="4"><strong>Auth</strong></td>
+                                <td><code>/api/auth/signup</code></td>
+                                <td><span class="method method-post">POST</span></td>
+                                <td>Register new user, return JWT</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/auth/login</code></td>
+                                <td><span class="method method-post">POST</span></td>
+                                <td>Authenticate user, return JWT</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/auth/me</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>Get current user profile</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/auth/profile</code></td>
+                                <td><span class="method method-put">PUT</span></td>
+                                <td>Update user profile</td>
+                            </tr>
+
+                            <tr>
+                                <td rowspan="5"><strong>Cities</strong></td>
+                                <td><code>/api/cities</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>List all cities (filter by zone/state)</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/cities/search</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>Search cities by name or state</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/cities/{id}</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>City details + attractions + crime stats</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/cities/state/{state}</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>Get cities by state</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/cities/zone/{zone}</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>Get cities by safety zone (green/orange/red)</td>
+                            </tr>
+
+                            <tr>
+                                <td rowspan="5"><strong>Routes</strong></td>
+                                <td><code>/api/routes/safe</code></td>
+                                <td><span class="method method-post">POST</span></td>
+                                <td>A* safest route between two cities</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/routes/alternatives</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>3 A* route alternatives (safest/balanced/fastest)</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/routes/smart</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>OSRM real-road routes + Safety Agent scoring</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/routes/check-safety</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>Live GPS position safety check</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/routes/reroute</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>Emergency reroute from danger zone</td>
+                            </tr>
+
+                            <tr>
+                                <td rowspan="2"><strong>Emergency</strong></td>
+                                <td><code>/api/emergency</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>National emergency contacts</td>
+                            </tr>
+                            <tr>
+                                <td><code>/api/emergency/{city_id}</code></td>
+                                <td><span class="method method-get">GET</span></td>
+                                <td>City-specific + national contacts</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 4. DATABASE ═══════════════ -->
+        <section class="section theme-orange" id="database">
+            <div class="section-header">
+                <div class="section-num">4</div>
+                <h2>Database Schema (SQLite − ER Diagram)</h2>
+            </div>
+            <div class="card">
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+erDiagram
+    User {
+        int id PK
+        string email UK
+        string password
+        string name
+        string profile_pic
+        string google_id UK
+        datetime created_at
+        string phone UK
+    }
+
+    City {
+        int id PK
+        string name
+        string state
+        float latitude
+        float longitude
+        int population
+        float crime_index
+        string safety_zone
+    }
+
+    CrimeStatistic {
+        int id PK
+        int city_id FK
+        int year
+        float crime_rate
+    }
+
+    Attraction {
+        int id PK
+        int city_id FK
+        string name
+        string category
+        float rating
+    }
+
+    EmergencyContact {
+        int id PK
+        int city_id FK
+        string name
+        string number
+        string service_type
+        bool is_national
+    }
+
+    City ||--o{ CrimeStatistic : "has"
+    City ||--o{ Attraction : "has"
+    City ||--o{ EmergencyContact : "has"
+                </pre>
+                </div>
+                <p class="card-subtitle" style="margin-top:1rem;">5 tables • <code>safety_zone</code> values: <span
+                        class="label label-safe">green (Safe)</span> <span class="label label-moderate">orange
+                        (Moderate)</span> <span class="label label-high">red (High Risk)</span></p>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 5. ML PIPELINE ═══════════════ -->
+        <section class="section theme-red" id="ml">
+            <div class="section-header">
+                <div class="section-num">5</div>
+                <h2>ML Pipeline (XGBoost Safety Classifier)</h2>
+            </div>
+            <div class="card">
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+graph LR
+    subgraph DS["📊 Data Sources"]
+        N1["NCRB Table 1.1\nIPC Crimes"]
+        N3["NCRB Table 1.3\nCrimes Against Women"]
+        LD["india_district_crime_2022\n(Pre-labeled)"]
+    end
+
+    subgraph PR["⚙️ Processing"]
+        DP["data_processor.py\nFeature Engineering"]
+        TX["train_xgboost.py\nModel Training"]
+    end
+
+    subgraph AR["📦 Artifacts"]
+        MOD["xgboost_safety_classifier.pkl"]
+        SCL["scaler.pkl + label_encoder.pkl"]
+        META["model_metadata.json"]
+        PRED["district_predictions.csv"]
+    end
+
+    subgraph INF["🔮 Inference"]
+        PRDR["predictor.py\nSafetyPredictor"]
+        PDF["generate_pdf.py\nPDF Report"]
+    end
+
+    N1 --> DP
+    N3 --> DP
+    LD --> TX
+    DP --> TX
+    TX --> MOD
+    TX --> SCL
+    TX --> META
+    TX --> PRED
+    MOD --> PRDR
+    SCL --> PRDR
+    META --> PRDR
+    PRDR --> PDF
+
+    style DS fill:#1a0a0a,stroke:#f97316,color:#fed7aa
+    style PR fill:#0a0a1a,stroke:#3b82f6,color:#bfdbfe
+    style AR fill:#1a0a1a,stroke:#8b5cf6,color:#ddd6fe
+    style INF fill:#0a1a0a,stroke:#10b981,color:#a7f3d0
+    style N1 fill:#f97316,color:#fff
+    style N3 fill:#f97316,color:#fff
+    style LD fill:#f97316,color:#fff
+    style DP fill:#3b82f6,color:#fff
+    style TX fill:#3b82f6,color:#fff
+    style MOD fill:#ef4444,color:#fff
+    style SCL fill:#8b5cf6,color:#fff
+    style META fill:#8b5cf6,color:#fff
+    style PRED fill:#8b5cf6,color:#fff
+    style PRDR fill:#10b981,color:#fff
+    style PDF fill:#06b6d4,color:#fff
+                </pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>ML Features & Output Labels</h3>
+                <div class="feature-grid">
+                    <div class="feature-item"><code>murder_rate</code>
+                        <div class="desc">Murders per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>rape_rate</code>
+                        <div class="desc">Rapes per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>robbery_rate</code>
+                        <div class="desc">Robberies per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>theft_rate</code>
+                        <div class="desc">Thefts per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>hurt_rate</code>
+                        <div class="desc">Hurt crimes per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>kidnapping_rate</code>
+                        <div class="desc">Kidnappings per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>dowry_deaths_rate</code>
+                        <div class="desc">Dowry deaths per lakh population</div>
+                    </div>
+                    <div class="feature-item"><code>total_crime_rate</code>
+                        <div class="desc">Aggregate crime rate</div>
+                    </div>
+                    <div class="feature-item"><code>violent_crime_rate</code>
+                        <div class="desc">Violent crimes subset rate</div>
+                    </div>
+                    <div class="feature-item"><code>property_crime_rate</code>
+                        <div class="desc">Property crimes subset rate</div>
+                    </div>
+                </div>
+                <p style="margin-top:1.2rem; font-size:0.9rem;"><strong>Output Labels:</strong>&nbsp; <span
+                        class="label label-safe">Safe (0)</span> &nbsp; <span class="label label-moderate">Moderate
+                        (1)</span> &nbsp; <span class="label label-high">High Risk (2)</span></p>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 6. DATA FLOW DIAGRAM ═══════════════ -->
+        <section class="section theme-green" id="dataflow">
+            <div class="section-header">
+                <div class="section-num">6</div>
+                <h2>Complete Data Flow Diagram</h2>
+            </div>
+
+            <div class="card">
+                <h3>Authentication Flow</h3>
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant U as 🧑 User
+    participant FE as ⚛️ React
+    participant API as ⚡ FastAPI
+    participant DB as 💾 SQLite
+
+    U->>FE: Enter email + password
+    FE->>API: POST /api/auth/login
+    API->>DB: Query User by email
+    DB-->>API: User record
+    API->>API: Verify password (Argon2)
+    API->>API: Sign JWT (RS256 private key)
+    API-->>FE: access_token + token_type
+    FE->>FE: Store token in localStorage
+                </pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>City Exploration Flow</h3>
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant U as 🧑 User
+    participant FE as ⚛️ React
+    participant API as ⚡ FastAPI
+    participant DB as 💾 SQLite
+
+    U->>FE: Navigate to /explore
+    FE->>API: GET /api/cities?limit=1000
+    API->>DB: SELECT * FROM cities
+    DB-->>API: City list with safety zones
+    API-->>FE: CityResponse[]
+    FE->>FE: Render SafetyMap (Leaflet)
+    Note right of FE: 🟢 Green = Safe
+    Note right of FE: 🟠 Orange = Moderate
+    Note right of FE: 🔴 Red = High Risk
+                </pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Smart Route Finding Flow (OSRM + Safety Agent)</h3>
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant U as 🧑 User
+    participant FE as ⚛️ React
+    participant API as ⚡ FastAPI
+    participant DB as 💾 SQLite
+    participant OSRM as 🗺️ OSRM
+    participant SA as 🛡️ Safety Agent
+
+    U->>FE: Enter origin + destination
+    FE->>API: GET /api/routes/smart
+    API->>DB: Resolve city names to lat/lng
+    API->>OSRM: GET /route/v1/driving/{coords}
+    Note right of OSRM: Request up to 3 alternatives
+    OSRM-->>API: Encoded polylines + distance + duration
+    API->>API: Decode polylines to coordinates
+    API->>DB: Load all cities for safety data
+    API->>SA: evaluate_routes(osrm_routes, cities)
+    SA->>SA: Sample 25 points per route
+    SA->>SA: Map points to nearest city zones
+    SA->>SA: Compute safety score (0−100)
+    SA->>SA: Composite score = 60% safety + 20% distance + 20% duration
+    SA->>SA: Rank routes + generate reasoning
+    SA-->>API: Scored routes + recommended index
+    API-->>FE: SmartMultiRouteResponse
+    FE->>FE: Render routes with safety overlays
+                </pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Live GPS Safety Check & Auto-Rerouting</h3>
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant U as 📍 GPS
+    participant FE as ⚛️ React
+    participant API as ⚡ FastAPI
+    participant DB as 💾 SQLite
+    participant OSRM as 🗺️ OSRM
+    participant SA as 🛡️ Safety Agent
+
+    U->>FE: Position update during navigation
+    FE->>API: GET /api/routes/check-safety?lat&lng
+    API->>DB: Load all cities
+    API->>SA: find_nearest_city(lat, lng)
+    SA-->>API: Nearest city + safety zone
+
+    alt 🔴 Zone = RED (DANGER)
+        API-->>FE: trigger_reroute = true
+        FE->>API: GET /api/routes/reroute
+        API->>OSRM: Fresh routes from current pos
+        API->>SA: Re-score new routes
+        API-->>FE: New SmartMultiRouteResponse
+        FE->>FE: Update navigation with safer route
+    else 🟢🟠 Zone = GREEN or ORANGE
+        API-->>FE: safe = true/false, stay on course
+    end
+                </pre>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>A* Fallback Flow (when OSRM is unavailable)</h3>
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+sequenceDiagram
+    participant API as ⚡ FastAPI
+    participant DB as 💾 SQLite
+    participant OSRM as 🗺️ OSRM
+
+    API->>OSRM: Request routes
+    OSRM--xAPI: ❌ Timeout / Error
+
+    Note over API: Fallback to A* graph search
+    API->>DB: Load all cities
+    API->>API: build_graph(cities, weights)
+    Note right of API: 3 weight profiles
+    Note right of API: Safest: red = 10x penalty
+    Note right of API: Balanced: red = 2x penalty
+    Note right of API: Fastest: red = 1.2x penalty
+    API->>API: A* search with safety-weighted edges
+    API->>API: Calculate safety scores
+    API-->>API: MultiRouteResponse with fallback warning
+                </pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 7. DEPLOYMENT ═══════════════ -->
+        <section class="section theme-pink" id="deploy">
+            <div class="section-header">
+                <div class="section-num">7</div>
+                <h2>Deployment Architecture (Docker Compose)</h2>
+            </div>
+            <div class="card">
+                <div class="mermaid-wrapper">
+                    <pre class="mermaid">
+graph TB
+    subgraph DC["🐳 Docker Compose"]
+        subgraph C1["Container: api"]
+            BK["FastAPI + Uvicorn\nPort 8000"]
+        end
+        subgraph C2["Container: frontendapi"]
+            FK["React Dev Server\nPort 5173"]
+        end
+    end
+
+    FK -- "depends_on" --> BK
+    BK -- "reads (ro)" --> SEC["🔑 secrets/\nprivate.pem\npublic.pem"]
+    BK -- "volume mount" --> BKV["./backend → /app"]
+    FK -- "volume mount" --> FKV["./frontend → /app"]
+
+    style DC fill:#1a0a20,stroke:#ec4899,color:#fce7f3
+    style C1 fill:#0c1f3d,stroke:#3b82f6,color:#bfdbfe
+    style C2 fill:#1a1040,stroke:#7c3aed,color:#ddd6fe
+    style BK fill:#3b82f6,color:#fff
+    style FK fill:#7c3aed,color:#fff
+    style SEC fill:#ef4444,color:#fff
+    style BKV fill:#475569,color:#e2e8f0
+    style FKV fill:#475569,color:#e2e8f0
+                </pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 8. DIRECTORY TREE ═══════════════ -->
+        <section class="section theme-green" id="tree">
+            <div class="section-header">
+                <div class="section-num">8</div>
+                <h2>Project Directory Structure</h2>
+            </div>
+            <div class="card">
+                <div class="dir-tree"><span class="folder">Minipro/</span>
+                    ├── docker-compose.yml <span class="comment"># Multi-container orchestration</span>
+                    ├── <span class="folder">backend/</span>
+                    │ ├── <span class="highlight">main.py</span> <span class="comment"># FastAPI entry point</span>
+                    │ ├── <span class="folder">config/</span>config.py <span class="comment"># DB URL, RSA key
+                        paths</span>
+                    │ ├── <span class="folder">database/</span>
+                    │ │ ├── database.py <span class="comment"># SQLAlchemy engine + session</span>
+                    │ │ ├── <span class="highlight">models.py</span> <span class="comment"># ORM: User, City,
+                        CrimeStatistic, Attraction, EmergencyContact</span>
+                    │ │ ├── <span class="highlight">schemas.py</span> <span class="comment"># Pydantic request/response
+                        schemas</span>
+                    │ │ ├── seed_cities.py <span class="comment"># City seed data</span>
+                    │ │ └── emergency_contacts_seed.py
+                    │ ├── <span class="folder">routers/</span>
+                    │ │ ├── <span class="folder">auth/</span> <span class="comment"># /api/auth — login, signup,
+                        profile</span>
+                    │ │ │ ├── routes.py
+                    │ │ │ └── deps.py <span class="comment"># get_current_user dependency</span>
+                    │ │ ├── <span class="folder">cities/</span> <span class="comment"># /api/cities — CRUD, search,
+                        filter</span>
+                    │ │ │ └── routes.py
+                    │ │ ├── <span class="folder">routes/</span> <span class="comment"># /api/routes — A*, OSRM, GPS
+                        safety</span>
+                    │ │ │ └── <span class="highlight">routes.py</span> <span class="comment"># 854 lines — core routing
+                        logic</span>
+                    │ │ └── <span class="folder">emergency/</span> <span class="comment"># /api/emergency —
+                        contacts</span>
+                    │ │ └── routes.py
+                    │ ├── <span class="folder">utils/</span>
+                    │ │ ├── utility.py <span class="comment"># Argon2 hashing, JWT RS256 signing</span>
+                    │ │ ├── <span class="highlight">osrm_router.py</span> <span class="comment"># OSRM API client (async
+                        httpx)</span>
+                    │ │ └── <span class="highlight">safety_agent.py</span> <span class="comment"># Route safety scorer +
+                        agent reasoning</span>
+                    │ ├── seed_comprehensive.py <span class="comment"># Full data seeding script</span>
+                    │ ├── seed_ncrb_data.py <span class="comment"># NCRB data → DB seeder</span>
+                    │ ├── seed_xgboost_data.py <span class="comment"># XGBoost predictions → DB</span>
+                    │ └── <span class="data">tourist_safety.db</span> <span class="comment"># SQLite database
+                        file</span>
+                    ├── <span class="folder">frontend/</span>
+                    │ ├── <span class="folder">src/</span>
+                    │ │ ├── <span class="highlight">App.jsx</span> <span class="comment"># Router + AuthProvider
+                        shell</span>
+                    │ │ ├── main.jsx <span class="comment"># React entry point</span>
+                    │ │ ├── <span class="folder">api/</span>
+                    │ │ │ ├── axios.js <span class="comment"># Axios instance (baseURL: localhost:8000)</span>
+                    │ │ │ └── <span class="highlight">services.js</span> <span class="comment"># All API service
+                        functions</span>
+                    │ │ ├── <span class="folder">context/</span>
+                    │ │ │ └── AuthContext.jsx <span class="comment"># Auth state (token in localStorage)</span>
+                    │ │ ├── <span class="folder">components/</span>
+                    │ │ │ ├── Navbar.jsx
+                    │ │ │ ├── <span class="highlight">SafetyMap.jsx</span> <span class="comment"># Leaflet map with
+                        safety zones</span>
+                    │ │ │ ├── ProtectedRoute.jsx <span class="comment"># Auth guard</span>
+                    │ │ │ └── BackgroundBlur.jsx
+                    │ │ └── <span class="folder">pages/</span>
+                    │ │ ├── Home.jsx <span class="comment"># Landing page</span>
+                    │ │ ├── Explore.jsx <span class="comment"># City explorer with safety map</span>
+                    │ │ ├── <span class="highlight">SafeRoute.jsx</span> <span class="comment"># Route finder (OSRM +
+                        A*)</span>
+                    │ │ ├── Hotspots.jsx <span class="comment"># Crime hotspot visualization</span>
+                    │ │ ├── Emergency.jsx <span class="comment"># Emergency contacts</span>
+                    │ │ ├── Login.jsx / Signup.jsx
+                    │ │ └── Profile.jsx / EditProfile.jsx
+                    │ └── <span class="folder">crime_data/</span> <span class="comment"># Raw CSV datasets</span>
+                    │ ├── <span class="data">NCRB_District_Table_1.1.csv</span>
+                    │ ├── <span class="data">NCRB_District_Table_1.3.csv</span>
+                    │ ├── <span class="data">india_district_crime_2022.csv</span>
+                    │ └── <span class="comment">... (6 more CSVs)</span>
+                    └── <span class="folder">ml/</span>
+                    ├── <span class="highlight">data_processor.py</span> <span class="comment"># NCRB data → features +
+                        auto-labels</span>
+                    ├── <span class="highlight">train_xgboost.py</span> <span class="comment"># Multi-source training
+                        pipeline</span>
+                    ├── <span class="highlight">predictor.py</span> <span class="comment"># SafetyPredictor inference
+                        class</span>
+                    ├── generate_pdf.py <span class="comment"># PDF report generator</span>
+                    ├── <span class="data">training_dataset.csv</span> <span class="comment"># Generated training
+                        data</span>
+                    ├── <span class="data">district_features.csv</span> <span class="comment"># Pre-computed district
+                        features</span>
+                    └── <span class="folder">models/</span>
+                    ├── <span class="data">xgboost_safety_classifier.pkl</span>
+                    ├── <span class="data">scaler.pkl</span> + <span class="data">label_encoder.pkl</span>
+                    ├── <span class="data">feature_columns.pkl</span>
+                    └── <span class="data">district_xgboost_predictions.csv</span></div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ 9. TECH STACK ═══════════════ -->
+        <section class="section theme-purple" id="stack">
+            <div class="section-header">
+                <div class="section-num">9</div>
+                <h2>Technology Stack</h2>
+            </div>
+            <div class="card">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Layer</th>
+                                <th>Technology</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Frontend</strong></td>
+                                <td>React + Vite</td>
+                                <td>SWC compiler, React Router, React Hot Toast</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Maps</strong></td>
+                                <td>Leaflet</td>
+                                <td>Via <code>react-leaflet</code> — color-coded safety markers</td>
+                            </tr>
+                            <tr>
+                                <td><strong>HTTP Client</strong></td>
+                                <td>Axios</td>
+                                <td>Base URL → <code>localhost:8000</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Backend</strong></td>
+                                <td>FastAPI</td>
+                                <td>Uvicorn ASGI server</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ORM</strong></td>
+                                <td>SQLAlchemy</td>
+                                <td>Declarative Base, sessionmaker</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Database</strong></td>
+                                <td>SQLite</td>
+                                <td><code>tourist_safety.db</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Auth</strong></td>
+                                <td>JWT (RS256)</td>
+                                <td><code>python-jose</code>, RSA key pair in <code>secrets/</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Password</strong></td>
+                                <td>Argon2</td>
+                                <td>Via <code>argon2-cffi</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Routing</strong></td>
+                                <td>OSRM</td>
+                                <td>Public demo server + A* fallback</td>
+                            </tr>
+                            <tr>
+                                <td><strong>HTTP (Server)</strong></td>
+                                <td>httpx</td>
+                                <td>Async client for OSRM calls</td>
+                            </tr>
+                            <tr>
+                                <td><strong>ML Model</strong></td>
+                                <td>XGBoost</td>
+                                <td>3-class classifier (Safe / Moderate / High Risk)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Processing</strong></td>
+                                <td>pandas + numpy</td>
+                                <td>Feature engineering from NCRB data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Containers</strong></td>
+                                <td>Docker Compose</td>
+                                <td>2 services: <code>api</code> + <code>frontendapi</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── FOOTER ─── -->
+        <footer class="footer">
+            <p>GuardMyTrip — System Architecture Document • Generated February 2026</p>
+        </footer>
+
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#7c3aed',
+                primaryTextColor: '#f1f5f9',
+                primaryBorderColor: '#5b21b6',
+                lineColor: '#64748b',
+                secondaryColor: '#1e293b',
+                tertiaryColor: '#0f172a',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '13px',
+                noteBkgColor: '#1e293b',
+                noteTextColor: '#94a3b8',
+                noteBorderColor: '#334155',
+                actorBkg: '#1e293b',
+                actorBorder: '#475569',
+                actorTextColor: '#f1f5f9',
+                signalColor: '#94a3b8',
+                signalTextColor: '#f1f5f9',
+            },
+            sequence: {
+                actorFontSize: 13,
+                noteFontSize: 11,
+                messageFontSize: 12,
+                mirrorActors: false,
+                bottomMarginAdj: 1,
+                useMaxWidth: true,
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+            },
+            er: {
+                useMaxWidth: true,
+            }
+        });
+    </script>
+
+</body>
+
+</html>

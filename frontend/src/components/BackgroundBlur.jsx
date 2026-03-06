@@ -1,6 +1,13 @@
 import React from "react";
+import { useTheme } from "../context/ThemeContext";
 
 function BackgroundBlur() {
+  const { theme } = useTheme();
+
+  if (theme === 'light') {
+    return null; // No blur effect in light mode
+  }
+
   return (
     <div
       className="
@@ -19,4 +26,3 @@ function BackgroundBlur() {
 }
 
 export default BackgroundBlur;
-

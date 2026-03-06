@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, UserPlus, Shield, Eye, EyeOff } from "lucide-react";
-import {signup } from "../api/services";
+import { signup } from "../api/services";
+import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 
 export default function Signup() {
     const navigate = useNavigate();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -60,7 +63,7 @@ export default function Signup() {
                     <h1 className="text-2xl sm:text-3xl font-bold mb-2">
                         Create <span className="text-emerald-400">Account</span>
                     </h1>
-                    <p className="text-slate-400 text-sm">
+                    <p className={`text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         Join GuardMyTrip for safer travels
                     </p>
                 </div>
@@ -69,7 +72,7 @@ export default function Signup() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Name */}
                     <div>
-                        <label className="block text-sm text-slate-400 mb-2">Full Name</label>
+                        <label className={`block text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Full Name</label>
                         <div className="relative">
                             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                             <input
@@ -79,14 +82,14 @@ export default function Signup() {
                                 onChange={handleChange}
                                 placeholder="Enter your name"
                                 required
-                                className="w-full bg-slate-900/50 border border-slate-800 rounded-xl h-12 pl-12 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                className={`w-full rounded-xl h-12 pl-12 pr-4 focus:outline-none focus:border-emerald-500/50 transition-colors ${isDark ? 'bg-slate-900/50 border border-slate-800 text-white placeholder-slate-500' : 'bg-white border border-slate-300 text-slate-900 placeholder-slate-400'}`}
                             />
                         </div>
                     </div>
 
                     {/* Email */}
                     <div>
-                        <label className="block text-sm text-slate-400 mb-2">Email</label>
+                        <label className={`block text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Email</label>
                         <div className="relative">
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                             <input
@@ -96,14 +99,14 @@ export default function Signup() {
                                 onChange={handleChange}
                                 placeholder="Enter your email"
                                 required
-                                className="w-full bg-slate-900/50 border border-slate-800 rounded-xl h-12 pl-12 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                className={`w-full rounded-xl h-12 pl-12 pr-4 focus:outline-none focus:border-emerald-500/50 transition-colors ${isDark ? 'bg-slate-900/50 border border-slate-800 text-white placeholder-slate-500' : 'bg-white border border-slate-300 text-slate-900 placeholder-slate-400'}`}
                             />
                         </div>
                     </div>
 
                     {/* Password */}
                     <div>
-                        <label className="block text-sm text-slate-400 mb-2">Password</label>
+                        <label className={`block text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Password</label>
                         <div className="relative">
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                             <input
@@ -113,7 +116,7 @@ export default function Signup() {
                                 onChange={handleChange}
                                 placeholder="Create a password"
                                 required
-                                className="w-full bg-slate-900/50 border border-slate-800 rounded-xl h-12 pl-12 pr-12 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                className={`w-full rounded-xl h-12 pl-12 pr-12 focus:outline-none focus:border-emerald-500/50 transition-colors ${isDark ? 'bg-slate-900/50 border border-slate-800 text-white placeholder-slate-500' : 'bg-white border border-slate-300 text-slate-900 placeholder-slate-400'}`}
                             />
                             <button
                                 type="button"
@@ -127,7 +130,7 @@ export default function Signup() {
 
                     {/* Confirm Password */}
                     <div>
-                        <label className="block text-sm text-slate-400 mb-2">Confirm Password</label>
+                        <label className={`block text-sm mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Confirm Password</label>
                         <div className="relative">
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                             <input
@@ -137,7 +140,7 @@ export default function Signup() {
                                 onChange={handleChange}
                                 placeholder="Confirm your password"
                                 required
-                                className="w-full bg-slate-900/50 border border-slate-800 rounded-xl h-12 pl-12 pr-12 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                className={`w-full rounded-xl h-12 pl-12 pr-12 focus:outline-none focus:border-emerald-500/50 transition-colors ${isDark ? 'bg-slate-900/50 border border-slate-800 text-white placeholder-slate-500' : 'bg-white border border-slate-300 text-slate-900 placeholder-slate-400'}`}
                             />
                             <button
                                 type="button"
@@ -162,17 +165,17 @@ export default function Signup() {
                     {/* Divider */}
                     <div className="relative my-6">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-slate-800"></div>
+                            <div className={`w-full border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-4 bg-[#020617] text-slate-500">or continue with</span>
+                            <span className={`px-4 ${isDark ? 'bg-[#020617] text-slate-500' : 'bg-[#f8fafc] text-slate-400'}`}>or continue with</span>
                         </div>
                     </div>
 
                     {/* Google Sign Up */}
                     <button
                         type="button"
-                        className="w-full flex items-center justify-center gap-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white h-12 rounded-xl font-medium transition-all"
+                        className={`w-full flex items-center justify-center gap-3 h-12 rounded-xl font-medium transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-700'}`}
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
@@ -196,7 +199,7 @@ export default function Signup() {
                     </button>
 
                     {/* Login Link */}
-                    <p className="text-center text-sm text-slate-400 mt-6">
+                    <p className={`text-center text-sm mt-6 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         Already have an account?{" "}
                         <Link to="/login" className="text-emerald-400 hover:text-emerald-300 font-medium">
                             Sign in
