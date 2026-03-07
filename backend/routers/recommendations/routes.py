@@ -12,9 +12,27 @@ from database import models, schemas
 from database.database import get_db
 from routers.auth.deps import get_current_user
 from collections import Counter
+from fastapi.responses import JSONResponse
 import math
+import time
 
 router = APIRouter(prefix="/api/user-recommendations", tags=["Personalized Recommendations"])
+
+# ── Per-user recommendation cache (TTL 30s) ──
+_rec_cache = {}
+_REC_TTL = 30
+
+def _get_cached_recs(user_id: int):
+    entry = _rec_cache.get(user_id)
+    if entry and time.time() - entry["ts"] < _REC_TTL:
+        return entry["data"]
+    return None
+
+def _set_cached_recs(user_id: int, data):
+    _rec_cache[user_id] = {"data": data, "ts": time.time()}
+
+def _invalidate_recs(user_id: int):
+    _rec_cache.pop(user_id, None)
 
 
 # ═══════════════════════════════════════════════
@@ -63,6 +81,7 @@ def update_preferences(
     
     db.commit()
     db.refresh(pref)
+    _invalidate_recs(current_user.id)  # Fresh recs after pref change
     return pref
 
 
@@ -79,13 +98,14 @@ def get_visited_places(
     visited = (
         db.query(models.VisitedPlace)
         .filter(models.VisitedPlace.user_id == current_user.id)
+        .options(joinedload(models.VisitedPlace.attraction).joinedload(models.Attraction.city))
         .all()
     )
     
     result = []
     for v in visited:
-        attr = db.query(models.Attraction).filter(models.Attraction.id == v.attraction_id).first()
-        city = db.query(models.City).filter(models.City.id == attr.city_id).first() if attr else None
+        attr = v.attraction
+        city = attr.city if attr else None
         result.append({
             "id": v.id,
             "attraction_id": v.attraction_id,
@@ -132,6 +152,7 @@ def add_visited_place(
         db.commit()
         db.refresh(vp)
     
+    _invalidate_recs(current_user.id)  # Fresh recs after visited change
     city = db.query(models.City).filter(models.City.id == attr.city_id).first()
     return {
         "id": vp.id,
@@ -161,6 +182,7 @@ def remove_visited_place(
     
     db.delete(vp)
     db.commit()
+    _invalidate_recs(current_user.id)
     return {"message": "Removed from visited places"}
 
 
@@ -259,6 +281,11 @@ def get_recommendations(
     3. Sort by composite score descending
     4. Return top N recommendations
     """
+    # Check cache first
+    cached = _get_cached_recs(current_user.id)
+    if cached is not None:
+        return cached
+    
     # 1. Get user preferences
     pref = db.query(models.UserPreference).filter(
         models.UserPreference.user_id == current_user.id
@@ -338,7 +365,9 @@ def get_recommendations(
     # 5. Sort by composite score (descending), then rating
     scored.sort(key=lambda x: (x["match_score"], x["rating"] or 0), reverse=True)
     
-    return scored[:limit]
+    result = scored[:limit]
+    _set_cached_recs(current_user.id, result)
+    return result
 
 
 @router.get("/categories")

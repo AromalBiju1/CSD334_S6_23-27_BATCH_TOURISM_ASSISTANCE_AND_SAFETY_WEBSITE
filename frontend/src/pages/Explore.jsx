@@ -156,6 +156,7 @@ export default function Explore() {
                         loading={loading}
                         error={error}
                         className={isDark ? 'border border-slate-800' : 'border border-slate-200'}
+                        theme={theme}
                     />
                 ) : (
                     <div className={`rounded-2xl overflow-hidden ${isDark ? 'bg-slate-900/30 border border-slate-800' : 'bg-white border border-slate-200 shadow-sm'}`}>
