@@ -1,9 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-<<<<<<< HEAD
-from sqlalchemy.orm import Session
-=======
 from sqlalchemy.orm import Session, joinedload
->>>>>>> 7056f10a8e7bda46fe2dbc81fc1b2799fe0d581e
 from sqlalchemy import or_
 from typing import List, Optional
 from database import models, schemas
