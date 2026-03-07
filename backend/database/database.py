@@ -4,8 +4,13 @@ from sqlalchemy import create_engine
 
 from config.config import database_url
 
+# Render provides postgres:// but SQLAlchemy needs postgresql://
+db_url = database_url
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
 engine = create_engine(
-    database_url,
+    db_url,
     pool_size=20,
     max_overflow=10,
     pool_pre_ping=True,
