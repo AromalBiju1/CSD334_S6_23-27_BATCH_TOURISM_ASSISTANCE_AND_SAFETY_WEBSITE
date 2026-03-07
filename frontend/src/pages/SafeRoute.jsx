@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Search, Navigation, ChevronDown, MapPin, Loader, AlertCircle, Shield, Zap, Scale, Bot, ChevronRight, Car, Locate } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
+import { useTheme } from "../context/ThemeContext";
 import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition } from "../api/services";
 import toast from "react-hot-toast";
 
@@ -33,6 +34,8 @@ function useDebounce(value, delay) {
 }
 
 export default function SafeRoute() {
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [cities, setCities] = useState([]);
     const [startPoint, setStartPoint] = useState("");
     const [destination, setDestination] = useState("");
@@ -860,10 +863,11 @@ export default function SafeRoute() {
                             showLegend={true}
                             showZoneCircles={false}
                             zoneFilter={zoneFilter}
-                            className="border border-slate-800"
+                            className={isDark ? 'border border-slate-800' : 'border border-slate-200'}
                             fitBounds={selectedRoute?.path?.length >= 2 ? selectedRoute.path : null}
                             onSelectStart={handleSelectStart}
                             onSelectDest={handleSelectDest}
+                            theme={theme}
                         />
                     </div>
                 </div>

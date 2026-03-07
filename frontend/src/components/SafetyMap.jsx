@@ -34,9 +34,12 @@ const ZONE_LABELS = {
     user: 'Your Location',
 };
 
-// Tile layer config from env or default
-const TILE_URL = import.meta.env.VITE_MAP_TILE_URL || 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-const TILE_ATTRIBUTION = import.meta.env.VITE_MAP_ATTRIBUTION || '&copy; OpenStreetMap &copy; CARTO';
+// Tile layer configs for dark/light
+const TILE_URLS = {
+    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+};
+const TILE_ATTRIBUTION = '&copy; OpenStreetMap &copy; CARTO';
 
 // Memoized zone icon creator - small markers for overview
 const zoneIconCache = {};
@@ -66,6 +69,48 @@ const createZoneIcon = (zone, small = true) => {
     });
 
     zoneIconCache[key] = icon;
+    return icon;
+};
+
+// GPS pulsing blue dot for user location
+const userLocationIconCache = {};
+const createUserLocationIcon = () => {
+    if (userLocationIconCache['user']) return userLocationIconCache['user'];
+    const icon = L.divIcon({
+        className: 'user-location-marker',
+        html: `
+      <div style="
+        width: 22px; height: 22px;
+        position: relative;
+        display: flex; align-items: center; justify-content: center;
+      ">
+        <div style="
+          position: absolute; width: 22px; height: 22px;
+          background: rgba(59,130,246,0.25);
+          border-radius: 50%;
+          animation: gps-pulse 2s ease-out infinite;
+        "></div>
+        <div style="
+          width: 14px; height: 14px;
+          background: #3b82f6;
+          border: 3px solid white;
+          border-radius: 50%;
+          box-shadow: 0 2px 8px rgba(59,130,246,0.5);
+          z-index: 1;
+        "></div>
+      </div>
+      <style>
+        @keyframes gps-pulse {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(3); opacity: 0; }
+        }
+      </style>
+    `,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11],
+        popupAnchor: [0, -11],
+    });
+    userLocationIconCache['user'] = icon;
     return icon;
 };
 
@@ -243,8 +288,10 @@ const CityMarker = React.memo(({ city, onClick, showCircle, onSelectStart, onSel
         onClick(city);
     }, [city, onClick]);
 
-    // Choose marker icon based on city properties
     const markerIcon = (() => {
+        if (city.isUser) {
+            return createUserLocationIcon();
+        }
         if (city.stopNumber !== undefined) {
             return createNumberedIcon(city.stopNumber, city.stopColor || ZONE_COLORS.green);
         }
@@ -375,6 +422,26 @@ const MapLegend = React.memo(() => (
 
 MapLegend.displayName = 'MapLegend';
 
+// Theme-aware tile layer that swaps on toggle
+const ThemeTileLayer = React.memo(({ theme }) => {
+    const map = useMap();
+    const tileRef = React.useRef(null);
+
+    React.useEffect(() => {
+        if (tileRef.current) {
+            map.removeLayer(tileRef.current);
+        }
+        const url = TILE_URLS[theme] || TILE_URLS.dark;
+        tileRef.current = L.tileLayer(url, { attribution: TILE_ATTRIBUTION }).addTo(map);
+        return () => {
+            if (tileRef.current) map.removeLayer(tileRef.current);
+        };
+    }, [theme, map]);
+
+    return null;
+});
+ThemeTileLayer.displayName = 'ThemeTileLayer';
+
 // Main SafetyMap component
 export default function SafetyMap({
     center = INDIA_CENTER,
@@ -393,6 +460,7 @@ export default function SafetyMap({
     height = '500px',
     className = '',
     fitBounds = null,
+    theme = 'dark',
 }) {
     const [mapReady, setMapReady] = useState(false);
 
@@ -448,7 +516,7 @@ export default function SafetyMap({
                 zoomControl={false}
                 whenReady={handleMapReady}
             >
-                <TileLayer url={TILE_URL} attribution={TILE_ATTRIBUTION} />
+                <ThemeTileLayer theme={theme} />
                 <ZoomControl position="topright" />
                 <MapController center={center} zoom={zoom} fitBounds={fitBounds} />
 

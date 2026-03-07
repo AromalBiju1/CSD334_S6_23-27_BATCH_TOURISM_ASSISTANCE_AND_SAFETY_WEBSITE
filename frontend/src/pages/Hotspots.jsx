@@ -440,7 +440,8 @@ export default function Hotspots() {
                                 showZoneCircles={false}
                                 showLegend={false}
                                 height="600px"
-                                className="border border-slate-800"
+                                className={isDark ? 'border border-slate-800' : 'border border-slate-200'}
+                                theme={theme}
                             />
                         </div>
 
