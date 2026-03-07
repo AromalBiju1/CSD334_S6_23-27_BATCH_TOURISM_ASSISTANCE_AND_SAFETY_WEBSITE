@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from routers.auth.deps import get_current_user
 from database import schemas,models
@@ -26,11 +27,16 @@ app.include_router(profile_routes.router)
 app.include_router(recommendations_router)
 
 origins = [
-    "http://localhost:5173",    # Your Frontend (Vite/React)
-    "http://127.0.0.1:5173",  # Your Frontend (Vite/React)
-    "http://localhost:8000",    # Swagger UI / Docs
-    "http://127.0.0.1:8000",  # Swagger UI / Docs
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
+
+# Add production Vercel URL from env
+vercel_url = os.getenv("FRONTEND_URL")
+if vercel_url:
+    origins.append(vercel_url)
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,7 +48,11 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "GuardMyTrip API is running"}
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
 @app.get("/me", response_model=schemas.UserResponse)
 def read_me(current_user = Depends(get_current_user)):
