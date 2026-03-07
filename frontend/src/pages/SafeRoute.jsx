@@ -58,6 +58,7 @@ export default function SafeRoute() {
     const [navigationStep, setNavigationStep] = useState(0);
     const [safetyAlert, setSafetyAlert] = useState(null);
     const navigationIntervalRef = useRef(null);
+    const lastZoneRef = useRef(null); // Track zone to avoid spamming toasts
 
     // Travel mode state
     const [travelMode, setTravelMode] = useState("driving"); // driving, walking, cycling
@@ -184,7 +185,7 @@ export default function SafeRoute() {
             lng: selectedRoute.path[0][1]
         });
         setSafetyAlert(null);
-        toast.success("Starting live navigation simulation...", { icon: "🚗" });
+        lastZoneRef.current = null;
     }, [selectedRoute]);
 
     const stopNavigation = useCallback(() => {
@@ -229,8 +230,12 @@ export default function SafeRoute() {
 
                             // Trigger auto-reroute
                             setTimeout(() => handleReroute(lat, lng), 2000);
-                        } else if (safetyData.zone === 'orange') {
-                            toast("⚠️ Caution: Moderate risk area nearby", { icon: "⚠️" });
+                        } else if (safetyData.zone === 'orange' && lastZoneRef.current !== 'orange') {
+                            lastZoneRef.current = 'orange';
+                            setSafetyAlert({ type: 'caution', message: 'Caution: Moderate risk area ahead' });
+                        } else if (safetyData.zone === 'green' && lastZoneRef.current !== 'green') {
+                            lastZoneRef.current = 'green';
+                            setSafetyAlert(null);
                         }
                     });
                 }
@@ -298,18 +303,18 @@ export default function SafeRoute() {
         [cities, zoneFilter]
     );
 
-    // Memoize origin/destination/user markers
+    // Memoize origin/destination/car markers
     const mapCities = useMemo(() => [
         startCity && { ...startCity, lat: startCity.latitude, lng: startCity.longitude, zone: "green", isStart: true },
         destCity && { ...destCity, lat: destCity.latitude, lng: destCity.longitude, zone: "red", isDest: true },
         currentLocation && {
-            id: "user-loc",
-            name: "Current Location",
+            id: "nav-car",
+            name: "Navigation",
             lat: currentLocation.lat,
             lng: currentLocation.lng,
-            zone: "user", // Custom zone for blue marker
+            zone: "user",
             safety_zone: "user",
-            isUser: true
+            isCar: true
         }
     ].filter(Boolean), [startCity, destCity, currentLocation]);
 
@@ -400,7 +405,7 @@ export default function SafeRoute() {
 
                     {/* Zone Filter Buttons */}
                     <div className="flex items-center gap-2 bg-slate-900/50 p-2 rounded-xl border border-slate-800 flex-wrap">
-                        <span className="text-sm text-slate-400 pl-2">Filter:</span>
+                        <span className={`text-sm pl-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Filter:</span>
                         <button
                             onClick={() => setZoneFilter('all')}
                             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${zoneFilter === 'all'
@@ -668,12 +673,14 @@ export default function SafeRoute() {
                                 </div>
 
                                 {safetyAlert ? (
-                                    <div className="mb-4 bg-red-500/20 border border-red-500/50 p-4 rounded-xl animate-pulse">
-                                        <div className="flex items-center gap-2 text-red-400 font-bold mb-1">
+                                    <div className={`mb-4 border p-4 rounded-xl ${safetyAlert.type === 'danger'
+                                        ? 'bg-red-500/20 border-red-500/50 animate-pulse'
+                                        : 'bg-amber-500/15 border-amber-500/40'}`}>
+                                        <div className={`flex items-center gap-2 font-bold mb-1 ${safetyAlert.type === 'danger' ? 'text-red-400' : 'text-amber-400'}`}>
                                             <AlertCircle size={20} />
-                                            REROUTING ALERT
+                                            {safetyAlert.type === 'danger' ? 'REROUTING ALERT' : 'CAUTION'}
                                         </div>
-                                        <p className="text-white text-sm">{safetyAlert.message}</p>
+                                        <p className={`text-sm ${isDark ? 'text-white' : 'text-slate-800'}`}>{safetyAlert.message}</p>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-2 gap-3 mb-4">

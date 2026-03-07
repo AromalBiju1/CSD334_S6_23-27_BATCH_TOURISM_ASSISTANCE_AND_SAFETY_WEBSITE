@@ -114,6 +114,45 @@ const createUserLocationIcon = () => {
     return icon;
 };
 
+// Car navigation marker icon
+const createCarIcon = () => {
+    return L.divIcon({
+        className: 'car-nav-marker',
+        html: `
+      <div style="
+        width: 36px; height: 36px;
+        display: flex; align-items: center; justify-content: center;
+        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+      ">
+        <div style="
+          width: 36px; height: 36px;
+          background: linear-gradient(135deg, #06b6d4, #3b82f6);
+          border: 3px solid white;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          box-shadow: 0 2px 12px rgba(6,182,212,0.5);
+          animation: car-bounce 1s ease-in-out infinite;
+        ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="none">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9L18 10l-2.8-4.7c-.4-.7-1.1-1.3-2-1.3H10.8c-.9 0-1.6.6-2 1.3L6 10l-2.5 1.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+      </div>
+      <style>
+        @keyframes car-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+      </style>
+    `,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+        popupAnchor: [0, -18],
+    });
+};
+
 // Large pin-style icon for Start/Destination markers
 const createLargeZoneIcon = (zone) => {
     const color = ZONE_COLORS[zone] || '#22c55e';
@@ -289,6 +328,9 @@ const CityMarker = React.memo(({ city, onClick, showCircle, onSelectStart, onSel
     }, [city, onClick]);
 
     const markerIcon = (() => {
+        if (city.isCar) {
+            return createCarIcon();
+        }
         if (city.isUser) {
             return createUserLocationIcon();
         }
