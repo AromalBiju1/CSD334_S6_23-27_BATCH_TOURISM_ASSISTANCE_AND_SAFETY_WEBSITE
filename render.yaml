@@ -11,4 +11,8 @@ services:
         sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: JWT_PRIVATE_KEY
+        sync: false
+      - key: JWT_PUBLIC_KEY
+        sync: false
     healthCheckPath: /health
