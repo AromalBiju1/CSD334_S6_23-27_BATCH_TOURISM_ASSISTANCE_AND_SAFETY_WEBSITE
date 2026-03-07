@@ -36,7 +36,7 @@ origins = [
 # Add production Vercel URL from env
 vercel_url = os.getenv("FRONTEND_URL")
 if vercel_url:
-    origins.append(vercel_url)
+    origins.append(vercel_url.rstrip('/'))
 
 app.add_middleware(
     CORSMiddleware,
