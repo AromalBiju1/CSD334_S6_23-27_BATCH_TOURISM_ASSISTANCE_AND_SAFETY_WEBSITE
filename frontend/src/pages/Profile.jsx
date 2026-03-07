@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import {
     User, Mail, LogOut, Shield, Calendar, MapPin, Navigation,
-    Star, Bell, Settings, ChevronRight, Map, Phone, Heart
+    Star, Bell, Settings, ChevronRight, Map, Phone, Heart, Loader, Activity
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { getProfileInfo, getRecentActivity } from '../api/services';
 
 export default function Profile() {
     const { user, logout } = useAuth();
@@ -20,6 +21,30 @@ export default function Profile() {
         navigate('/');
     };
 
+    const [profileData, setProfileData] = useState(null);
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProfileData = async () => {
+            if (!user) return;
+            try {
+                const [info, recentLogs] = await Promise.all([
+                    getProfileInfo(),
+                    getRecentActivity()
+                ]);
+                setProfileData(info);
+                setActivities(recentLogs);
+            } catch (err) {
+                console.error("Failed to load profile data", err);
+                toast.error("Failed to load profile statistics.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfileData();
+    }, [user]);
+
     if (!user) {
         return null;
     }
@@ -32,15 +57,9 @@ export default function Profile() {
     ];
 
     const stats = [
-        { label: 'Trips Viewed', value: '12', icon: <Map size={16} /> },
-        { label: 'Routes Planned', value: '5', icon: <Navigation size={16} /> },
-        { label: 'Cities Explored', value: '8', icon: <MapPin size={16} /> },
-    ];
-
-    const recentActivity = [
-        { title: 'Explored Delhi Safety Map', time: '2 days ago', icon: <Map size={16} className="text-emerald-400" /> },
-        { title: 'Planned route to Jaipur', time: '5 days ago', icon: <Navigation size={16} className="text-blue-400" /> },
-        { title: 'Checked Mumbai hotspots', time: '1 week ago', icon: <MapPin size={16} className="text-orange-400" /> },
+        { label: 'Routes Planned', value: profileData?.stats?.routes_planned || 0, icon: <Navigation size={16} />, onClick: () => navigate('/profile/routes-planned'), color: 'text-emerald-400' },
+        { label: 'Cities Explored', value: profileData?.stats?.cities_explored || 0, icon: <MapPin size={16} />, color: 'text-orange-400' },
+        { label: 'Total km Saved', value: profileData?.stats?.total_km || 0, icon: <Map size={16} />, color: 'text-blue-400' },
     ];
 
     return (
@@ -88,10 +107,14 @@ export default function Profile() {
                 {/* Stats Row */}
                 <div className="grid grid-cols-3 gap-4 mb-6">
                     {stats.map((stat, index) => (
-                        <div key={index} className={`border rounded-2xl p-4 text-center ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-                            <div className={`flex items-center justify-center gap-2 mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <div
+                            key={index}
+                            onClick={stat.onClick}
+                            className={`border rounded-2xl p-4 text-center ${stat.onClick ? 'cursor-pointer hover:border-emerald-500/50 transition-colors' : ''} ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}
+                        >
+                            <div className={`flex items-center justify-center gap-2 mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'} ${stat.color}`}>
                                 {stat.icon}
-                                <span className="text-xs">{stat.label}</span>
+                                <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>{stat.label}</span>
                             </div>
                             <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{stat.value}</p>
                         </div>
@@ -128,18 +151,31 @@ export default function Profile() {
                             Recent Activity
                         </h2>
                         <div className="space-y-3">
-                            {recentActivity.map((activity, index) => (
-                                <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-slate-800/30' : 'bg-slate-50'}`}>
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`}>
-                                        {activity.icon}
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className={`text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>{activity.title}</p>
-                                        <p className="text-xs text-slate-500">{activity.time}</p>
-                                    </div>
-                                    <ChevronRight size={16} className="text-slate-600" />
+                            {loading ? (
+                                <div className="flex justify-center p-4">
+                                    <Loader className="animate-spin text-blue-400" size={24} />
                                 </div>
-                            ))}
+                            ) : activities.length > 0 ? activities.map((activity, index) => {
+                                let IconCmp = Activity;
+                                let iconColor = "text-emerald-400";
+                                if (activity.action_type === 'explore') { IconCmp = Map; iconColor = "text-blue-400"; }
+                                if (activity.action_type === 'plan') { IconCmp = Navigation; iconColor = "text-emerald-400"; }
+                                if (activity.action_type === 'hotspots') { IconCmp = MapPin; iconColor = "text-orange-400"; }
+
+                                return (
+                                    <div key={index} className={`flex items-center gap-3 p-3 rounded-xl ${isDark ? 'bg-slate-800/30' : 'bg-slate-50'}`}>
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isDark ? 'bg-slate-800' : 'bg-slate-200'} ${iconColor}`}>
+                                            <IconCmp size={16} />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className={`text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>{activity.title}</p>
+                                            <p className="text-xs text-slate-500">{new Date(activity.created_at).toLocaleDateString()}</p>
+                                        </div>
+                                    </div>
+                                )
+                            }) : (
+                                <p className="text-slate-500 text-sm italic">No recent activity.</p>
+                            )}
                         </div>
                     </div>
 
@@ -151,16 +187,16 @@ export default function Profile() {
                         </h2>
                         <div className="space-y-3">
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
-                                <span className="text-sm text-slate-300">Preferred Zone</span>
-                                <span className="text-sm text-emerald-400 font-medium">Green Zones Only</span>
+                                <span className="text-sm text-slate-300">Profile Built</span>
+                                <span className="text-sm text-emerald-400 font-medium">True</span>
                             </div>
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
                                 <span className="text-sm text-slate-300">Notifications</span>
-                                <span className="text-sm text-blue-400 font-medium">Enabled</span>
+                                <span className="text-sm text-blue-400 font-medium">{profileData?.preferences?.notifications_enabled ? "Enabled" : "Disabled"}</span>
                             </div>
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
-                                <span className="text-sm text-slate-300">Language</span>
-                                <span className="text-sm text-white font-medium">English</span>
+                                <span className="text-sm text-slate-300">Profile Visibility</span>
+                                <span className={`text-sm font-medium ${profileData?.privacy?.is_public ? 'text-emerald-400' : 'text-slate-400'}`}>{profileData?.privacy?.is_public ? "Public" : "Private"}</span>
                             </div>
                         </div>
                     </div>
@@ -179,8 +215,11 @@ export default function Profile() {
                                 <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Change Password</span>
                                 <ChevronRight size={16} className="text-slate-600" />
                             </button>
-                            <button className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors text-left">
-                                <span className="text-sm text-slate-300">Privacy Settings</span>
+                            <button
+                                onClick={() => navigate('/profile/privacy')}
+                                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/50 transition-colors text-left"
+                            >
+                                <span className={`text-sm ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>Privacy Settings</span>
                                 <ChevronRight size={16} className="text-slate-600" />
                             </button>
                             <button

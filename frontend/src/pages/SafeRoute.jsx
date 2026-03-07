@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { Search, Navigation, ChevronDown, MapPin, Loader, AlertCircle, Shield, Zap, Scale, Bot, ChevronRight, Car, Locate } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
 import { useTheme } from "../context/ThemeContext";
-import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition } from "../api/services";
+import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition, logActivity } from "../api/services";
 import toast from "react-hot-toast";
 
 // Route type icons and labels
@@ -132,6 +132,7 @@ export default function SafeRoute() {
                 setAnimating(true);
                 setTimeout(() => setAnimating(false), 3000);
 
+                logActivity('plan', `Planned route to ${destCity.name}`);
                 toast.success(`🛡️ Safety Agent found ${data.routes.length} route${data.routes.length > 1 ? 's' : ''}!`);
             } else {
                 toast.error("No routes found");

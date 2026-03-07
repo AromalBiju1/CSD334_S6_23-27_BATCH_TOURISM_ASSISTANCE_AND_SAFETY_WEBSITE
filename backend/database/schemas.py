@@ -156,10 +156,6 @@ class UserProfileResponse(BaseModel):
     class Config:
         from_attributes = True
 
-class PasswordChangeRequest(BaseModel):
-    old_password: str
-    new_password: str
-
 class ProfileUpdate(BaseModel):
     name: str
     email: EmailStr
@@ -229,3 +225,33 @@ class RecommendationResponse(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     description: Optional[str] = None
+
+class ActivityHistoryBase(BaseModel):
+    action_type: str
+    title: str
+
+class ActivityLogRequest(ActivityHistoryBase):
+    pass
+
+class ActivityHistoryResponse(ActivityHistoryBase):
+    id: int
+    user_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class PrivacySettingsUpdate(BaseModel):
+    is_public: bool
+    notifications_enabled: bool
+
+class RouteSavedResponse(BaseModel):
+    id: int
+    origin: str
+    destination: str
+    distance_km: float
+    safety_score: float
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True

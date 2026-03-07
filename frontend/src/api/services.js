@@ -193,3 +193,35 @@ export const searchAttractionsForMarking = async (search = "") => {
     const response = await api.get('/api/user-recommendations/all-attractions', { params: { search } });
     return response.data;
 };
+
+// ── Profile & Privacy API ──
+
+export const getProfileInfo = async () => {
+    const response = await api.get('/api/profile/me');
+    return response.data;
+};
+
+export const getRecentActivity = async () => {
+    const response = await api.get('/api/profile/activity');
+    return response.data;
+};
+
+export const logActivity = async (actionType, title) => {
+    try {
+        const response = await api.post('/api/profile/activity', { action_type: actionType, title });
+        return response.data;
+    } catch (err) {
+        console.error("Failed to log activity", err);
+        return null; // Don't crash UI on analytics failure
+    }
+};
+
+export const updatePrivacySettings = async (data) => {
+    const response = await api.put('/api/profile/privacy', data);
+    return response.data;
+};
+
+export const getSavedRoutes = async () => {
+    const response = await api.get('/api/profile/saved-routes');
+    return response.data;
+};

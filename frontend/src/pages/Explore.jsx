@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Map, List, Loader, AlertCircle } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
-import { getCities, getCitiesByZone, searchCities } from "../api/services";
+import { getCities, getCitiesByZone, searchCities, logActivity } from "../api/services";
 import { useTheme } from "../context/ThemeContext";
 
 export default function Explore() {
@@ -49,6 +49,7 @@ export default function Explore() {
 
     const handleCityClick = (city) => {
         setSelectedCity(city);
+        logActivity('explore', `Explored Safety Map for ${city.name}`);
     };
 
     const getZoneColor = (zone) => {

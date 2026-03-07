@@ -79,3 +79,38 @@ def change_password(
     db.commit()
     
     return {"message": "Password changed successfully!"}
+
+
+@router.get("/activity", response_model=list[schemas.ActivityHistoryResponse])
+def get_recent_activity(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    activities = db.query(models.ActivityHistory).filter(
+        models.ActivityHistory.user_id == current_user.id
+    ).order_by(models.ActivityHistory.created_at.desc()).limit(10).all()
+    return activities
+
+@router.post("/activity", response_model=schemas.ActivityHistoryResponse)
+def log_activity(data: schemas.ActivityLogRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    new_activity = models.ActivityHistory(
+        user_id=current_user.id,
+        action_type=data.action_type,
+        title=data.title
+    )
+    db.add(new_activity)
+    db.commit()
+    db.refresh(new_activity)
+    return new_activity
+
+@router.put("/privacy", response_model=schemas.UserPrivacy)
+def update_privacy(data: schemas.PrivacySettingsUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    current_user.is_public = data.is_public
+    current_user.notifications_enabled = data.notifications_enabled
+    db.commit()
+    db.refresh(current_user)
+    return {"is_public": current_user.is_public}
+
+@router.get("/saved-routes", response_model=list[schemas.RouteSavedResponse])
+def get_saved_routes(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    routes = db.query(models.SavedRoute).filter(
+        models.SavedRoute.user_id == current_user.id
+    ).order_by(models.SavedRoute.created_at.desc()).all()
+    return routes

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Search, MapPin, Star, ChevronDown, Loader, Navigation, X, Route } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
-import { getAllAttractions, getCities } from "../api/services";
+import { getAllAttractions, getCities, logActivity } from "../api/services";
 import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 
@@ -177,11 +177,13 @@ export default function Hotspots() {
             const updated = [...prev, attraction];
             if (updated.length >= 2) {
                 const last = updated[updated.length - 2];
+                logActivity('hotspots', `Routed tour to ${attraction.name}`);
                 toast.success(
                     `Route: ${last.name} → ${attraction.name}`,
                     { icon: "🗺️", duration: 2500 }
                 );
             } else {
+                logActivity('hotspots', `Checked hotspots at ${attraction.name}`);
                 toast.success(`Tour started at ${attraction.name}`, { icon: "📍", duration: 2000 });
             }
             return updated;

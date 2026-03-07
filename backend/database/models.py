@@ -25,6 +25,7 @@ class User(Base):
     saved_routes = relationship("SavedRoute", back_populates="user")
     preferences = relationship("UserPreference", back_populates="user", uselist=False)
     visited_places = relationship("VisitedPlace", back_populates="user")
+    activities = relationship("ActivityHistory", back_populates="user")
 
 class City(Base):
     __tablename__ = "cities"
@@ -112,3 +113,13 @@ class VisitedPlace(Base):
 
     user = relationship("User", back_populates="visited_places")
     attraction = relationship("Attraction")
+
+class ActivityHistory(Base):
+    __tablename__ = "activity_history"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    action_type = Column(String, nullable=False) # e.g., "explore", "plan", "hotspots"
+    title = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="activities")

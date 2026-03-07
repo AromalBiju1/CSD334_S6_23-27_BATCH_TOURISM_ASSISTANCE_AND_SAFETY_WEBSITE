@@ -17,6 +17,8 @@ import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
 import ChangePassword from './pages/ChangePassword';
 import Recommendations from './pages/Recommendations';
+import PrivacySettings from './pages/PrivacySettings';
+import RoutesPlanned from './pages/RoutesPlanned';
 
 function AppContent() {
   const { theme } = useTheme();
@@ -52,6 +54,12 @@ function AppContent() {
         } />
         <Route path='/profile/change-password' element={
           <ProtectedRoute><ChangePassword /></ProtectedRoute>
+        } />
+        <Route path='/profile/privacy' element={
+          <ProtectedRoute><PrivacySettings /></ProtectedRoute>
+        } />
+        <Route path='/profile/routes-planned' element={
+          <ProtectedRoute><RoutesPlanned /></ProtectedRoute>
         } />
         <Route path='/recommendations' element={
           <ProtectedRoute><Recommendations /></ProtectedRoute>
