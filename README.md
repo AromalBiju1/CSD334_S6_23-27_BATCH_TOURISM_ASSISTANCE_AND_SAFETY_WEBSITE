@@ -1,5 +1,7 @@
 # 🧭 Tourist Assistance & Safety Website
 
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_Site-brightgreen?style=for-the-badge)](https://csd-334-s6-23-27-batch-tourism-assi.vercel.app/)
+
 A smart, safety-focused web platform designed to enhance the travel experience by combining tourist hotspot discovery with real-time safety-aware navigation and emergency support tools.
 
 ---
