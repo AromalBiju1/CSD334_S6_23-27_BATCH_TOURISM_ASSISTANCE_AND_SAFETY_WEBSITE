@@ -6,7 +6,11 @@ from config.config import database_url
 
 # Render provides postgres:// but SQLAlchemy needs postgresql://
 db_url = database_url
-if db_url and db_url.startswith("postgres://"):
+
+if not db_url:
+    # Build steps on platforms like Render may import this file without env vars
+    db_url = "sqlite:///./test.db"
+elif db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(
