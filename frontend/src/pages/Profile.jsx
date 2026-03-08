@@ -81,11 +81,11 @@ export default function Profile() {
                 <div className={`bg-gradient-to-br from-emerald-500/10 to-blue-500/10 border rounded-3xl p-8 mb-6 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         {/* Avatar */}
-                        <div className="w-24 h-24 rounded-full bg-emerald-500/20 border-4 border-emerald-500/30 flex items-center justify-center overflow-hidden">
+                        <div className={`w-24 h-24 rounded-full border-4 flex items-center justify-center overflow-hidden transition-colors ${isDark ? 'bg-emerald-500/20 border-emerald-500/30' : 'bg-white border-slate-100 shadow-sm'}`}>
                             {user.profile_pic ? (
                                 <img src={user.profile_pic} alt={user.name} className="w-full h-full object-cover" />
                             ) : (
-                                <User className="text-emerald-400" size={40} />
+                                <User className={isDark ? "text-emerald-400" : "text-slate-300"} size={40} />
                             )}
                         </div>
 

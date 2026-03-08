@@ -79,16 +79,15 @@ export default function Navbar() {
 
                         {isAuthenticated ? (
                             <>
-                                {/* Profile Icon */}
                                 <Link
                                     to="/profile"
                                     className={`flex items-center gap-2 transition-colors ${isDark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'}`}
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center overflow-hidden">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden transition-colors ${isDark ? 'bg-emerald-500/20 border border-emerald-500/30' : 'bg-slate-100 border border-slate-200'}`}>
                                         {user?.profile_pic ? (
                                             <img src={user.profile_pic} alt={user.name} className="w-full h-full object-cover" />
                                         ) : (
-                                            <User size={16} className="text-emerald-400" />
+                                            <User size={16} className={isDark ? "text-emerald-400" : "text-slate-500"} />
                                         )}
                                     </div>
                                 </Link>
