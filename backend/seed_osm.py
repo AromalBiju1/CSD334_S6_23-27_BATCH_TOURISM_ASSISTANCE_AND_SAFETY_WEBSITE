@@ -17,9 +17,9 @@ CATEGORIES = {
     'Fort': 'historic=fort',
     'Beach': 'natural=beach',
     'Museum': 'tourism=museum',
-    'Park': 'leisure=park'
 }
 LIMIT_PER_CATEGORY_PER_CITY = 3
+FETCH_LIMIT = 15
 
 def get_wikipedia_thumbnail(title):
     try:
@@ -45,9 +45,9 @@ def fetch_osm_data(city_name, category, tag):
     [out:json][timeout:25];
     area[name="{city_name}"]->.searchArea;
     node[{tag}](area.searchArea);
-    out {LIMIT_PER_CATEGORY_PER_CITY};
+    out {FETCH_LIMIT};
     way[{tag}](area.searchArea);
-    out center {LIMIT_PER_CATEGORY_PER_CITY};
+    out center {FETCH_LIMIT};
     """
     
     url = "https://overpass-api.de/api/interpreter"
@@ -78,9 +78,17 @@ def run_seeder():
                 
                 added_for_cat = 0
                 for place in results:
+                    if added_for_cat >= LIMIT_PER_CATEGORY_PER_CITY:
+                        break
+                        
                     tags = place.get('tags', {})
                     name = tags.get('name') or tags.get('name:en')
                     if not name:
+                        continue
+                        
+                    # Skip generic or misspelled names
+                    lower_name = name.strip().lower()
+                    if lower_name in ['temple', 'hindu temple', 'temble', 'church', 'mosque', 'park', 'beach', 'monument']:
                         continue
                         
                     # Skip if already exists

@@ -209,6 +209,7 @@ class VisitedPlaceResponse(BaseModel):
     attraction_name: Optional[str] = None
     attraction_category: Optional[str] = None
     city_name: Optional[str] = None
+    image_url: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -225,6 +226,7 @@ class RecommendationResponse(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     description: Optional[str] = None
+    image_url: Optional[str] = None
 
 class ActivityHistoryBase(BaseModel):
     action_type: str

@@ -58,6 +58,7 @@ def list_attractions(
             "longitude": attr.longitude if attr.longitude else (attr.city.longitude if attr.city else None),
             "description": attr.description,
             "city_name": attr.city.name if attr.city else None,
+            "image_url": attr.image_url,
         }
         result.append(data)
 

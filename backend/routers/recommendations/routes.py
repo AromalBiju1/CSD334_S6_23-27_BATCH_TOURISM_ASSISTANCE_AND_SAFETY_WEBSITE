@@ -162,6 +162,7 @@ def add_visited_place(
         "attraction_name": attr.name,
         "attraction_category": attr.category,
         "city_name": city.name if city else None,
+        "image_url": attr.image_url,
     }
 
 
@@ -360,6 +361,7 @@ def get_recommendations(
             "latitude": attr.latitude or (city.latitude if city else None),
             "longitude": attr.longitude or (city.longitude if city else None),
             "description": attr.description,
+            "image_url": attr.image_url,
         })
     
     # 5. Sort by composite score (descending), then rating
