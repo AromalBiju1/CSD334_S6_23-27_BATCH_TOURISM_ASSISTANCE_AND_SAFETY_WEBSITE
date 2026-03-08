@@ -207,10 +207,7 @@ export default function Profile() {
                             Preferences
                         </h2>
                         <div className="space-y-3">
-                            <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
-                                <span className="text-sm text-slate-300">Profile Built</span>
-                                <span className="text-sm text-emerald-400 font-medium">True</span>
-                            </div>
+
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
                                 <span className="text-sm text-slate-300">Notifications</span>
                                 <span className="text-sm text-blue-400 font-medium">{profileData?.preferences?.notifications_enabled ? "Enabled" : "Disabled"}</span>
