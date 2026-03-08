@@ -160,43 +160,6 @@ export default function Recommendations() {
         return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${c.cls}`}>{c.label}</span>;
     };
 
-    if (loading) {
-        return (
-            <main className="pt-16 min-h-screen w-full">
-                <div className="w-full max-w-6xl mx-auto px-6 md:px-16 py-8">
-                    <div className="mb-8">
-                        <div className={`h-8 w-48 rounded-lg animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                        <div className={`h-4 w-72 mt-3 rounded-lg animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                    </div>
-                    <div className="grid lg:grid-cols-3 gap-6">
-                        <div className="lg:col-span-1 space-y-6">
-                            {[1, 2].map(i => (
-                                <div key={i} className={`rounded-2xl border p-6 ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
-                                    <div className={`h-5 w-32 rounded animate-pulse mb-4 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                                    <div className="space-y-3">
-                                        {[1, 2, 3].map(j => (
-                                            <div key={j} className={`h-10 rounded-xl animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className={`rounded-2xl border p-5 ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
-                                    <div className={`h-5 w-36 rounded animate-pulse mb-3 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                                    <div className={`h-4 w-24 rounded animate-pulse mb-4 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                                    <div className={`h-3 w-full rounded animate-pulse mb-2 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                                    <div className={`h-3 w-3/4 rounded animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </main>
-        );
-    }
-
     const renderedRecommendations = useMemo(() => {
         if (recsLoading) {
             return (
@@ -298,6 +261,43 @@ export default function Recommendations() {
             </div>
         );
     }, [recommendations, recsLoading, isDark, handleAddVisited]);
+
+    if (loading) {
+        return (
+            <main className="pt-16 min-h-screen w-full">
+                <div className="w-full max-w-6xl mx-auto px-6 md:px-16 py-8">
+                    <div className="mb-8">
+                        <div className={`h-8 w-48 rounded-lg animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                        <div className={`h-4 w-72 mt-3 rounded-lg animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                    </div>
+                    <div className="grid lg:grid-cols-3 gap-6">
+                        <div className="lg:col-span-1 space-y-6">
+                            {[1, 2].map(i => (
+                                <div key={i} className={`rounded-2xl border p-6 ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
+                                    <div className={`h-5 w-32 rounded animate-pulse mb-4 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                                    <div className="space-y-3">
+                                        {[1, 2, 3].map(j => (
+                                            <div key={j} className={`h-10 rounded-xl animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
+                            {[1, 2, 3, 4].map(i => (
+                                <div key={i} className={`rounded-2xl border p-5 ${isDark ? 'bg-slate-900/50 border-slate-800' : 'bg-white border-slate-200'}`}>
+                                    <div className={`h-5 w-36 rounded animate-pulse mb-3 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                                    <div className={`h-4 w-24 rounded animate-pulse mb-4 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                                    <div className={`h-3 w-full rounded animate-pulse mb-2 ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                                    <div className={`h-3 w-3/4 rounded animate-pulse ${isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="pt-16 min-h-screen w-full">
