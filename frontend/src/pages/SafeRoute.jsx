@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { Search, Navigation, ChevronDown, MapPin, Loader, AlertCircle, Shield, Zap, Scale, Bot, ChevronRight, Car, Locate } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
 import { useTheme } from "../context/ThemeContext";
-import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition, logActivity, saveRoute } from "../api/services";
+import { getCities, getSmartRoutes, getRouteAlternatives, logActivity, saveRoute } from "../api/services";
 import toast from "react-hot-toast";
 
 // Route type icons and labels
@@ -52,13 +52,7 @@ export default function SafeRoute() {
     const [agentSummary, setAgentSummary] = useState("");
     const [showAgentReasoning, setShowAgentReasoning] = useState(false);
 
-    // Navigation state
-    const [isNavigating, setIsNavigating] = useState(false);
-    const [currentLocation, setCurrentLocation] = useState(null);
-    const [navigationStep, setNavigationStep] = useState(0);
-    const [safetyAlert, setSafetyAlert] = useState(null);
-    const navigationIntervalRef = useRef(null);
-    const lastZoneRef = useRef(null); // Track zone to avoid spamming toasts
+    // Navigation state removed per user request
 
     // Travel mode state
     const [travelMode, setTravelMode] = useState("driving"); // driving, walking, cycling
@@ -191,117 +185,7 @@ export default function SafeRoute() {
         }
     }, []);
 
-    // Navigation Simulation Logic
-    const startNavigation = useCallback(() => {
-        if (!selectedRoute?.path || selectedRoute.path.length === 0) return;
 
-        setIsNavigating(true);
-        setNavigationStep(0);
-        setCurrentLocation({
-            lat: selectedRoute.path[0][0],
-            lng: selectedRoute.path[0][1]
-        });
-        setSafetyAlert(null);
-        lastZoneRef.current = null;
-    }, [selectedRoute]);
-
-    const stopNavigation = useCallback(() => {
-        setIsNavigating(false);
-        setCurrentLocation(null);
-        setNavigationStep(0);
-        setSafetyAlert(null);
-        if (navigationIntervalRef.current) clearInterval(navigationIntervalRef.current);
-    }, []);
-
-    // Actual Navigation Loop
-    useEffect(() => {
-        if (!isNavigating || !selectedRoute) return;
-
-        navigationIntervalRef.current = setInterval(async () => {
-            setNavigationStep(prev => {
-                const nextStep = prev + 5; // Move faster for demo: +5 points
-                if (nextStep >= selectedRoute.path.length) {
-                    stopNavigation();
-                    toast.success("You have arrived at your destination!");
-                    return prev;
-                }
-
-                const currentPos = selectedRoute.path[nextStep];
-                const lat = currentPos[0];
-                const lng = currentPos[1];
-                setCurrentLocation({ lat, lng });
-
-                // Check safety every 10 steps (~2 seconds in sim)
-                if (nextStep % 10 === 0) {
-                    checkPositionSafety(lat, lng).then(safetyData => {
-                        if (safetyData.trigger_reroute) {
-                            // Pause navigation and reroute
-                            clearInterval(navigationIntervalRef.current);
-                            setSafetyAlert({
-                                type: "danger",
-                                message: safetyData.message,
-                                district: safetyData.nearest_district
-                            });
-
-                            toast.error("⚠️ Entering High-Risk Zone! Rerouting...", { duration: 4000 });
-
-                            // Trigger auto-reroute
-                            setTimeout(() => handleReroute(lat, lng), 2000);
-                        } else if (safetyData.zone === 'orange' && lastZoneRef.current !== 'orange') {
-                            lastZoneRef.current = 'orange';
-                            setSafetyAlert({ type: 'caution', message: 'Caution: Moderate risk area ahead' });
-                        } else if (safetyData.zone === 'green' && lastZoneRef.current !== 'green') {
-                            lastZoneRef.current = 'green';
-                            setSafetyAlert(null);
-                        }
-                    });
-                }
-
-                return nextStep;
-            });
-        }, 200); // 200ms tick for smooth simulation
-
-        return () => {
-            if (navigationIntervalRef.current) clearInterval(navigationIntervalRef.current);
-        };
-    }, [isNavigating, selectedRoute]);
-
-    const handleReroute = async (currentLat, currentLng) => {
-        setLoading(true);
-        try {
-            const data = await rerouteFromPosition(
-                currentLat,
-                currentLng,
-                destCity.latitude,
-                destCity.longitude,
-                destCity.name
-            );
-
-            if (data.routes && data.routes.length > 0) {
-                setRoutes(data.routes);
-                setSelectedRouteIndex(data.recommended_index);
-                setNavigationStep(0); // Reset to start of new route
-                setSafetyAlert(null);
-
-                // Resume navigation on new route
-                navigationIntervalRef.current = setInterval(() => {
-                    // ... logic resumes in next effect cycle ...
-                    // Actually we need to set isNavigating to true to ensure effect picks up new route
-                    setIsNavigating(true);
-                }, 200);
-
-                toast.success("✅ Rerouted successfully to safer path!");
-                setAgentSummary(data.agent_summary);
-            } else {
-                toast.error("Could not find a safer route. Proceed with extreme caution.");
-            }
-        } catch (error) {
-            console.error("Reroute failed:", error);
-            toast.error("Rerouting failed. Please check connection.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     // Memoize displayed cities to prevent re-filtering on every keystroke
     const displayedCities = useMemo(() =>
@@ -323,17 +207,8 @@ export default function SafeRoute() {
     // Memoize origin/destination/car markers
     const mapCities = useMemo(() => [
         startCity && { ...startCity, lat: startCity.latitude, lng: startCity.longitude, zone: "green", isStart: true },
-        destCity && { ...destCity, lat: destCity.latitude, lng: destCity.longitude, zone: "red", isDest: true },
-        currentLocation && {
-            id: "nav-car",
-            name: "Navigation",
-            lat: currentLocation.lat,
-            lng: currentLocation.lng,
-            zone: "user",
-            safety_zone: "user",
-            isCar: true
-        }
-    ].filter(Boolean), [startCity, destCity, currentLocation]);
+        destCity && { ...destCity, lat: destCity.latitude, lng: destCity.longitude, zone: "red", isDest: true }
+    ].filter(Boolean), [startCity, destCity]);
 
     // Handlers for Map Interactions
     const handleSelectStart = useCallback((city) => {
@@ -671,184 +546,124 @@ export default function SafeRoute() {
                             </div>
                         )}
 
-                        {/* Selected Route Details - or Navigation Dashboard */}
-                        {isNavigating ? (
-                            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-xl ring-1 ring-cyan-500/50 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-pulse"></div>
-
-                                <div className="flex justify-between items-center mb-4">
-                                    <h4 className="flex items-center gap-2 text-cyan-400 font-bold text-lg animate-pulse">
-                                        <Navigation className="animate-bounce" size={20} />
-                                        Live Navigation
+                        {/* Selected Route Details */}
+                        {selectedRoute && (
+                            <div className={`border rounded-2xl p-5 ${selectedRoute.safety_score >= 60
+                                ? 'bg-emerald-500/10 border-emerald-500/30'
+                                : 'bg-orange-500/10 border-orange-500/30'
+                                }`}>
+                                <div className="flex justify-between items-start mb-3">
+                                    <h4 className={`font-semibold ${selectedRoute.safety_score >= 60 ? 'text-emerald-400' : 'text-orange-400'
+                                        }`}>
+                                        📍 Selected Route Details
                                     </h4>
-                                    <button
-                                        onClick={stopNavigation}
-                                        className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg text-xs hover:bg-red-500/30 transition-colors"
-                                    >
-                                        Stop
-                                    </button>
                                 </div>
 
-                                {safetyAlert ? (
-                                    <div className={`mb-4 border p-4 rounded-xl ${safetyAlert.type === 'danger'
-                                        ? 'bg-red-500/20 border-red-500/50 animate-pulse'
-                                        : 'bg-amber-500/15 border-amber-500/40'}`}>
-                                        <div className={`flex items-center gap-2 font-bold mb-1 ${safetyAlert.type === 'danger' ? 'text-red-400' : 'text-amber-400'}`}>
-                                            <AlertCircle size={20} />
-                                            {safetyAlert.type === 'danger' ? 'REROUTING ALERT' : 'CAUTION'}
-                                        </div>
-                                        <p className={`text-sm ${isDark ? 'text-white' : 'text-slate-800'}`}>{safetyAlert.message}</p>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-400">Type:</span>
+                                        <span className="text-white capitalize">{selectedRoute.route_type.replace('_', ' ')}</span>
                                     </div>
-                                ) : (
-                                    <div className="grid grid-cols-2 gap-3 mb-4">
-                                        <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-700">
-                                            <p className="text-slate-400 text-xs">Speed</p>
-                                            <p className="text-white font-mono text-lg">45 km/h</p>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-400">Total Distance:</span>
+                                        <span className="text-white">{selectedRoute.distance}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-400">Est. Duration:</span>
+                                        <span className="text-white">{selectedRoute.duration}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-400">Safety Score:</span>
+                                        <span className={`font-bold ${selectedRoute.safety_score >= 60 ? 'text-emerald-400' : 'text-orange-400'
+                                            }`}>
+                                            {selectedRoute.safety_score}%
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Zone Breakdown Bar */}
+                                {selectedRoute.zone_breakdown && Object.keys(selectedRoute.zone_breakdown).length > 0 && (
+                                    <div className="mt-3 pt-3 border-t border-slate-700">
+                                        <p className="text-xs text-slate-400 mb-2">Zone Breakdown</p>
+                                        <div className="flex rounded-full overflow-hidden h-2.5">
+                                            {selectedRoute.zone_breakdown.green > 0 && (
+                                                <div
+                                                    className="bg-emerald-500 h-full"
+                                                    style={{ width: `${selectedRoute.zone_breakdown.green}%` }}
+                                                    title={`Safe: ${selectedRoute.zone_breakdown.green}%`}
+                                                />
+                                            )}
+                                            {selectedRoute.zone_breakdown.orange > 0 && (
+                                                <div
+                                                    className="bg-amber-500 h-full"
+                                                    style={{ width: `${selectedRoute.zone_breakdown.orange}%` }}
+                                                    title={`Moderate: ${selectedRoute.zone_breakdown.orange}%`}
+                                                />
+                                            )}
+                                            {selectedRoute.zone_breakdown.red > 0 && (
+                                                <div
+                                                    className="bg-rose-500 h-full"
+                                                    style={{ width: `${selectedRoute.zone_breakdown.red}%` }}
+                                                    title={`High Risk: ${selectedRoute.zone_breakdown.red}%`}
+                                                />
+                                            )}
+                                            {selectedRoute.zone_breakdown.unknown > 0 && (
+                                                <div
+                                                    className="bg-slate-600 h-full"
+                                                    style={{ width: `${selectedRoute.zone_breakdown.unknown}%` }}
+                                                    title={`Unknown: ${selectedRoute.zone_breakdown.unknown}%`}
+                                                />
+                                            )}
                                         </div>
-                                        <div className="bg-slate-900/50 p-3 rounded-xl border border-slate-700">
-                                            <p className="text-slate-400 text-xs">Safety</p>
-                                            <p className="text-emerald-400 font-bold text-lg">Stable</p>
+                                        <div className="flex justify-between text-xs text-slate-500 mt-1">
+                                            {selectedRoute.zone_breakdown.green > 0 && (
+                                                <span className="text-emerald-400">🟢 {selectedRoute.zone_breakdown.green}%</span>
+                                            )}
+                                            {selectedRoute.zone_breakdown.orange > 0 && (
+                                                <span className="text-amber-400">🟡 {selectedRoute.zone_breakdown.orange}%</span>
+                                            )}
+                                            {selectedRoute.zone_breakdown.red > 0 && (
+                                                <span className="text-rose-400">🔴 {selectedRoute.zone_breakdown.red}%</span>
+                                            )}
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-white font-bold">
-                                            <ChevronDown size={18} />
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-300 text-sm">Follow current route</p>
-                                            <p className="text-slate-500 text-xs">{(selectedRoute.distance_km - (navigationStep * 0.1)).toFixed(1)} km remaining</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            selectedRoute && (
-                                <div className={`border rounded-2xl p-5 ${selectedRoute.safety_score >= 60
-                                    ? 'bg-emerald-500/10 border-emerald-500/30'
-                                    : 'bg-orange-500/10 border-orange-500/30'
-                                    }`}>
-                                    <div className="flex justify-between items-start mb-3">
-                                        <h4 className={`font-semibold ${selectedRoute.safety_score >= 60 ? 'text-emerald-400' : 'text-orange-400'
-                                            }`}>
-                                            📍 Selected Route Details
-                                        </h4>
+                                {/* Agent Reasoning Toggle */}
+                                {selectedRoute.agent_reasoning && (
+                                    <div className="mt-3 pt-3 border-t border-slate-700">
                                         <button
-                                            onClick={startNavigation}
-                                            className="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-cyan-900/20 flex items-center gap-2"
+                                            onClick={() => setShowAgentReasoning(!showAgentReasoning)}
+                                            className="w-full flex items-center justify-between text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
                                         >
-                                            <Navigation size={14} /> Start
-                                        </button>
-                                    </div>
-
-                                    <div className="space-y-2 text-sm">
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-400">Type:</span>
-                                            <span className="text-white capitalize">{selectedRoute.route_type.replace('_', ' ')}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-400">Total Distance:</span>
-                                            <span className="text-white">{selectedRoute.distance}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-400">Est. Duration:</span>
-                                            <span className="text-white">{selectedRoute.duration}</span>
-                                        </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-slate-400">Safety Score:</span>
-                                            <span className={`font-bold ${selectedRoute.safety_score >= 60 ? 'text-emerald-400' : 'text-orange-400'
-                                                }`}>
-                                                {selectedRoute.safety_score}%
+                                            <span className="flex items-center gap-1">
+                                                <Bot size={14} /> Why this route?
                                             </span>
-                                        </div>
+                                            <ChevronRight
+                                                size={14}
+                                                className={`transition-transform ${showAgentReasoning ? 'rotate-90' : ''}`}
+                                            />
+                                        </button>
+                                        {showAgentReasoning && (
+                                            <div className="mt-2 p-3 bg-slate-800/80 rounded-lg text-xs text-slate-300 whitespace-pre-line leading-relaxed">
+                                                {selectedRoute.agent_reasoning}
+                                            </div>
+                                        )}
                                     </div>
+                                )}
 
-                                    {/* Zone Breakdown Bar */}
-                                    {selectedRoute.zone_breakdown && Object.keys(selectedRoute.zone_breakdown).length > 0 && (
-                                        <div className="mt-3 pt-3 border-t border-slate-700">
-                                            <p className="text-xs text-slate-400 mb-2">Zone Breakdown</p>
-                                            <div className="flex rounded-full overflow-hidden h-2.5">
-                                                {selectedRoute.zone_breakdown.green > 0 && (
-                                                    <div
-                                                        className="bg-emerald-500 h-full"
-                                                        style={{ width: `${selectedRoute.zone_breakdown.green}%` }}
-                                                        title={`Safe: ${selectedRoute.zone_breakdown.green}%`}
-                                                    />
-                                                )}
-                                                {selectedRoute.zone_breakdown.orange > 0 && (
-                                                    <div
-                                                        className="bg-amber-500 h-full"
-                                                        style={{ width: `${selectedRoute.zone_breakdown.orange}%` }}
-                                                        title={`Moderate: ${selectedRoute.zone_breakdown.orange}%`}
-                                                    />
-                                                )}
-                                                {selectedRoute.zone_breakdown.red > 0 && (
-                                                    <div
-                                                        className="bg-rose-500 h-full"
-                                                        style={{ width: `${selectedRoute.zone_breakdown.red}%` }}
-                                                        title={`High Risk: ${selectedRoute.zone_breakdown.red}%`}
-                                                    />
-                                                )}
-                                                {selectedRoute.zone_breakdown.unknown > 0 && (
-                                                    <div
-                                                        className="bg-slate-600 h-full"
-                                                        style={{ width: `${selectedRoute.zone_breakdown.unknown}%` }}
-                                                        title={`Unknown: ${selectedRoute.zone_breakdown.unknown}%`}
-                                                    />
-                                                )}
-                                            </div>
-                                            <div className="flex justify-between text-xs text-slate-500 mt-1">
-                                                {selectedRoute.zone_breakdown.green > 0 && (
-                                                    <span className="text-emerald-400">🟢 {selectedRoute.zone_breakdown.green}%</span>
-                                                )}
-                                                {selectedRoute.zone_breakdown.orange > 0 && (
-                                                    <span className="text-amber-400">🟡 {selectedRoute.zone_breakdown.orange}%</span>
-                                                )}
-                                                {selectedRoute.zone_breakdown.red > 0 && (
-                                                    <span className="text-rose-400">🔴 {selectedRoute.zone_breakdown.red}%</span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Agent Reasoning Toggle */}
-                                    {selectedRoute.agent_reasoning && (
-                                        <div className="mt-3 pt-3 border-t border-slate-700">
-                                            <button
-                                                onClick={() => setShowAgentReasoning(!showAgentReasoning)}
-                                                className="w-full flex items-center justify-between text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-                                            >
-                                                <span className="flex items-center gap-1">
-                                                    <Bot size={14} /> Why this route?
-                                                </span>
-                                                <ChevronRight
-                                                    size={14}
-                                                    className={`transition-transform ${showAgentReasoning ? 'rotate-90' : ''}`}
-                                                />
-                                            </button>
-                                            {showAgentReasoning && (
-                                                <div className="mt-2 p-3 bg-slate-800/80 rounded-lg text-xs text-slate-300 whitespace-pre-line leading-relaxed">
-                                                    {selectedRoute.agent_reasoning}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {/* Warnings */}
-                                    {selectedRoute.warnings?.length > 0 && (
-                                        <div className="mt-3 pt-3 border-t border-slate-700">
-                                            <p className="text-xs text-orange-400 mb-1 flex items-center gap-1">
-                                                <AlertCircle size={12} /> Cautions:
-                                            </p>
-                                            {selectedRoute.warnings.slice(0, 3).map((warning, i) => (
-                                                <p key={i} className="text-xs text-slate-400">{warning}</p>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            )
+                                {/* Warnings */}
+                                {selectedRoute.warnings?.length > 0 && (
+                                    <div className="mt-3 pt-3 border-t border-slate-700">
+                                        <p className="text-xs text-orange-400 mb-1 flex items-center gap-1">
+                                            <AlertCircle size={12} /> Cautions:
+                                        </p>
+                                        {selectedRoute.warnings.slice(0, 3).map((warning, i) => (
+                                            <p key={i} className="text-xs text-slate-400">{warning}</p>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                         {/* Agent Summary */}
