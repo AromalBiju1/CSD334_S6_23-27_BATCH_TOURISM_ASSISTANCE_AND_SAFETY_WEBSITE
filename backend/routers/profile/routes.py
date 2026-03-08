@@ -88,6 +88,12 @@ def get_recent_activity(db: Session = Depends(get_db), current_user: models.User
     ).order_by(models.ActivityHistory.created_at.desc()).limit(10).all()
     return activities
 
+@router.delete("/activity")
+def clear_activity_history(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    db.query(models.ActivityHistory).filter(models.ActivityHistory.user_id == current_user.id).delete()
+    db.commit()
+    return {"message": "All activity history deleted"}
+
 @router.post("/activity", response_model=schemas.ActivityHistoryResponse)
 def log_activity(data: schemas.ActivityLogRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     new_activity = models.ActivityHistory(

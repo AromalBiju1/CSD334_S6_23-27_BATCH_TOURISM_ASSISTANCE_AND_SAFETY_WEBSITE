@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
     Heart, Settings, Star, MapPin, Search, X, Plus, Trash2,
     Loader, RefreshCw, Shield, ChevronDown
@@ -110,7 +110,7 @@ export default function Recommendations() {
         return () => clearTimeout(timer);
     }, [searchQuery, handleSearchAttractions]);
 
-    const handleAddVisited = async (attraction) => {
+    const handleAddVisited = useCallback(async (attraction) => {
         try {
             await addVisitedPlace({ attraction_id: attraction.id, rating: null });
             toast.success(`Added "${attraction.name}" to visited places`);
@@ -124,9 +124,9 @@ export default function Recommendations() {
         } catch (err) {
             toast.error(err.response?.data?.detail || "Failed to add");
         }
-    };
+    }, []);
 
-    const handleRemoveVisited = async (id) => {
+    const handleRemoveVisited = useCallback(async (id) => {
         try {
             await removeVisitedPlace(id);
             toast.success("Removed from visited places");
@@ -136,7 +136,7 @@ export default function Recommendations() {
         } catch {
             toast.error("Failed to remove");
         }
-    };
+    }, []);
 
     const handleRefreshRecs = async () => {
         setRecsLoading(true);
@@ -196,6 +196,108 @@ export default function Recommendations() {
             </main>
         );
     }
+
+    const renderedRecommendations = useMemo(() => {
+        if (recsLoading) {
+            return (
+                <div className="flex items-center justify-center py-20">
+                    <Loader className="animate-spin text-emerald-400" size={40} />
+                </div>
+            );
+        }
+        if (recommendations.length === 0) {
+            return (
+                <div className={`rounded-2xl border p-12 text-center ${isDark ? "bg-slate-900/30 border-slate-800" : "bg-white border-slate-200"}`}>
+                    <h3 className={`text-lg font-semibold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                        No recommendations yet
+                    </h3>
+                    <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                        Set your preferences and mark some visited places to get personalized recommendations!
+                    </p>
+                </div>
+            );
+        }
+        return (
+            <div className="grid sm:grid-cols-2 gap-4">
+                {recommendations.map((rec) => (
+                    <div
+                        key={rec.id}
+                        className={`rounded-2xl border overflow-hidden transition-all hover:scale-[1.02] ${isDark
+                            ? "bg-slate-900/50 border-slate-800 hover:border-slate-700"
+                            : "bg-white border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md"
+                            }`}
+                    >
+                        {/* Image Section */}
+                        {rec.image_url ? (
+                            <div className="w-full h-32 relative">
+                                <img src={rec.image_url} alt={rec.name} className="w-full h-full object-cover" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div className="absolute bottom-3 left-3 flex gap-2">
+                                    {rec.category && (
+                                        <span className="px-2 py-0.5 rounded-full text-xs bg-black/50 text-white backdrop-blur-sm border border-white/20">
+                                            {rec.category}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="w-full h-8" />
+                        )}
+
+                        <div className="p-5 pt-2">
+                            <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1">
+                                    <h3 className={`font-semibold mb-1 truncate ${isDark ? "text-white" : "text-slate-900"}`}>
+                                        {rec.name}
+                                    </h3>
+                                    <p className={`text-sm flex items-center gap-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                                        <MapPin size={12} />
+                                        {rec.city_name}
+                                    </p>
+                                </div>
+                                <div className="text-right pl-2">
+                                    <div className="text-emerald-400 font-bold text-lg">
+                                        {Math.round(rec.match_score * 100)}%
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 flex-wrap mb-2">
+                                {!rec.image_url && rec.category && (
+                                    <span className={`px-2 py-0.5 rounded-full text-xs ${isDark ? "bg-slate-800 text-slate-300" : "bg-slate-100 text-slate-600"}`}>
+                                        {rec.category}
+                                    </span>
+                                )}
+                                {rec.rating && (
+                                    <span className="flex items-center gap-1 text-xs text-amber-400">
+                                        <Star size={12} fill="currentColor" />
+                                        {rec.rating.toFixed(1)}
+                                    </span>
+                                )}
+                                {getSafetyBadge(rec.safety_zone)}
+                            </div>
+
+                            {rec.description && (
+                                <p className={`text-xs mt-3 line-clamp-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+                                    {rec.description}
+                                </p>
+                            )}
+
+                            <button
+                                onClick={() => handleAddVisited({ id: rec.id, name: rec.name })}
+                                className={`mt-3 w-full text-center py-2 rounded-xl text-xs font-medium transition-all ${isDark
+                                    ? "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
+                                    : "bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200"
+                                    }`}
+                            >
+                                Mark as Visited
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }, [recommendations, recsLoading, isDark, handleAddVisited]);
 
     return (
         <main className="pt-16 min-h-screen w-full">
@@ -446,100 +548,7 @@ export default function Recommendations() {
                             </button>
                         </div>
 
-                        {recsLoading ? (
-                            <div className="flex items-center justify-center py-20">
-                                <Loader className="animate-spin text-emerald-400" size={40} />
-                            </div>
-                        ) : recommendations.length === 0 ? (
-                            <div className={`rounded-2xl border p-12 text-center ${isDark ? "bg-slate-900/30 border-slate-800" : "bg-white border-slate-200"}`}>
-
-                                <h3 className={`text-lg font-semibold mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
-                                    No recommendations yet
-                                </h3>
-                                <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                                    Set your preferences and mark some visited places to get personalized recommendations!
-                                </p>
-                            </div>
-                        ) : (
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                {recommendations.map((rec) => (
-                                    <div
-                                        key={rec.id}
-                                        className={`rounded-2xl border overflow-hidden transition-all hover:scale-[1.02] ${isDark
-                                            ? "bg-slate-900/50 border-slate-800 hover:border-slate-700"
-                                            : "bg-white border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md"
-                                            }`}
-                                    >
-                                        {/* Image Section */}
-                                        {rec.image_url ? (
-                                            <div className="w-full h-32 relative">
-                                                <img src={rec.image_url} alt={rec.name} className="w-full h-full object-cover" />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                                <div className="absolute bottom-3 left-3 flex gap-2">
-                                                    {rec.category && (
-                                                        <span className="px-2 py-0.5 rounded-full text-xs bg-black/50 text-white backdrop-blur-sm border border-white/20">
-                                                            {rec.category}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="w-full h-8" />
-                                        )}
-
-                                        <div className="p-5 pt-2">
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div className="flex-1">
-                                                    <h3 className={`font-semibold mb-1 truncate ${isDark ? "text-white" : "text-slate-900"}`}>
-                                                        {rec.name}
-                                                    </h3>
-                                                    <p className={`text-sm flex items-center gap-1 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                                                        <MapPin size={12} />
-                                                        {rec.city_name}
-                                                    </p>
-                                                </div>
-                                                <div className="text-right pl-2">
-                                                    <div className="text-emerald-400 font-bold text-lg">
-                                                        {Math.round(rec.match_score * 100)}%
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-2 flex-wrap mb-2">
-                                                {!rec.image_url && rec.category && (
-                                                    <span className={`px-2 py-0.5 rounded-full text-xs ${isDark ? "bg-slate-800 text-slate-300" : "bg-slate-100 text-slate-600"}`}>
-                                                        {rec.category}
-                                                    </span>
-                                                )}
-                                                {rec.rating && (
-                                                    <span className="flex items-center gap-1 text-xs text-amber-400">
-                                                        <Star size={12} fill="currentColor" />
-                                                        {rec.rating.toFixed(1)}
-                                                    </span>
-                                                )}
-                                                {getSafetyBadge(rec.safety_zone)}
-                                            </div>
-
-                                            {rec.description && (
-                                                <p className={`text-xs mt-3 line-clamp-2 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-                                                    {rec.description}
-                                                </p>
-                                            )}
-
-                                            <button
-                                                onClick={() => handleAddVisited({ id: rec.id, name: rec.name })}
-                                                className={`mt-3 w-full text-center py-2 rounded-xl text-xs font-medium transition-all ${isDark
-                                                    ? "bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700"
-                                                    : "bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200"
-                                                    }`}
-                                            >
-                                                Mark as Visited
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        {renderedRecommendations}
                     </div>
                 </div>
             </div>

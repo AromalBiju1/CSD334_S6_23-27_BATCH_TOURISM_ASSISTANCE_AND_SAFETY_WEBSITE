@@ -7,7 +7,7 @@ import {
     Star, Bell, Settings, ChevronRight, Map, Phone, Heart, Loader, Activity
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getProfileInfo, getRecentActivity } from '../api/services';
+import { getProfileInfo, getRecentActivity, clearActivityHistory } from '../api/services';
 
 export default function Profile() {
     const { user, logout } = useAuth();
@@ -24,6 +24,17 @@ export default function Profile() {
     const [profileData, setProfileData] = useState(null);
     const [activities, setActivities] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    const handleClearActivity = async () => {
+        try {
+            await clearActivityHistory();
+            setActivities([]);
+            toast.success("Activity history cleared");
+        } catch (err) {
+            console.error("Failed to clear activity:", err);
+            toast.error("Failed to clear activity history");
+        }
+    };
 
     useEffect(() => {
         const fetchProfileData = async () => {
@@ -146,10 +157,20 @@ export default function Profile() {
 
                     {/* Recent Activity */}
                     <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
-                        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                            <Bell size={18} className="text-blue-400" />
-                            Recent Activity
-                        </h2>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                                <Bell size={18} className="text-blue-400" />
+                                Recent Activity
+                            </h2>
+                            {activities.length > 0 && (
+                                <button
+                                    onClick={handleClearActivity}
+                                    className="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded bg-red-500/10 hover:bg-red-500/20 transition-colors"
+                                >
+                                    Clear All
+                                </button>
+                            )}
+                        </div>
                         <div className="space-y-3">
                             {loading ? (
                                 <div className="flex justify-center p-4">

@@ -313,11 +313,13 @@ def get_recommendations(
         cat_counts = Counter(a.category for a in visited_attrs if a.category)
         user_categories = [cat for cat, _ in cat_counts.most_common(5)]
     
-    # 3. Get all candidate attractions (exclude already visited)
+    # 3. Get all candidate attractions (exclude already visited), limit to top 200 globally rated to optimize memory
     candidates = (
         db.query(models.Attraction)
         .join(models.City)
         .filter(~models.Attraction.id.in_(visited_ids) if visited_ids else True)
+        .order_by(models.Attraction.rating.desc())
+        .limit(200)
         .all()
     )
     

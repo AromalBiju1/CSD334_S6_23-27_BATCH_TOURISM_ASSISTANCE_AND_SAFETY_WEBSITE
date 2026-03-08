@@ -216,6 +216,11 @@ export const logActivity = async (actionType, title) => {
     }
 };
 
+export const clearActivityHistory = async () => {
+    const response = await api.delete('/api/profile/activity');
+    return response.data;
+};
+
 export const updatePrivacySettings = async (data) => {
     const response = await api.put('/api/profile/privacy', data);
     return response.data;
@@ -223,5 +228,10 @@ export const updatePrivacySettings = async (data) => {
 
 export const getSavedRoutes = async () => {
     const response = await api.get('/api/profile/saved-routes');
+    return response.data;
+};
+
+export const saveRoute = async (routeData) => {
+    const response = await api.post('/api/profile/save-route', routeData);
     return response.data;
 };

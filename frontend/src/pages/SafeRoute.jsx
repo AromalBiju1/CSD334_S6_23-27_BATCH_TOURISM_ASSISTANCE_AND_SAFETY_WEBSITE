@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { Search, Navigation, ChevronDown, MapPin, Loader, AlertCircle, Shield, Zap, Scale, Bot, ChevronRight, Car, Locate } from "lucide-react";
 import SafetyMap from "../components/SafetyMap";
 import { useTheme } from "../context/ThemeContext";
-import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition, logActivity } from "../api/services";
+import { getCities, getSmartRoutes, getRouteAlternatives, checkPositionSafety, rerouteFromPosition, logActivity, saveRoute } from "../api/services";
 import toast from "react-hot-toast";
 
 // Route type icons and labels
@@ -133,6 +133,13 @@ export default function SafeRoute() {
                 setTimeout(() => setAnimating(false), 3000);
 
                 logActivity('plan', `Planned route to ${destCity.name}`);
+                saveRoute({
+                    origin: startCity.name,
+                    destination: destCity.name,
+                    distance_km: data.routes[data.recommended_index || 0].distance_km || 0,
+                    safety_score: data.routes[data.recommended_index || 0].safety_score || 0
+                }).catch(err => console.error("Failed to save route stats", err));
+
                 toast.success(`🛡️ Safety Agent found ${data.routes.length} route${data.routes.length > 1 ? 's' : ''}!`);
             } else {
                 toast.error("No routes found");
@@ -147,6 +154,15 @@ export default function SafeRoute() {
                     setRecommendedIndex(fallback.recommended_index || 0);
                     setSelectedRouteIndex(fallback.recommended_index || 0);
                     setAgentSummary("Using fallback routing (road routing service unavailable).");
+
+                    logActivity('plan', `Planned route to ${destCity.name} (fallback)`);
+                    saveRoute({
+                        origin: startCity.name,
+                        destination: destCity.name,
+                        distance_km: fallback.routes[fallback.recommended_index || 0].distance_km || 0,
+                        safety_score: fallback.routes[fallback.recommended_index || 0].safety_score || 0
+                    }).catch(err => console.error("Failed to save route stats", err));
+
                     toast.success(`Found ${fallback.routes.length} route(s) via fallback`);
                 } else {
                     toast.error("No routes found");
