@@ -278,7 +278,6 @@ def get_recommendations(
     candidates = (
         db.query(models.Attraction)
         .options(joinedload(models.Attraction.city))
-        .join(models.City)
         .filter(~models.Attraction.id.in_(visited_ids) if visited_ids else True)
         .order_by(models.Attraction.rating.desc())
         .limit(200)
