@@ -2,10 +2,24 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
 from typing import List, Optional
+import time
 from database import models, schemas
 from database.database import get_db
 
 router = APIRouter(prefix="/api/recommendations", tags=["Hotspot Recommendations"])
+
+# ── Global Cache for Attractions (TTL 5 minutes) ──
+_attractions_cache = {}
+_ATTRACTIONS_TTL = 300
+
+def _get_cached_attractions(cache_key: str):
+    entry = _attractions_cache.get(cache_key)
+    if entry and time.time() - entry["ts"] < _ATTRACTIONS_TTL:
+        return entry["data"]
+    return None
+
+def _set_cached_attractions(cache_key: str, data):
+    _attractions_cache[cache_key] = {"data": data, "ts": time.time()}
 
 
 
@@ -23,6 +37,11 @@ def list_attractions(
     Ordered by rating DESC; duplicates (same name + category) are removed,
     keeping the entry from the best-matched city.
     """
+    cache_key = f"{city}_{category}_{limit}_{offset}"
+    cached = _get_cached_attractions(cache_key)
+    if cached is not None:
+        return cached
+
     query = (
         db.query(models.Attraction)
         .join(models.City)
@@ -62,6 +81,7 @@ def list_attractions(
         }
         result.append(data)
 
+    _set_cached_attractions(cache_key, result)
     return result
 
 
