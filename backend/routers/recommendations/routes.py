@@ -223,45 +223,6 @@ def _compute_safety_score(safety_zone: str, preferred_safety: str) -> float:
     return zone_scores.get(safety_zone, 0.3)
 
 
-def _compute_collaborative_boost(attraction_id: int, visited_ids: set, 
-                                  all_visited: list, db: Session) -> float:
-    """
-    Simple collaborative filtering: if other users who visited similar
-    attractions also visited this one, boost its score.
-    """
-    if not visited_ids:
-        return 0.0
-    
-    # Find users who visited the same attractions as current user
-    similar_users = (
-        db.query(models.VisitedPlace.user_id)
-        .filter(
-            models.VisitedPlace.attraction_id.in_(visited_ids),
-            models.VisitedPlace.user_id != all_visited[0].user_id if all_visited else True
-        )
-        .distinct()
-        .limit(50)
-        .all()
-    )
-    
-    if not similar_users:
-        return 0.0
-    
-    similar_user_ids = [u[0] for u in similar_users]
-    
-    # Count how many similar users visited this attraction
-    count = (
-        db.query(func.count(models.VisitedPlace.id))
-        .filter(
-            models.VisitedPlace.attraction_id == attraction_id,
-            models.VisitedPlace.user_id.in_(similar_user_ids)
-        )
-        .scalar()
-    )
-    
-    # Normalize: more similar users who visited → higher boost
-    return min(count / max(len(similar_user_ids), 1), 1.0) * 0.3
-
 
 @router.get("/for-you", response_model=List[schemas.RecommendationResponse])
 def get_recommendations(
@@ -323,6 +284,38 @@ def get_recommendations(
         .all()
     )
     
+    # 3.5 Pre-compute collaborative filtering to avoid N+1 queries in the loop
+    collab_scores = {}
+    if visited_ids:
+        similar_users = (
+            db.query(models.VisitedPlace.user_id)
+            .filter(
+                models.VisitedPlace.attraction_id.in_(visited_ids),
+                models.VisitedPlace.user_id != current_user.id
+            )
+            .distinct()
+            .limit(50)
+            .all()
+        )
+        similar_user_ids = [u[0] for u in similar_users]
+        
+        if similar_user_ids:
+            candidate_ids = [a.id for a in candidates]
+            counts = (
+                db.query(
+                    models.VisitedPlace.attraction_id,
+                    func.count(models.VisitedPlace.id)
+                )
+                .filter(
+                    models.VisitedPlace.user_id.in_(similar_user_ids),
+                    models.VisitedPlace.attraction_id.in_(candidate_ids)
+                )
+                .group_by(models.VisitedPlace.attraction_id)
+                .all()
+            )
+            for attr_id, count in counts:
+                collab_scores[attr_id] = min(count / max(len(similar_user_ids), 1), 1.0) * 0.3
+    
     # 4. Score each candidate
     scored = []
     for attr in candidates:
@@ -340,8 +333,8 @@ def get_recommendations(
             preferred_safety
         )
         
-        # Collaborative filtering
-        collab_score = _compute_collaborative_boost(attr.id, visited_ids, visited, db)
+        # Collaborative filtering (pre-computed O(1) fetch)
+        collab_score = collab_scores.get(attr.id, 0.0)
         
         # Weighted composite score
         composite = (

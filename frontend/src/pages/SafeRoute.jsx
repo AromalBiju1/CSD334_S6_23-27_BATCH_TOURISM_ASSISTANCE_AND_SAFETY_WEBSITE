@@ -219,7 +219,7 @@ export default function SafeRoute() {
 
         navigationIntervalRef.current = setInterval(async () => {
             setNavigationStep(prev => {
-                const nextStep = prev + 1; // Move faster for demo: +5 points
+                const nextStep = prev + 5; // Move faster for demo: +5 points
                 if (nextStep >= selectedRoute.path.length) {
                     stopNavigation();
                     toast.success("You have arrived at your destination!");
