@@ -235,23 +235,22 @@ export default function Hotspots() {
 
     // Build sequential tour route segments for SafetyMap using real OSRM paths
     const tourRoutes = tourStops.length >= 2
-        ? tourStops.slice(0, -1).map((stop, i) => ({
-            // Use real road path if available, otherwise fall back to straight line
-            path: tourRouteSegments[i] || [
-                [stop.latitude, stop.longitude],
-                [tourStops[i + 1].latitude, tourStops[i + 1].longitude],
-            ],
-            color: TOUR_COLORS[i % TOUR_COLORS.length],
-            weight: 5,
-            opacity: tourRouteSegments[i] ? 0.9 : 0.5,
-            selected: true,
-            animate: true,
-            info: {
-                type: `Stop ${i + 1} → Stop ${i + 2}`,
-                distance: `${stop.name} → ${tourStops[i + 1].name}`,
-                duration: ""
-            }
-        }))
+        ? tourStops.slice(0, -1).map((stop, i) => {
+            if (!tourRouteSegments[i]) return null;
+            return {
+                path: tourRouteSegments[i],
+                color: TOUR_COLORS[i % TOUR_COLORS.length],
+                weight: 5,
+                opacity: 0.9,
+                selected: true,
+                animate: true,
+                info: {
+                    type: `Stop ${i + 1} → Stop ${i + 2}`,
+                    distance: `${stop.name} → ${tourStops[i + 1].name}`,
+                    duration: ""
+                }
+            };
+        }).filter(Boolean)
         : [];
 
     // Fit map to tour stops if present
