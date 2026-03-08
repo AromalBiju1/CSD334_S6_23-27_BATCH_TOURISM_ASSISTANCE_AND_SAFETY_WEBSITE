@@ -370,13 +370,21 @@ def get_recommendations(
 @router.get("/categories")
 def get_available_categories(db: Session = Depends(get_db)):
     """Get all unique attraction categories for the preference form."""
-    categories = (
-        db.query(models.Attraction.category)
-        .filter(models.Attraction.category.isnot(None))
-        .distinct()
-        .all()
-    )
-    return [c[0] for c in categories if c[0]]
+    return [
+        "Monuments", 
+        "Museums", 
+        "Temples", 
+        "Mosques", 
+        "Churches", 
+        "Parks/Nature", 
+        "Beaches", 
+        "Amusement Parks", 
+        "Forts", 
+        "Historical", 
+        "Cultural", 
+        "Nature", 
+        "Attraction"
+    ]
 
 
 @router.get("/all-attractions")
