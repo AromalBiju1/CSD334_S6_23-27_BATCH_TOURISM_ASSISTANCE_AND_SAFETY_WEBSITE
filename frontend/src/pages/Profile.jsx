@@ -121,7 +121,7 @@ export default function Profile() {
                     ))}
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6 items-start">
                     {/* Quick Actions */}
                     <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
                         <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
