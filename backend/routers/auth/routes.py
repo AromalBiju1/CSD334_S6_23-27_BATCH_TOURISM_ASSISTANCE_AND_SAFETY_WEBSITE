@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Header
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
+import requests
 from database.database import get_db
 from database import models, schemas
 from utils.utility import hash_password, verify_password, create_access_token, PUBLIC_KEY, ALGORITHM
@@ -72,6 +73,66 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
 
     token = create_access_token({"user_id": db_user.id})
     return {"access_token": token, "token_type": "bearer"}
+
+
+@router.post("/google")
+def google_login(payload: schemas.GoogleLoginRequest, db: Session = Depends(get_db)):
+    # Verify access token with Google
+    headers = {"Authorization": f"Bearer {payload.access_token}"}
+    try:
+        response = requests.get("https://www.googleapis.com/oauth2/v3/userinfo", headers=headers, timeout=10)
+        response.raise_for_status()
+        user_info = response.json()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid Google token")
+
+    email = user_info.get("email")
+    name = user_info.get("name")
+    google_id = user_info.get("sub")
+    profile_pic = user_info.get("picture")
+
+    if not email:
+        raise HTTPException(status_code=400, detail="Google account has no email")
+
+    # Check if user already exists
+    db_user = db.query(models.User).filter(models.User.email == email).first()
+
+    if not db_user:
+        # Create new user automatically
+        # Generate a random impossible password for google-only users
+        import secrets
+        random_pass = secrets.token_urlsafe(32)
+        
+        db_user = models.User(
+            email=email,
+            name=name,
+            password=hash_password(random_pass),
+            google_id=google_id,
+            profile_pic=profile_pic
+        )
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+    else:
+        # Update google_id and profile picture if not set
+        if not db_user.google_id or not db_user.profile_pic:
+            db_user.google_id = google_id
+            db_user.profile_pic = profile_pic
+            db.commit()
+            db.refresh(db_user)
+
+    # Generate our app's JWT
+    token = create_access_token({"user_id": db_user.id})
+    return {
+        "access_token": token, 
+        "token_type": "bearer",
+        "user": {
+            "id": db_user.id,
+            "email": db_user.email,
+            "name": db_user.name,
+            "profile_pic": db_user.profile_pic
+        }
+    }
 
 
 @router.put("/profile", response_model=schemas.ProfileResponse)

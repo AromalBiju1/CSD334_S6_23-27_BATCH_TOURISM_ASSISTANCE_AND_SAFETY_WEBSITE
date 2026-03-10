@@ -7,7 +7,7 @@ import {
     Star, Bell, Settings, ChevronRight, Map, Phone, Heart, Loader, Activity
 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getProfileInfo, getRecentActivity, clearActivityHistory } from '../api/services';
+import { getProfileInfo, getRecentActivity, clearActivityHistory, updatePrivacySettings } from '../api/services';
 
 export default function Profile() {
     const { user, logout } = useAuth();
@@ -33,6 +33,36 @@ export default function Profile() {
         } catch (err) {
             console.error("Failed to clear activity:", err);
             toast.error("Failed to clear activity history");
+        }
+    };
+
+    const handleNotificationToggle = async () => {
+        try {
+            const currentStatus = profileData?.preferences?.notifications_enabled || false;
+            const newStatus = !currentStatus;
+
+            if (newStatus && 'Notification' in window) {
+                const permission = await Notification.requestPermission();
+                if (permission !== 'granted') {
+                    toast.error("Browser notification permission denied.");
+                    return;
+                }
+            }
+
+            await updatePrivacySettings({
+                is_public: profileData?.privacy?.is_public || false,
+                notifications_enabled: newStatus
+            });
+
+            setProfileData(prev => ({
+                ...prev,
+                preferences: { ...prev.preferences, notifications_enabled: newStatus }
+            }));
+
+            toast.success(newStatus ? "Notifications enabled" : "Notifications disabled");
+        } catch (err) {
+            console.error("Failed to update notification settings:", err);
+            toast.error("Failed to update notification settings");
         }
     };
 
@@ -210,7 +240,12 @@ export default function Profile() {
 
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
                                 <span className="text-sm text-slate-300">Notifications</span>
-                                <span className="text-sm text-blue-400 font-medium">{profileData?.preferences?.notifications_enabled ? "Enabled" : "Disabled"}</span>
+                                <button
+                                    onClick={handleNotificationToggle}
+                                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${profileData?.preferences?.notifications_enabled ? 'bg-emerald-500' : 'bg-slate-600'}`}
+                                >
+                                    <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${profileData?.preferences?.notifications_enabled ? 'translate-x-5' : 'translate-x-1'}`} />
+                                </button>
                             </div>
                             <div className="flex items-center justify-between p-3 rounded-xl bg-slate-800/30">
                                 <span className="text-sm text-slate-300">Profile Visibility</span>

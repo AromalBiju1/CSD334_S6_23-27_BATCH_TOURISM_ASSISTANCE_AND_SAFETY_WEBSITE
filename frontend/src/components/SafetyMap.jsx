@@ -473,7 +473,7 @@ const ThemeTileLayer = React.memo(({ theme }) => {
         if (tileRef.current) {
             map.removeLayer(tileRef.current);
         }
-        const url = TILE_URLS[theme] || TILE_URLS.dark;
+        const url = TILE_URLS.light;
         tileRef.current = L.tileLayer(url, { attribution: TILE_ATTRIBUTION }).addTo(map);
         return () => {
             if (tileRef.current) map.removeLayer(tileRef.current);

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User, UserPlus, Shield, Eye, EyeOff } from "lucide-react";
-import { signup } from "../api/services";
+import { signup, googleLogin } from "../api/services";
+import { useGoogleLogin } from '@react-oauth/google';
+import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 
 export default function Signup() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const { theme } = useTheme();
     const isDark = theme === 'dark';
     const [formData, setFormData] = useState({
@@ -51,6 +54,33 @@ export default function Signup() {
             setLoading(false);
         }
     };
+
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            try {
+                const response = await googleLogin(tokenResponse.access_token);
+                const token = response.access_token;
+                const userData = response.user || {
+                    email: response.email,
+                    name: response.name,
+                    profile_pic: response.profile_pic
+                };
+
+                if (token) {
+                    login(userData, token);
+                    toast.success("Google Sign-In successful!");
+                    navigate('/', { replace: true });
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                toast.error(error.response?.data?.detail || "Google Sign-In failed");
+            } finally {
+                setLoading(false);
+            }
+        },
+        onError: error => toast.error('Google Sign-In failed')
+    });
 
     return (
         <main className="pt-16 min-h-screen w-full flex items-center justify-center px-6 py-12">
@@ -175,7 +205,9 @@ export default function Signup() {
                     {/* Google Sign Up */}
                     <button
                         type="button"
-                        className={`w-full flex items-center justify-center gap-3 h-12 rounded-xl font-medium transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-700'}`}
+                        onClick={() => handleGoogleLogin()}
+                        disabled={loading}
+                        className={`w-full flex items-center justify-center gap-3 h-12 rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-700'}`}
                     >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
