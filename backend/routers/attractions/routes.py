@@ -9,17 +9,17 @@ from database.database import get_db
 router = APIRouter(prefix="/api/recommendations", tags=["Hotspot Recommendations"])
 
 # ── Global Cache for Attractions (TTL 5 minutes) ──
-_attractions_cache = {}
+_attractions_cache_v2 = {}
 _ATTRACTIONS_TTL = 300
 
 def _get_cached_attractions(cache_key: str):
-    entry = _attractions_cache.get(cache_key)
+    entry = _attractions_cache_v2.get(cache_key)
     if entry and time.time() - entry["ts"] < _ATTRACTIONS_TTL:
         return entry["data"]
     return None
 
 def _set_cached_attractions(cache_key: str, data):
-    _attractions_cache[cache_key] = {"data": data, "ts": time.time()}
+    _attractions_cache_v2[cache_key] = {"data": data, "ts": time.time()}
 
 
 
@@ -42,21 +42,24 @@ def list_attractions(
     if cached is not None:
         return cached
 
-    query = (
-        db.query(models.Attraction)
-        .join(models.City)
-        .order_by(models.Attraction.rating.desc())
-    )
+    # Start with base query using joinedload for city details to avoid N+1 queries
+    query = db.query(models.Attraction).options(joinedload(models.Attraction.city))
 
+    # Apply filters
     if city:
-        query = query.filter(models.City.name.ilike(f"%{city}%"))
+        # Join is necessary when filtering by city name
+        query = query.join(models.City).filter(models.City.name.ilike(f"%{city}%"))
 
     if category:
         query = query.filter(models.Attraction.category.ilike(f"%{category}%"))
 
+    # Initial sorting
+    query = query.order_by(models.Attraction.rating.desc())
+
     # Get count before limit/offset for pagination UI
     total_raw = query.count()
 
+    # Fetch batch
     attractions = query.offset(offset).limit(limit).all()
 
     # Build response with city_name and fallback lat/lng from parent city.

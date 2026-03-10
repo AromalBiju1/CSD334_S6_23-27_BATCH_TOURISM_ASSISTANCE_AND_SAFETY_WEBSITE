@@ -76,11 +76,15 @@ export default function Hotspots() {
                 if (selectedCategory !== "all") params.category = selectedCategory;
 
                 const data = await getAllAttractions(params);
-                // Data is now {items, total, has_more, ...}
-                setAttractions(data.items || []);
-                setFilteredAttractions(data.items || []);
-                setTotalCount(data.total || 0);
-                setHasMore(data.has_more);
+                // Handle both old array format and new paginated object format
+                const items = Array.isArray(data) ? data : (data.items || []);
+                const total = Array.isArray(data) ? data.length : (data.total || 0);
+                const more = Array.isArray(data) ? data.length === PAGE_SIZE : !!data.has_more;
+
+                setAttractions(items);
+                setFilteredAttractions(items);
+                setTotalCount(total);
+                setHasMore(more);
             } catch (err) {
                 setError("Failed to load attractions. Make sure the backend is running.");
                 setAttractions([]);
@@ -101,10 +105,13 @@ export default function Hotspots() {
             if (selectedCategory !== "all") params.category = selectedCategory;
 
             const data = await getAllAttractions(params);
-            if (data.items?.length > 0) {
-                setAttractions(prev => [...prev, ...data.items]);
+            const newItems = Array.isArray(data) ? data : (data.items || []);
+            const more = Array.isArray(data) ? data.length === PAGE_SIZE : !!data.has_more;
+
+            if (newItems.length > 0) {
+                setAttractions(prev => [...prev, ...newItems]);
                 setOffset(newOffset);
-                setHasMore(data.has_more);
+                setHasMore(more);
             } else {
                 setHasMore(false);
             }
