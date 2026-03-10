@@ -88,7 +88,12 @@ function ThemedToaster() {
 }
 
 function App() {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  // Use a fallback empty string so the app doesn't crash if the Vercel environment variable is missing
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "missing-client-id";
+
+  if (clientId === "missing-client-id") {
+    console.warn("VITE_GOOGLE_CLIENT_ID is missing from environment variables. Google Sign-in will not work.");
+  }
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
