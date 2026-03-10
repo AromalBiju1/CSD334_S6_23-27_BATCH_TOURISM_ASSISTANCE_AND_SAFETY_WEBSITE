@@ -54,9 +54,12 @@ export default function Login() {
 
     const handleGoogleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
+            console.log("🟦 Google Popup Success!", tokenResponse);
             setLoading(true);
             try {
+                console.log("🟦 Sending token to backend: /api/auth/google ...");
                 const response = await googleLogin(tokenResponse.access_token);
+                console.log("🟦 Backend Response received:", response);
                 const token = response.access_token;
                 const userData = response.user || {
                     email: response.email,
@@ -65,18 +68,26 @@ export default function Login() {
                 };
 
                 if (token) {
+                    console.log("🟦 Auth Token valid, logging user in context...");
                     login(userData, token);
                     toast.success("Login successful!");
+                    console.log("🟦 Navigating to Home...");
                     navigate('/', { replace: true });
+                } else {
+                    console.error("🟦 Backend response did not contain an access_token", response);
+                    toast.error("Invalid token format from server");
                 }
             } catch (error) {
-                console.error('Google login error:', error);
+                console.error('🟦 Google login backend error:', error);
                 toast.error(error.response?.data?.detail || "Google Login failed");
             } finally {
                 setLoading(false);
             }
         },
-        onError: error => toast.error('Google Sign-In failed')
+        onError: error => {
+            console.error('🟦 Google Popup Error:', error);
+            toast.error('Google Sign-In failed');
+        }
     });
 
     return (
