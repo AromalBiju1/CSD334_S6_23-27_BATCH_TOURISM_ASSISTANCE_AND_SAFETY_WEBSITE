@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from "./components/Navbar";
 import BackgroundBlur from './components/BackgroundBlur';
@@ -88,21 +87,12 @@ function ThemedToaster() {
 }
 
 function App() {
-  // Use a fallback empty string so the app doesn't crash if the Vercel environment variable is missing
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "missing-client-id";
-
-  if (clientId === "missing-client-id") {
-    console.warn("VITE_GOOGLE_CLIENT_ID is missing from environment variables. Google Sign-in will not work.");
-  }
-
   return (
-    <GoogleOAuthProvider clientId={clientId}>
-      <ThemeProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </ThemeProvider>
-    </GoogleOAuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
