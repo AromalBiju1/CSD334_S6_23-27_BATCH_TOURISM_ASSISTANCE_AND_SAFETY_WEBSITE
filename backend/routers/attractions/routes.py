@@ -27,7 +27,7 @@ def _set_cached_attractions(cache_key: str, data):
 def list_attractions(
     city: Optional[str] = Query(None, description="Filter by city name"),
     category: Optional[str] = Query(None, description="Filter by category"),
-    limit: int = Query(500, ge=1, le=1000),
+    limit: int = Query(100, ge=1, le=1000),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
 ):

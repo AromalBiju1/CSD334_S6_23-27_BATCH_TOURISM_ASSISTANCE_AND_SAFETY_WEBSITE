@@ -13,7 +13,6 @@ class User(Base):
     phone = Column(String, unique=True, nullable=True)
     profile_pic = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    google_id = Column(String, unique=True, nullable=True)
     
     # --- New Preference/Privacy Columns ---
     language = Column(String, default="English")
@@ -55,6 +54,10 @@ class CrimeStatistic(Base):
 
 class Attraction(Base):
     __tablename__ = "attractions"
+    __table_args__ = (
+        Index('ix_attraction_name_cat', 'name', 'category'),
+        Index('ix_attraction_rating', 'rating'),
+    )
     
     id = Column(Integer, primary_key=True, index=True)
     city_id = Column(Integer, ForeignKey("cities.id")) 

@@ -14,7 +14,6 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    google_id: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -24,15 +23,12 @@ class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-class GoogleLoginRequest(BaseModel):
-    access_token: str
 
 class UserResponse(BaseModel):
     id: int
     email: EmailStr
     name: str
     profile_pic: Optional[str] = None
-    google_id: Optional[str] = None
     created_at: datetime
 
     class Config:

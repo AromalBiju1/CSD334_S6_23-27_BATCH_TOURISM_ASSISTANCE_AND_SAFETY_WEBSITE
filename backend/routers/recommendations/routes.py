@@ -280,7 +280,7 @@ def get_recommendations(
         .options(joinedload(models.Attraction.city))
         .filter(~models.Attraction.id.in_(visited_ids) if visited_ids else True)
         .order_by(models.Attraction.rating.desc())
-        .limit(200)
+        .limit(100)
         .all()
     )
     

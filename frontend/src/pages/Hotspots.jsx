@@ -36,6 +36,9 @@ export default function Hotspots() {
     const [citiesLoading, setCitiesLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedAttraction, setSelectedAttraction] = useState(null);
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const PAGE_SIZE = 50;
 
     // Tour mode state — accumulates stops sequentially
     const [tourStops, setTourStops] = useState([]);
@@ -62,20 +65,19 @@ export default function Hotspots() {
 
     // Fetch attractions
     useEffect(() => {
-        const fetchAttractions = async () => {
+        const fetchInitialAttractions = async () => {
             setLoading(true);
             setError(null);
+            setOffset(0);
             try {
-                const params = {};
-                if (selectedCity) {
-                    params.city = selectedCity.name;
-                }
-                if (selectedCategory !== "all") {
-                    params.category = selectedCategory;
-                }
+                const params = { limit: PAGE_SIZE, offset: 0 };
+                if (selectedCity) params.city = selectedCity.name;
+                if (selectedCategory !== "all") params.category = selectedCategory;
+
                 const data = await getAllAttractions(params);
                 setAttractions(data);
                 setFilteredAttractions(data);
+                setHasMore(data.length === PAGE_SIZE);
             } catch (err) {
                 setError("Failed to load attractions. Make sure the backend is running.");
                 setAttractions([]);
@@ -84,8 +86,30 @@ export default function Hotspots() {
                 setLoading(false);
             }
         };
-        fetchAttractions();
+        fetchInitialAttractions();
     }, [selectedCity, selectedCategory]);
+
+    const handleLoadMore = async () => {
+        if (loading || !hasMore) return;
+        const newOffset = offset + PAGE_SIZE;
+        try {
+            const params = { limit: PAGE_SIZE, offset: newOffset };
+            if (selectedCity) params.city = selectedCity.name;
+            if (selectedCategory !== "all") params.category = selectedCategory;
+
+            const data = await getAllAttractions(params);
+            if (data.length > 0) {
+                setAttractions(prev => [...prev, ...data]);
+                setOffset(newOffset);
+                setHasMore(data.length === PAGE_SIZE);
+            } else {
+                setHasMore(false);
+            }
+        } catch (err) {
+            console.error("Failed to load more:", err);
+            toast.error("Failed to load more attractions");
+        }
+    };
 
     // City suggestions
     const citySuggestions = cityQuery.length > 1 && !selectedCity
@@ -656,6 +680,20 @@ export default function Hotspots() {
                                 </div>
                             );
                         })}
+                    </div>
+                )}
+
+                {/* Load More Button */}
+                {!loading && hasMore && filteredAttractions.length > 0 && (
+                    <div className="flex justify-center mt-12 pb-12">
+                        <button
+                            onClick={handleLoadMore}
+                            className={`px-8 py-3 rounded-xl font-medium transition-all ${isDark
+                                ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                                : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 shadow-sm'}`}
+                        >
+                            Load More Attractions
+                        </button>
                     </div>
                 )}
 

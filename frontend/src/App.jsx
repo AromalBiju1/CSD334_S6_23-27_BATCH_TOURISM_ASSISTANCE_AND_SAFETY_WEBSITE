@@ -6,6 +6,7 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from "./components/Navbar";
 import BackgroundBlur from './components/BackgroundBlur';
+import SafetyMonitor from './components/SafetyMonitor';
 import Home from "./pages/Home";
 import Explore from './pages/Explore';
 import SafeRoute from './pages/SafeRoute';
@@ -26,6 +27,7 @@ function AppContent() {
   return (
     <div className={`min-h-screen theme-transition ${theme === 'dark' ? 'bg-[#020617] text-white' : 'bg-[#f8fafc] text-[#0f172a]'}`}>
       <Navbar />
+      <SafetyMonitor />
       <BackgroundBlur />
       <Routes>
         {/* Public Routes */}
