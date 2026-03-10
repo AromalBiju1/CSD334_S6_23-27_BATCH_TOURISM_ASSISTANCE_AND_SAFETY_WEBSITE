@@ -113,6 +113,13 @@ class AttractionWithCity(AttractionResponse):
     """Attraction with resolved city_name for list endpoints"""
     city_name: Optional[str] = None
 
+class PaginatedAttractionResponse(BaseModel):
+    items: List[AttractionWithCity]
+    total: int
+    has_more: bool
+    offset: int
+    limit: int
+
 class CityWithDetails(CityResponse):
     """City with related data"""
     attractions: List[AttractionResponse] = []

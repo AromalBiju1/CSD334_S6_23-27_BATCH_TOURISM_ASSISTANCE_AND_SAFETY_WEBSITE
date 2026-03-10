@@ -38,6 +38,7 @@ export default function Hotspots() {
     const [selectedAttraction, setSelectedAttraction] = useState(null);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    const [totalCount, setTotalCount] = useState(0);
     const PAGE_SIZE = 50;
 
     // Tour mode state — accumulates stops sequentially
@@ -75,9 +76,11 @@ export default function Hotspots() {
                 if (selectedCategory !== "all") params.category = selectedCategory;
 
                 const data = await getAllAttractions(params);
-                setAttractions(data);
-                setFilteredAttractions(data);
-                setHasMore(data.length === PAGE_SIZE);
+                // Data is now {items, total, has_more, ...}
+                setAttractions(data.items || []);
+                setFilteredAttractions(data.items || []);
+                setTotalCount(data.total || 0);
+                setHasMore(data.has_more);
             } catch (err) {
                 setError("Failed to load attractions. Make sure the backend is running.");
                 setAttractions([]);
@@ -98,10 +101,10 @@ export default function Hotspots() {
             if (selectedCategory !== "all") params.category = selectedCategory;
 
             const data = await getAllAttractions(params);
-            if (data.length > 0) {
-                setAttractions(prev => [...prev, ...data]);
+            if (data.items?.length > 0) {
+                setAttractions(prev => [...prev, ...data.items]);
                 setOffset(newOffset);
-                setHasMore(data.length === PAGE_SIZE);
+                setHasMore(data.has_more);
             } else {
                 setHasMore(false);
             }
@@ -436,7 +439,7 @@ export default function Hotspots() {
                 {/* Results Count */}
                 {!loading && !error && (
                     <p className="text-slate-400 text-sm mb-4">
-                        Showing {filteredAttractions.length} attraction{filteredAttractions.length !== 1 ? 's' : ''}
+                        Showing {filteredAttractions.length} of {totalCount} attraction{totalCount !== 1 ? 's' : ''}
                         {mapAttractions.length < filteredAttractions.length &&
                             ` (${mapAttractions.length} with location data)`
                         }

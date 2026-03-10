@@ -23,7 +23,7 @@ def _set_cached_attractions(cache_key: str, data):
 
 
 
-@router.get("", response_model=List[schemas.AttractionWithCity])
+@router.get("", response_model=schemas.PaginatedAttractionResponse)
 def list_attractions(
     city: Optional[str] = Query(None, description="Filter by city name"),
     category: Optional[str] = Query(None, description="Filter by category"),
@@ -54,12 +54,13 @@ def list_attractions(
     if category:
         query = query.filter(models.Attraction.category.ilike(f"%{category}%"))
 
+    # Get count before limit/offset for pagination UI
+    total_raw = query.count()
+
     attractions = query.offset(offset).limit(limit).all()
 
     # Build response with city_name and fallback lat/lng from parent city.
-    # Deduplicate by (name, category) — keep the first (highest-rated) occurrence
-    # so that attractions seeded under multiple city rows appear only once.
-    seen: set = set()
+    seen = set()
     result = []
     for attr in attractions:
         dedup_key = (attr.name.strip().lower(), (attr.category or "").strip().lower())
@@ -81,8 +82,19 @@ def list_attractions(
         }
         result.append(data)
 
-    _set_cached_attractions(cache_key, result)
-    return result
+    # If the DB returned exactly 'limit' rows, there's likely more data to fetch, 
+    # even if deduplication made the current batch smaller than 'limit'.
+    has_more = len(attractions) == limit
+
+    response_data = {
+        "items": result,
+        "total": total_raw,
+        "has_more": has_more,
+        "offset": offset,
+        "limit": limit
+    }
+    _set_cached_attractions(cache_key, response_data)
+    return response_data
 
 
 @router.get("/search", response_model=List[schemas.CityWithDetails])
